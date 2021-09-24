@@ -34,15 +34,17 @@ void init_data(U8 *buf, int len)
 
 int main(int argc, char **argv){
     
-    if(argv[0] == "pnginfo"){
+    if(strcmp(argv[0],"pnginfo") == 0){
         pnginfo(argv[1]);
     }
-    else if(argv[0] == "findpng"){
+    else if(strcmp(argv[0],"findpng") == 0){
         findpng();
     }
-    else if(argv[0] == "catpng"){
+    else if(strcmp(argv[0],"catpng") == 0){
         catpng();
     }
+
+    return 0;
 }
 
 void pnginfo(char *filename){
