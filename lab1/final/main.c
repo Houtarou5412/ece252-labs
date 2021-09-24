@@ -46,7 +46,6 @@ int main(int argc, char *argv[]){
 }
 
 void pnginfo(char *filename[]){
-    U8 *png_data;
     U64 *header;
     U32 *IHDR_length;
     U32 *IHDR_type;
@@ -64,18 +63,18 @@ void pnginfo(char *filename[]){
 
     U32 *IDAT_length;
     U32 *IDAT_type;
-    U8 *IDAT_data[];
+    U8 *IDAT_data;
     U32 *IDAT_crc;
     U32 *IDAT_crc2;
-    U8 *IDAT_crc_input[];
+    U8 *IDAT_crc_input;
 
     U32 *IEND_length = 0;
     U32 *IEND_type;
     U32 *IEND_crc;
     U32 *IEND_crc2;
 
-    png_data = malloc();
-    File *png;
+
+    FILE *png;
     png = fopen(filename, "rb");
     fread(header, 1,8, png);
     *header = ntohl(header);
@@ -127,7 +126,7 @@ void catpng(){
 
 }
 
-void populate_IHDR_fields(File *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR_data_w, U32 *IHDR_data_h, U32 *IHDR_crc, U8 *IHDR_crc_input){
+void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR_data_w, U32 *IHDR_data_h, U32 *IHDR_crc, U8 *IHDR_crc_input){
     rewind(png);
     fseek(png, 8, SEEK_CUR);
     fread(IHDR_length, 1, 4, png);
@@ -155,13 +154,13 @@ void populate_IHDR_fields(File *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR
             IHDR_crc_input[i] = IHDR_data_h[i-8];
         }
     }
-    *IHDR_crc_input[12] = 8;
-    *IHDR_crc_input[13] = 6;
+    IHDR_crc_input[12] = 8;
+    IHDR_crc_input[13] = 6;
 
 
 }
 
-void populate_IDAT_fields(File *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_data[], U32 *IDAT_crc, U8 *IDAT_crc_input[]){
+void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_data[], U32 *IDAT_crc, U8 *IDAT_crc_input[]){
     rewind(png);
     fseek(png, 33, SEEK_CUR);
     fread(IDAT_length, 1, 4, png);
@@ -188,7 +187,7 @@ void populate_IDAT_fields(File *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_
     rewind(png);
 }
 
-void populate_IEND_fields(File *png, U32 *IEND_type, U32 *IEND_crc, U32 *IDAT_length){
+void populate_IEND_fields(FILE *png, U32 *IEND_type, U32 *IEND_crc, U32 *IDAT_length){
     rewind(png);
     fseek(png, 8+4+4+13+4+4+4+*IDAT_length+4+4, SEEK_CUR);
     fread(IEND_type,1,4, png);
