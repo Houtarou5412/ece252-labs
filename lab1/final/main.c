@@ -23,7 +23,7 @@ void pnginfo(char *filename);
 void findpng();
 void catpng();
 void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR_data_w, U32 *IHDR_data_h, U32 *IHDR_crc, U8 *IHDR_crc_input);
-void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_data[], U32 *IDAT_crc, U8 *IDAT_crc_input);
+void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_data, U32 *IDAT_crc, U8 *IDAT_crc_input);
 void populate_IEND_fields(FILE *png, U32 *IEND_type, U32 *IEND_crc, U32 *IDAT_length);
 
 /******************************************************************************
@@ -79,7 +79,7 @@ void pnginfo(char *filename){
     FILE *png;
     png = fopen(filename, "rb");
     fread(header, 1,8, png);
-    *header = ntohl(header);
+    *header = ntohl(*header);
     if(*header != 0x89504e470d0a1a0a){
         printf("%s: Not a PNG file\n", filename);
         return;
@@ -88,7 +88,7 @@ void pnginfo(char *filename){
         populate_IHDR_fields(png, IHDR_length, IHDR_type, IHDR_data_w, IHDR_data_h, IHDR_crc, IHDR_crc_input);
         populate_IDAT_fields(png, IDAT_length, IDAT_type, IDAT_data, IDAT_crc, IDAT_crc_input);
         populate_IEND_fields(png, IEND_type, IEND_crc, IDAT_length);
-        *IHDR_crc2 = crc(IHDR_crc_input, 17);
+        *IHDR_crc2 = crc(*IHDR_crc_input, 17);
         *IDAT_crc2 = crc(IDAT_crc_input, 4+*IDAT_length);
         *IEND_crc2 = crc(IEND_type, 4);
 
@@ -128,7 +128,7 @@ void catpng(){
 
 }
 
-void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR_data_w, U32 *IHDR_data_h, U32 *IHDR_crc, U8 *IHDR_crc_input){
+void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR_data_w, U32 *IHDR_data_h, U32 *IHDR_crc, U8 **IHDR_crc_input){
     rewind(png);
     fseek(png, 8, SEEK_CUR);
     fread(IHDR_length, 1, 4, png);
@@ -162,7 +162,7 @@ void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR
 
 }
 
-void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_data[], U32 *IDAT_crc, U8 *IDAT_crc_input){
+void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_data, U32 *IDAT_crc, U8 *IDAT_crc_input){
     rewind(png);
     fseek(png, 33, SEEK_CUR);
     fread(IDAT_length, 1, 4, png);
