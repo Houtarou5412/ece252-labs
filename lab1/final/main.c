@@ -17,6 +17,14 @@
 U8 gp_buf_def[BUF_LEN2]; /* output buffer for mem_def() */
 U8 gp_buf_inf[BUF_LEN2]; /* output buffer for mem_inf() */
 
+//fucntion declarations
+void pnginfo(char *filename);
+void findpng();
+void catpng();
+void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR_data_w, U32 *IHDR_data_h, U32 *IHDR_crc, U8 *IHDR_crc_input);
+void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_data[], U32 *IDAT_crc, U8 *IDAT_crc_input);
+void populate_IEND_fields(FILE *png, U32 *IEND_type, U32 *IEND_crc, U32 *IDAT_length);
+
 /******************************************************************************
  * FUNCTION PROTOTYPES 
  *****************************************************************************/
@@ -147,7 +155,7 @@ void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR
 
 }
 
-void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_data[], U32 *IDAT_crc, U8 *IDAT_crc_input[]){
+void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_data[], U32 *IDAT_crc, U8 *IDAT_crc_input){
     rewind(png);
     fseek(png, 33, SEEK_CUR);
     fread(IDAT_length, 1, 4, png);
