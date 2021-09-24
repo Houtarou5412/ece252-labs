@@ -88,9 +88,9 @@ void pnginfo(char *filename){
         populate_IHDR_fields(png, IHDR_length, IHDR_type, IHDR_data_w, IHDR_data_h, IHDR_crc, IHDR_crc_input);
         populate_IDAT_fields(png, IDAT_length, IDAT_type, IDAT_data, IDAT_crc, IDAT_crc_input);
         populate_IEND_fields(png, IEND_type, IEND_crc, IDAT_length);
-        *IHDR_crc2 = crc(*IHDR_crc_input, 17);
+        *IHDR_crc2 = crc(IHDR_crc_input, 17);
         *IDAT_crc2 = crc(IDAT_crc_input, 4+*IDAT_length);
-        *IEND_crc2 = crc(*IEND_type, 4);
+        *IEND_crc2 = crc(IEND_type, 4);
 
         char error_loc[4] = "";
         U32 c_crc;
@@ -156,8 +156,8 @@ void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR
             *(IHDR_crc_input + i) = *(IHDR_data_h + i-8);
         }
     }
-    *IHDR_crc_input[12] = 8;
-    *IHDR_crc_input[13] = 6;
+    *(IHDR_crc_input + 12) = 8;
+    *(IHDR_crc_input + 13) = 6;
 
 
 }
