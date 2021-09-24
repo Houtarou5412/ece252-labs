@@ -92,7 +92,7 @@ void pnginfo(char *filename){
         *IDAT_crc2 = crc(IDAT_crc_input, 4+*IDAT_length);
         *IEND_crc2 = crc(IEND_type, 4);
 
-        char error_loc[4] = "";
+        char error_loc[5] = "";
         U32 c_crc;
         U32 e_crc;
 
