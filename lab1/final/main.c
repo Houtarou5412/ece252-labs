@@ -22,9 +22,9 @@ U8 gp_buf_inf[BUF_LEN2]; /* output buffer for mem_inf() */
 void pnginfo(char *filename);
 void findpng();
 void catpng();
-void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR_data_w, U32 *IHDR_data_h, U32 *IHDR_crc, U8 **IHDR_crc_input);
+void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR_data_w, U32 *IHDR_data_h, U32 *IHDR_crc, U8 *IHDR_crc_input);
 void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_data, U32 *IDAT_crc, U8 *IDAT_crc_input);
-void populate_IEND_fields(FILE *png, U8 **IEND_type, U32 *IEND_crc, U32 *IDAT_length);
+void populate_IEND_fields(FILE *png, U8 *IEND_type, U32 *IEND_crc, U32 *IDAT_length);
 
 /******************************************************************************
  * FUNCTION PROTOTYPES 
@@ -57,7 +57,7 @@ void pnginfo(char *filename){
     *IHDR_data_f = 0;
     U8 *IHDR_data_i = malloc(1); // interlace
     *IHDR_data_i = 0;
-    U8 *IHDR_crc_input[17] = malloc(17);
+    U8 *IHDR_crc_input = malloc(17);
     U32 *IHDR_crc = malloc(4);
     U32 *IHDR_crc2 = malloc(4);
     
@@ -71,7 +71,7 @@ void pnginfo(char *filename){
 
     U32 *IEND_length = malloc(4);;
     *IEND_length = 0;
-    U8 *IEND_type[4] = malloc(1);
+    U8 *IEND_type = malloc(4);
     U32 *IEND_crc = malloc(4);
     U32 *IEND_crc2 = malloc(4);
 
@@ -128,7 +128,7 @@ void catpng(){
 
 }
 
-void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR_data_w, U32 *IHDR_data_h, U32 *IHDR_crc, U8 **IHDR_crc_input){
+void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR_data_w, U32 *IHDR_data_h, U32 *IHDR_crc, U8 *IHDR_crc_input){
     rewind(png);
     fseek(png, 8, SEEK_CUR);
     fread(IHDR_length, 1, 4, png);
@@ -147,13 +147,13 @@ void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR
 
     for(int i = 0; i < 12; i++){
         if(i < 4){
-            *IHDR_crc_input[i] = *(IHDR_type + i);
+            *(IHDR_crc_input +i) = *(IHDR_type + i);
         }
         else if(i < 8){
-            *IHDR_crc_input[i] = *(IHDR_data_w + i-4);
+            *(IHDR_crc_input +i) = *(IHDR_data_w + i-4);
         }
         else{
-            *IHDR_crc_input[i] = *(IHDR_data_h + i-8);
+            *(IHDR_crc_input + i) = *(IHDR_data_h + i-8);
         }
     }
     *IHDR_crc_input[12] = 8;
@@ -189,7 +189,7 @@ void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_
     rewind(png);
 }
 
-void populate_IEND_fields(FILE *png, U8 **IEND_type, U32 *IEND_crc, U32 *IDAT_length){
+void populate_IEND_fields(FILE *png, U8 *IEND_type, U32 *IEND_crc, U32 *IDAT_length){
     rewind(png);
     fseek(png, 8+4+4+13+4+4+4+*IDAT_length+4+4, SEEK_CUR);
     fread(IEND_type,1,4, png);
