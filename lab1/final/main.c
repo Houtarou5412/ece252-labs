@@ -79,7 +79,7 @@ void pnginfo(char *filename){
     FILE *png;
     png = fopen(filename, "rb");
     fread(header, 1,8, png);
-    *header = ntohl(*header);
+    //*header = ntohl(*header);
     if(*header != 0x89504e470d0a1a0a){
         printf("%s: Not a PNG file\n", filename);
         return;
@@ -90,7 +90,7 @@ void pnginfo(char *filename){
         populate_IEND_fields(png, IEND_type, IEND_crc, IDAT_length);
         *IHDR_crc2 = crc(*IHDR_crc_input, 17);
         *IDAT_crc2 = crc(IDAT_crc_input, 4+*IDAT_length);
-        *IEND_crc2 = crc(IEND_type, 4);
+        *IEND_crc2 = crc(*IEND_type, 4);
 
         char error_loc[4] = "";
         U32 c_crc;
@@ -113,8 +113,8 @@ void pnginfo(char *filename){
             e_crc = *IEND_crc;
         }
         
-        printf("%s: %d x %d\n", filename, IHDR_data_w, IHDR_data_h);
-        if(error_loc[0] != ""){
+        printf("%s: %u x %u\n", filename, IHDR_data_w, IHDR_data_h);
+        if(strcmp(error_loc[0],"") != 0){
             printf("%s chunk CRC error: computed %x, expected %x\n", error_loc, c_crc, e_crc);
         }
     }
@@ -132,32 +132,32 @@ void populate_IHDR_fields(FILE *png, U32 *IHDR_length, U32 *IHDR_type, U32 *IHDR
     rewind(png);
     fseek(png, 8, SEEK_CUR);
     fread(IHDR_length, 1, 4, png);
-    *IHDR_length = ntohl(*IHDR_length);
+    //*IHDR_length = ntohl(*IHDR_length);
     fread(IHDR_type, 1, 4, png);
-    *IHDR_type = ntohl(*IHDR_type);
+    //*IHDR_type = ntohl(*IHDR_type);
     fread(IHDR_data_w, 1, 4, png);
-    *IHDR_data_w = ntohl(*IHDR_data_w);
+    //*IHDR_data_w = ntohl(*IHDR_data_w);
     fread(IHDR_data_h, 1, 4, png);
-    *IHDR_data_h = ntohl(*IHDR_data_h);
+    //*IHDR_data_h = ntohl(*IHDR_data_h);
 
     fseek(png, 5, SEEK_CUR);
     fread(IHDR_crc, 1, 4, png);
-    *IHDR_crc = ntohl(*IHDR_crc);
+    //*IHDR_crc = ntohl(*IHDR_crc);
     rewind(png);
 
     for(int i = 0; i < 12; i++){
         if(i < 4){
-            IHDR_crc_input[i] = IHDR_type[i];
+            *IHDR_crc_input[i] = *(IHDR_type + i);
         }
         else if(i < 8){
-            IHDR_crc_input[i] = IHDR_data_w[i-4];
+            *IHDR_crc_input[i] = *(IHDR_data_w + i-4);
         }
         else{
-            IHDR_crc_input[i] = IHDR_data_h[i-8];
+            *IHDR_crc_input[i] = *(IHDR_data_h + i-8);
         }
     }
-    IHDR_crc_input[12] = 8;
-    IHDR_crc_input[13] = 6;
+    *IHDR_crc_input[12] = 8;
+    *IHDR_crc_input[13] = 6;
 
 
 }
@@ -166,16 +166,16 @@ void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_
     rewind(png);
     fseek(png, 33, SEEK_CUR);
     fread(IDAT_length, 1, 4, png);
-    *IDAT_length = ntohl(*IDAT_length);
+    //*IDAT_length = ntohl(*IDAT_length);
 
     fread(IDAT_type, 1, 4, png);
-    *IDAT_type = ntohl(*IDAT_type);
+    //*IDAT_type = ntohl(*IDAT_type);
     
     IDAT_data = malloc(IDAT_length);
-    fread(IDAT_data, 1, IDAT_length, png);
+    fread(IDAT_data, 1, *IDAT_length, png);
 
     fread(IDAT_crc, 1, 4, png);
-    *IDAT_crc = ntohl(*IDAT_crc);
+    //*IDAT_crc = ntohl(*IDAT_crc);
 
     for(int i = 0; i < *IDAT_length + 4; i++){
         if(i < 4){
@@ -193,10 +193,10 @@ void populate_IEND_fields(FILE *png, U8 **IEND_type, U32 *IEND_crc, U32 *IDAT_le
     rewind(png);
     fseek(png, 8+4+4+13+4+4+4+*IDAT_length+4+4, SEEK_CUR);
     fread(IEND_type,1,4, png);
-    *IEND_type = ntohl(*IEND_type);
+    //*IEND_type = ntohl(*IEND_type);
 
     fread(IEND_crc,1,4, png);
-    *IEND_crc = ntohl(*IEND_crc);
+    //*IEND_crc = ntohl(*IEND_crc);
 
     rewind(png);
 
