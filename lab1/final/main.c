@@ -32,7 +32,7 @@ void init_data(U8 *buf, int len)
     }
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv){
     
     if(argv[0] == "pnginfo"){
         pnginfo(argv[1]);
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
     }
 }
 
-void pnginfo(char *filename[]){
+void pnginfo(char *filename){
     U64 *header;
     U32 *IHDR_length;
     U32 *IHDR_type;
