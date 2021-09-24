@@ -1,5 +1,5 @@
 # Makefile, ECE252  
-# Yiqing Huang
+# YOUNG HA AHN, BRIAN PENG
 
 CC = gcc       # compiler
 CFLAGS = -Wall -g -std=c99 # compilation flags
@@ -9,7 +9,7 @@ LDLIBS = -lz   # link with libz
 
 # For students 
 LIB_UTIL = zutil.o crc.o
-SRCS   = main.c crc.c zutil.c
+SRCS   = main.c crc.c zutil.c crc.h
 OBJS   = main.o $(LIB_UTIL) 
 
 TARGETS= main.out 
