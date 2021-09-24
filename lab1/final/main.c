@@ -32,7 +32,7 @@ void init_data(U8 *buf, int len)
     }
 }
 
-int main(int argc, char *argv){
+int main(int argc, char **argv){
     
     if(argv[0] == "pnginfo"){
         pnginfo(argv[1]);
