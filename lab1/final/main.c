@@ -4,6 +4,7 @@
 #include "crc.h"      /* for crc()                   */
 #include "zutil.h"    /* for mem_def() and mem_inf() */
 #include "lab_png.h"  /* simple PNG data structures  */
+#include <arpa/inet.h>
 
 /******************************************************************************
  * DEFINED MACROS 
@@ -48,10 +49,14 @@ void pnginfo(char *filename){
     U32 *IHDR_data_h;
     U8 *IHDR_data_d; //depth
     *IHDR_data_d = 8;
-    U8 *IHDR_data_t = 6; // type
-    U8 *IHDR_data_c = 0; // compression
-    U8 *IHDR_data_f = 0; // filter
-    U8 *IHDR_data_i = 0; // interlace
+    U8 *IHDR_data_t; // type
+    *IHDR_data_t = 6;
+    U8 *IHDR_data_c; // compression
+    *IHDR_data_c = 0;
+    U8 *IHDR_data_f; // filter
+    *IHDR_data_f = 0;
+    U8 *IHDR_data_i; // interlace
+    *IHDR_data_i = 0;
     U8 *IHDR_crc_input[17];
     U32 *IHDR_crc;
     U32 *IHDR_crc2;
@@ -64,7 +69,8 @@ void pnginfo(char *filename){
     U32 *IDAT_crc2;
     U8 *IDAT_crc_input;
 
-    U32 *IEND_length = 0;
+    U32 *IEND_length;
+    *IEND_length = 0;
     U32 *IEND_type;
     U32 *IEND_crc;
     U32 *IEND_crc2;
@@ -74,7 +80,7 @@ void pnginfo(char *filename){
     png = fopen(filename, "rb");
     fread(header, 1,8, png);
     *header = ntohl(header);
-    if(*header != "0x89504e470d0a1a0a"){
+    if(*header != 0x89504e470d0a1a0a){
         printf("%s: Not a PNG file\n", filename);
         return;
     }
