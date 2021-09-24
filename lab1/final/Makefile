@@ -1,4 +1,4 @@
-# Makefile, ECE252  
+# Makefile, ECE252
 # YOUNG HA AHN, BRIAN PENG
 
 CC = gcc       # compiler
