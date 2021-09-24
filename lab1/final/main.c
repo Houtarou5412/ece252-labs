@@ -46,7 +46,8 @@ void pnginfo(char *filename){
     U32 *IHDR_type;
     U32 *IHDR_data_w;
     U32 *IHDR_data_h;
-    U8 *IHDR_data_d = 8; //depth
+    U8 *IHDR_data_d; //depth
+    *IHDR_data_d = 8;
     U8 *IHDR_data_t = 6; // type
     U8 *IHDR_data_c = 0; // compression
     U8 *IHDR_data_f = 0; // filter
