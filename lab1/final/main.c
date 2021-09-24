@@ -32,21 +32,6 @@ void init_data(U8 *buf, int len)
     }
 }
 
-int main(int argc, char **argv){
-    
-    if(strcmp(argv[0],"pnginfo") == 0){
-        pnginfo(argv[1]);
-    }
-    else if(strcmp(argv[0],"findpng") == 0){
-        findpng();
-    }
-    else if(strcmp(argv[0],"catpng") == 0){
-        catpng();
-    }
-
-    return 0;
-}
-
 void pnginfo(char *filename){
     U64 *header;
     U32 *IHDR_length;
@@ -200,4 +185,19 @@ void populate_IEND_fields(FILE *png, U32 *IEND_type, U32 *IEND_crc, U32 *IDAT_le
 
     rewind(png);
 
+}
+
+int main(int argc, char **argv){
+    
+    if(strcmp(argv[0],"pnginfo") == 0){
+        pnginfo(argv[1]);
+    }
+    else if(strcmp(argv[0],"findpng") == 0){
+        findpng();
+    }
+    else if(strcmp(argv[0],"catpng") == 0){
+        catpng();
+    }
+
+    return 0;
 }
