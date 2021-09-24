@@ -42,38 +42,38 @@ void init_data(U8 *buf, int len)
 }
 
 void pnginfo(char *filename){
-    U64 *header;
-    U32 *IHDR_length;
-    U32 *IHDR_type;
-    U32 *IHDR_data_w;
-    U32 *IHDR_data_h;
-    U8 *IHDR_data_d; //depth
+    U64 *header = malloc(8);  
+    U32 *IHDR_length = malloc(4);
+    U32 *IHDR_type = malloc(4);
+    U32 *IHDR_data_w = malloc(4);
+    U32 *IHDR_data_h = malloc(4);
+    U8 *IHDR_data_d = malloc(1); //depth
     *IHDR_data_d = 8;
-    U8 *IHDR_data_t; // type
+    U8 *IHDR_data_t = malloc(1); // type
     *IHDR_data_t = 6;
-    U8 *IHDR_data_c; // compression
+    U8 *IHDR_data_c = malloc(1); // compression
     *IHDR_data_c = 0;
-    U8 *IHDR_data_f; // filter
+    U8 *IHDR_data_f = malloc(1); // filter
     *IHDR_data_f = 0;
-    U8 *IHDR_data_i; // interlace
+    U8 *IHDR_data_i = malloc(1); // interlace
     *IHDR_data_i = 0;
-    U8 *IHDR_crc_input[17];
-    U32 *IHDR_crc;
-    U32 *IHDR_crc2;
+    U8 *IHDR_crc_input[17] = malloc(17);
+    U32 *IHDR_crc = malloc(4);
+    U32 *IHDR_crc2 = malloc(4);
     
 
-    U32 *IDAT_length;
-    U32 *IDAT_type;
+    U32 *IDAT_length = malloc(4);
+    U32 *IDAT_type = malloc(4);
     U8 *IDAT_data;
-    U32 *IDAT_crc;
-    U32 *IDAT_crc2;
+    U32 *IDAT_crc = malloc(4);
+    U32 *IDAT_crc2 = malloc(4);
     U8 *IDAT_crc_input;
 
-    U32 *IEND_length;
+    U32 *IEND_length = malloc(4);;
     *IEND_length = 0;
-    U8 *IEND_type[4];
-    U32 *IEND_crc;
-    U32 *IEND_crc2;
+    U8 *IEND_type[4] = malloc(1);
+    U32 *IEND_crc = malloc(4);
+    U32 *IEND_crc2 = malloc(4);
 
 
     FILE *png;
@@ -113,8 +113,8 @@ void pnginfo(char *filename){
             e_crc = *IEND_crc;
         }
         
-        printf("%s: %u x %u\n", filename, IHDR_data_w, IHDR_data_h);
-        if(strcmp(error_loc[0],"") != 0){
+        printf("%s: %u x %u\n", filename, *IHDR_data_w, *IHDR_data_h);
+        if(strcmp(*error_loc,"") != 0){
             printf("%s chunk CRC error: computed %x, expected %x\n", error_loc, c_crc, e_crc);
         }
     }
@@ -171,7 +171,7 @@ void populate_IDAT_fields(FILE *png, U32 *IDAT_length, U32 *IDAT_type, U8 *IDAT_
     fread(IDAT_type, 1, 4, png);
     //*IDAT_type = ntohl(*IDAT_type);
     
-    IDAT_data = malloc(IDAT_length);
+    IDAT_data = malloc(*IDAT_length);
     fread(IDAT_data, 1, *IDAT_length, png);
 
     fread(IDAT_crc, 1, 4, png);
