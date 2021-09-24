@@ -1,5 +1,5 @@
-# Makefile, ECE252
-# YOUNG HA AHN, BRIAN PENG
+# Makefile, ECE252  
+# Yiqing Huang
 
 CC = gcc       # compiler
 CFLAGS = -Wall -g -std=c99 # compilation flags
@@ -9,18 +9,18 @@ LDLIBS = -lz   # link with libz
 
 # For students 
 LIB_UTIL = zutil.o crc.o
-SRCS = main.c crc.c crc.h zutil.c lab_png.h zutil.h
-OBJS = pnginfo.o findpng.o catpng.o $(LIB_UTIL)
+SRCS   = main.c crc.c zutil.c
+OBJS   = main.o $(LIB_UTIL) 
 
-TARGETS= main.out
+TARGETS= main.out 
 
 all: ${TARGETS}
 
-main.out: $(OBJS)
-	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS)
+main.out: $(OBJS) 
+	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS) 
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $<
+%.o: %.c 
+	$(CC) $(CFLAGS) -c $< 
 
 %.d: %.c
 	gcc -MM -MF $@ $<
@@ -29,4 +29,4 @@ main.out: $(OBJS)
 
 .PHONY: clean
 clean:
-	rm -f *.d *.o $(TARGETS)
+	rm -f *.d *.o $(TARGETS) 
