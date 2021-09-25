@@ -24,10 +24,7 @@ int main(int argc, char **argv){
         printf("%s: Not a PNG file\n",argv[1]);
     }
     else{
-        fseek(png, 8, SEEK_CUR);
-        fread(f_IHDR_length, 1, 4, png);
-
-        fseek(png, 4, SEEK_CUR);
+        fseek(png, 16, SEEK_CUR);
         fread(f_png_width, 1, 4, png);
         fread(f_png_height, 1, 4, png);
         
@@ -48,11 +45,11 @@ int main(int argc, char **argv){
         
         
     }
-    free(IHDR_length);
-    free(IHDR_crc_input);
-    free(IHDR_crc);
-    free(png_width_string);
-    free(png_height_string);
+    
+    free(f_IHDR_crc_input);
+    free(f_IHDR_crc);
+    free(f_png_width);
+    free(f_png_height);
     fclose(png);
     return 0;
 }
