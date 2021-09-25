@@ -203,7 +203,8 @@ void populate_IEND_fields(FILE *png, U8 *IEND_type, U32 *IEND_crc, U32 *IDAT_len
 }
 
 int main(int argc, char **argv){
-    
+    printf("Checking one\n");
+
     if(strcmp(argv[0],"pnginfo") == 0){
         pnginfo(argv[1]);
     }
