@@ -12,11 +12,11 @@ LIB_UTIL = zutil.o crc.o
 SRCS   = main.c crc.c zutil.c
 OBJS   = main.o $(LIB_UTIL) 
 
-TARGETS= pnginfo.out 
+TARGETS= pnginfo 
 
 all: ${TARGETS}
 
-pnginfo.out: $(OBJS) 
+pnginfo: $(OBJS) 
 	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS) 
 
 %.o: %.c 
