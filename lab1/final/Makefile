@@ -29,4 +29,4 @@ main.out: $(OBJS)
 
 .PHONY: clean
 clean:
-	rm -f *.d *.o $(TARGETS) 
+	rm -f *.o *.out $(TARGETS) 
