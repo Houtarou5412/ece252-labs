@@ -9,8 +9,8 @@ LDLIBS = -lz   # link with libz
 
 # For students 
 LIB_UTIL = zutil.o crc.o
-SRCS   = main.c crc.c zutil.c
-OBJS   = main.o $(LIB_UTIL) 
+SRCS   = pnginfo.c findpng.c catpng.c crc.c zutil.c
+OBJS   = pnginfo.c $(LIB_UTIL) 
 
 TARGETS= pnginfo 
 
