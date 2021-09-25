@@ -64,10 +64,10 @@ void pnginfo(char *filename){
 
     U32 *IDAT_length = malloc(4);
     U32 *IDAT_type = malloc(4);
-    U8 *IDAT_data;
+    U8 *IDAT_data = NULL;
     U32 *IDAT_crc = malloc(4);
     U32 *IDAT_crc2 = malloc(4);
-    U8 *IDAT_crc_input;
+    U8 *IDAT_crc_input = NULL;
 
     U32 *IEND_length = malloc(4);;
     *IEND_length = 0;
@@ -114,7 +114,7 @@ void pnginfo(char *filename){
         }
         
         printf("%s: %u x %u\n", filename, *IHDR_data_w, *IHDR_data_h);
-        if(strcmp(*error_loc,"") != 0){
+        if(strcmp(error_loc,"") != 0){
             printf("%s chunk CRC error: computed %x, expected %x\n", error_loc, c_crc, e_crc);
         }
     }
