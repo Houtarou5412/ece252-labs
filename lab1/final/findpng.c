@@ -52,13 +52,13 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
         if(entry == NULL) {
             break;
         }
-        if(entry->d_type == DT_DIR) {
+        if(entry->d_type == DT_DIR && strcmp(entry->d_name,".") != 0 && strcmp(entry->d_name,"..") != 0) {
             int j = 0;
             for(int i = 0; j < 1+strlen(entry->d_name); i++) {
-                if(path[i] == "" && j == 0) {
-                    path[i] == "/";
+                if(strcmp(path[i],"") && j == 0) {
+                    path[i] = "/";
                     j++;
-                } else if(path[i] == "") {
+                } else if(strcmp(path[i],"")) {
                     path[i] == entry->d_name[j-1];
                     j++;
                 }
@@ -67,7 +67,7 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
             findpng(subfolder, pngExists, path);
             closedir(subfolder);
         } else if(entry->d_type == DT_REG) {
-            FILE *file = fopen(entry->d_name);
+            FILE *file = fopen(entry->d_name, "rb");
             if(ispng(file)) {
                 printf("%s/%s", path, entry->d_name);
                 *pngExists = 1;
