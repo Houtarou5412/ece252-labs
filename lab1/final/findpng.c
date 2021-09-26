@@ -82,6 +82,7 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
                 printf("%s/%s", path, entry->d_name);
                 *pngExists = 1;
             }
+            printf("9\n");
             fclose(file);
         }
     }
