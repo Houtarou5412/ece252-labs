@@ -14,14 +14,12 @@ int ispng(FILE *f);
 
 int main(int argc, char **argv) {
     printf("0\n");
-    fflush(stdout);
     DIR *folder = NULL;
     int *pngExists = malloc(sizeof(int));
     *pngExists = 0;
-    char path[1000000000];
+    char path[1000000];
     folder = opendir(argv[1]);
     printf("1\n");
-    fflush(stdout);
     if(folder != NULL) {
         printf("2\n");
         findpng(folder, pngExists, path);
