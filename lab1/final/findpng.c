@@ -13,7 +13,7 @@ void findpng(DIR *folder, int *pngExists, char path[]);
 int ispng(FILE *f);
 
 int main(int argc, char **argv) {
-    printf("arg: %s\n", argv[1]);
+    //printf("arg: %s\n", argv[1]);
     DIR *folder = NULL;
     int *pngExists = malloc(sizeof(int));
     *pngExists = 0;
@@ -22,9 +22,9 @@ int main(int argc, char **argv) {
         path[i] = argv[1][i];
     }
     folder = opendir(argv[1]);
-    printf("main path: %s\n", path);
+    //printf("main path: %s\n", path);
     if(folder != NULL) {
-        printf("2\n");
+        //printf("2\n");
         findpng(folder, pngExists, path);
         closedir(folder);
     }
@@ -54,15 +54,15 @@ int ispng(FILE *f){
 
 void findpng(DIR *folder, int *pngExists, char path[]) {
     struct dirent *entry;
-    printf("3\n");
+    //printf("3\n");
     while(1) {
         entry = readdir(folder);
         if(entry == NULL || strcmp(entry->d_name, "\0") == 0) {
             break;
         }
-        printf("4\n");
+        //printf("4\n");
         if(entry->d_type == DT_DIR && strcmp(entry->d_name,".") != 0 && strcmp(entry->d_name,"..") != 0 && strcmp(entry->d_name, "\0") != 0) {
-            printf("dir name: %s\n", entry->d_name);
+            //printf("dir name: %s\n", entry->d_name);
             char filepath[1000] = {'\0'};
             int j = 0;
             for(int i = 0; j < 1+strlen(entry->d_name); i++) {
@@ -77,12 +77,12 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
                     j++;
                 }
             }
-            printf("dir path: %s\n", path);
+            //printf("dir path: %s\n", path);
             DIR *subfolder = opendir(filepath);
             findpng(subfolder, pngExists, filepath);
             closedir(subfolder);
         } else if(entry->d_type == DT_REG) {
-            printf("7\n");
+            //printf("7\n");
             char filepath[1000] = {'\0'};
             int j = 0;
             for(int i = 0; j < 1+strlen(entry->d_name); i++) {
@@ -97,14 +97,14 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
                     j++;
                 }
             }
-            printf("path is %s\n", filepath);
+            //printf("path is %s\n", filepath);
             FILE *file = fopen(filepath, "rb");
-            printf("entry name: %s\n", entry->d_name);
+            //printf("entry name: %s\n", entry->d_name);
             if(file != NULL && ispng(file)) {
                 printf("%s", filepath);
                 *pngExists = 1;
             }
-            printf("9\n");
+            //printf("9\n");
             if(file != NULL) {
                 fclose(file);
             }
