@@ -12,6 +12,7 @@ int main(int argc, char **argv);
 int ispng(FILE *f);
 
 int main(int argc, char **argv) {
+    printf("1\n");
     int stop = 0;
     FILE **files = malloc(sizeof(FILE)*(argc-1));
     //int *order = (int*)malloc(sizeof(int)*(argc-1));
@@ -40,6 +41,7 @@ int main(int argc, char **argv) {
             }
         }
     }
+    printf("2\n");
     fread(before_width, 16, 1, files[0]);
     fread(width, 4, 1, files[0]);
     fseek(files[0], 4, SEEK_CUR);
@@ -70,6 +72,7 @@ int main(int argc, char **argv) {
     //
     // end loop, compress, write to file
     for(int m = 0; m < argc-1; m++) {
+        printf("3\n");
         U8 *height = malloc(sizeof(U8)*4);
         U64 part_height = 0;
         U8 *length = malloc(sizeof(U8)*4);
@@ -95,6 +98,7 @@ int main(int argc, char **argv) {
         part_u_data = malloc(sizeof(U8)*part_height*(width_val*4 + 1));
         mem_inf(part_u_data, part_u_data_length, data, part_length);
 
+        printf("4\n");
         temp_u_data = malloc(sizeof(U8)*(*part_u_data_length + sizeof(u_data)));
         for(unsigned long n = 0; n < sizeof(u_data) + *part_u_data_length; n++) {
             if(n < sizeof(u_data)) {
@@ -114,6 +118,7 @@ int main(int argc, char **argv) {
         free(part_u_data_length);
     }
 
+    printf("5\n");
     IDATdata = malloc(sizeof(U8)*sizeof(u_data));
     U32 *temp_size = malloc(sizeof(U64));
     mem_def(IDATdata, temp_size, u_data, sizeof(u_data), -1);
@@ -126,6 +131,7 @@ int main(int argc, char **argv) {
     height_val = (U32)htonl(height_val);
     memcpy(height, &height_val, sizeof(height_val));
 
+    printf("6\n");
     U32 *temp_crc = malloc(sizeof(U32));
 
     U8 *IHDRtypedata = malloc(sizeof(U8)*17);
@@ -158,6 +164,7 @@ int main(int argc, char **argv) {
     free(temp_crc);
     //free(IDATtypedata);
 
+    printf("7\n");
     char *outname = "all.png";
     FILE *outfile = fopen(outname, "rb+");
     fprintf(outfile, "%s", before_width);
@@ -168,6 +175,7 @@ int main(int argc, char **argv) {
     fprintf(outfile, "%s", IDATcrc);
     fprintf(outfile, "%s", IEND);
 
+    printf("8\n");
     fclose(outfile);
     for(int t = 0; t < argc-1; t++) {
         fclose(files[t]);
