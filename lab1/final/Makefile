@@ -16,13 +16,13 @@ TARGETS= pnginfo findpng catpng
 
 all: ${TARGETS}
 
-pnginfo: pnginfo.c
+pnginfo: pnginfo.c $(LIB_UTIL)
 	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS) 
 
-findpng: findpng.c 
+findpng: findpng.c $(LIB_UTIL)
 	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS) 
 
-catpng:  catpng.c
+catpng:  catpng.c $(LIB_UTIL)
 	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS) 
 
 %.o: %.c 
