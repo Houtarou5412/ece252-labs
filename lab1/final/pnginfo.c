@@ -29,6 +29,10 @@ int main(int argc, char **argv){
         fseek(png, 16, SEEK_CUR);
         fread(f_png_width, 1, 4, png);
         fread(f_png_height, 1, 4, png);
+
+        memcpy(&png_width, f_png_width, sizeof(png_width));
+        memcpy(&png_height, f_png_height, sizeof(png_height));
+        
         
         fseek(png, 12, SEEK_SET);
 
@@ -43,13 +47,13 @@ int main(int argc, char **argv){
         }
         
         if(crc_match == 0) {
-            printf("%s: %u x $u\n", argv[1], *f_png_width, *f_png_height);
-            printf("IDHL chunk CRC error: computed %x, expected %x\n", *crc_calc, *f_crc);
+            printf("%s: %u x %u\n", argv[1], png_width, png_height);
+            printf("IDHL chunk CRC error: computed %x, expected %x\n", crc_calc, *f_crc);
         } else {
-            fread(f_length,1,4,png)
+            fread(f_length,1,4,png);
             memcpy(&length, f_length, sizeof(length));
 
-            realloc(f_crc_input, 4+length);
+            f_crc_input = realloc(f_crc_input, 4+length);
             fread(f_crc_input, 4+length, 1, png);
             fread(f_crc, 4, 1, png);
 
@@ -61,8 +65,8 @@ int main(int argc, char **argv){
             }
             
             if(crc_match == 0) {
-                printf("%s: %u x $u\n", argv[1], *f_png_width, *f_png_height);
-                printf("IDAT chunk CRC error: computed %x, expected %x\n", *crc_calc, *f_crc);
+                printf("%s: %u x %u\n", argv[1], png_width, png_height);
+                printf("IDAT chunk CRC error: computed %x, expected %x\n", crc_calc, *f_crc);
             } else {
                 fseek(png, 4, SEEK_CUR);
                 fread(f_crc_input, 4, 1, png);
@@ -76,10 +80,10 @@ int main(int argc, char **argv){
                 }
                 
                 if(crc_match == 0) {
-                    printf("%s: %u x $u\n", argv[1], *f_png_width, *f_png_height);
-                    printf("IEND chunk CRC error: computed %x, expected %x\n", *crc_calc, *f_crc);
+                    printf("%s: %u x %u\n", argv[1], png_width, png_height);
+                    printf("IEND chunk CRC error: computed %x, expected %x\n", crc_calc, *f_crc);
                 } else {
-                    printf("%s: %u x $u\n", argv[1], f_png_width, f_png_height);
+                    printf("%s: %u x %u\n", argv[1], f_png_width, f_png_height);
                 }
             }
         }
