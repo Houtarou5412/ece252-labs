@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
         path[i] = argv[1][0];
     }
     folder = opendir(argv[1]);
-    printf("1\n");
+    printf("main path: %s\n", path);
     if(folder != NULL) {
         printf("2\n");
         findpng(folder, pngExists, path);
