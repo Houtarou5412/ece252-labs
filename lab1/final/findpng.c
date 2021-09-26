@@ -9,18 +9,20 @@
 
 
 int main(int argc, char **argv);
-void findpng(DIR *folder, int pngExists);
+void findpng(DIR *folder, int *pngExists, char path[]);
 int ispng(FILE *f);
 
 int main(int argc, char **argv) {
     DIR *folder;
-    int pngExists = 0;
+    int *pngExists = malloc(sizeof(int));
+    *pngExists = 0;
+    char path[1000000000];
     folder = opendir(argv[1]);
     if(folder != NULL) {
-        findpng(folder, pngExists);
+        findpng(folder, pngExists, path);
     }
 
-    if(pngExists == 0) {
+    if(*pngExists == 0) {
         printf("findpng: No PNG file found\n");
     }
     closedir(folder);
@@ -43,14 +45,35 @@ int ispng(FILE *f){
     return 1;
 }
 
-void findpng(DIR *folder, int pngExists) {
+void findpng(DIR *folder, int *pngExists, char path[]) {
+    struct dirent *entry;
     while(1) {
-        struct dirent *entry;
         entry = readdir(folder);
-        printf("%s\n", entry->d_name);
-        entry = readdir(folder);
-        printf("%s\n", entry->d_name);
-        entry = NULL;
-        break;
+        if(entry == NULL) {
+            break;
+        }
+        if(entry->d_type == DT_DIR) {
+            int j = 0;
+            for(int i = 0; j < 1+strlen(entry->d_name); i++) {
+                if(path[i] == "" && j == 0) {
+                    path[i] == "/";
+                    j++;
+                } else if(path[i] == "") {
+                    path[i] == entry->d_name[j-1];
+                    j++;
+                }
+            }
+            DIR *subfolder = opendir(entry->d_name);
+            findpng(subfolder, pngExists, path);
+            closedir(subfolder);
+        } else if(entry->d_type == DT_REG) {
+            FILE *file = fopen(entry->d_name);
+            if(ispng(file)) {
+                printf("%s/%s", path, entry->d_name);
+                *pngExists = 1;
+            }
+            fclose(file);
+        }
     }
+    entry = NULL;
 }
