@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
     if(*pngExists == 0) {
         printf("findpng: No PNG file found\n");
     }
+    free(pngExists);
     closedir(folder);
     return 0;
 }
