@@ -50,7 +50,7 @@ void findpng(DIR *folder, int pngExists) {
         printf("%s\n", entry->d_name);
         entry = readdir(folder);
         printf("%s\n", entry->d_name);
-        free(entry);
+        entry = NULL;
         break;
     }
 }
