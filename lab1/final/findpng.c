@@ -83,10 +83,12 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
             int j = 0;
             for(int i = 0; j < 1+strlen(entry->d_name); i++) {
                 printf("8\n");
-                if(path[i] == '\0' && j == 0) {
+                if(path[i] != '\0') {
                     filepath[i] = path[i];
+                } else if(j == 0) {
+                    filepath[i] = '/';
                     j++;
-                } else if(path[i] == '\0') {
+                } else {
                     filepath[i] = entry->d_name[j-1];
                     j++;
                 }
