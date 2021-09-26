@@ -78,7 +78,7 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
             printf("7\n");
             FILE *file = fopen(entry->d_name, "rb");
             printf("8\n");
-            if(ispng(file)) {
+            if(file != nullptr && ispng(file)) {
                 printf("%s/%s", path, entry->d_name);
                 *pngExists = 1;
             }
