@@ -63,14 +63,17 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
         printf("4\n");
         if(entry->d_type == DT_DIR && strcmp(entry->d_name,".") != 0 && strcmp(entry->d_name,"..") != 0 && strcmp(entry->d_name, "\0") != 0) {
             printf("dir name: %s\n", entry->d_name);
+            char filepath[1000] = {'\0'};
             int j = 0;
             for(int i = 0; j < 1+strlen(entry->d_name); i++) {
-                //printf("5\n");
-                if(path[i] == '\0' && j == 0) {
-                    path[i] = '/';
+                //printf("8\n");
+                if(path[i] != '\0') {
+                    filepath[i] = path[i];
+                } else if(j == 0) {
+                    filepath[i] = '/';
                     j++;
-                } else if(path[i] == '\0') {
-                    path[i] == entry->d_name[j-1];
+                } else {
+                    filepath[i] = entry->d_name[j-1];
                     j++;
                 }
             }
