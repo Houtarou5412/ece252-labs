@@ -9,20 +9,20 @@
 
 
 int main(int argc, char **argv);
-void findpng(DIR *folder);
-int ispng(FILE *f, int pngExists);
+void findpng(DIR *folderm int pngExists);
+int ispng(FILE *f);
 
 int main(int argc, char **argv) {
     DIR *folder;
     int pngExists = 0;
     folder = opendir(argv[1]);
-    //folder->d_type == DT_DIR // DT_DIR DT_REG
-    if(folder )
-    findpng(folder);
+    if(folder != NULL) {
+        findpng(folder);
+    }
+
     if(pngExists == 0) {
         printf("findpng: No PNG file found\n");
     }
-
     closedir(folder);
     return 0;
 }
@@ -43,6 +43,14 @@ int ispng(FILE *f){
     return 1;
 }
 
-void findpng(DIR *folder, pngExists) {
-
+void findpng(DIR *folder, int pngExists) {
+    while(1) {
+        struct dirent *entry;
+        entry = readdir(folder);
+        printf("%s\n", entry->d_name);
+        entry = readdir(folder);
+        printf("%s\n", entry->d_name);
+        free(entry);
+        break;
+    }
 }
