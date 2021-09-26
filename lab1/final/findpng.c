@@ -15,8 +15,8 @@ int ispng(FILE *f);
 int main(int argc, char **argv) {
     printf("0\n");
     DIR *folder = NULL;
-    /*int *pngExists = malloc(sizeof(int));
-    *pngExists = 0;
+    int *pngExists = malloc(sizeof(int));
+    /**pngExists = 0;
     char path[1000000000];
     folder = opendir(argv[1]);
     printf("1\n");
