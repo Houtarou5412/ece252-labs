@@ -83,7 +83,7 @@ int main(int argc, char **argv){
                     printf("%s: %u x %u\n", argv[1], png_width, png_height);
                     printf("IEND chunk CRC error: computed %x, expected %x\n", crc_calc, *f_crc);
                 } else {
-                    printf("%s: %u x %u\n", argv[1], f_png_width, f_png_height);
+                    printf("%s: %u x %u\n", argv[1], png_width, png_height);
                 }
             }
         }
