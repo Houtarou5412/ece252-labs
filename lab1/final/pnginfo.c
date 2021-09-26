@@ -22,10 +22,7 @@ int main(int argc, char **argv){
     U32 crc_calc = 0;
     FILE *png;
     png = fopen(argv[1], "rb");
-    if(png == NULL ){
-        printf("%s: Not a PNG file\n",argv[1]);
-    }
-    else if(ispng(png) == 0){
+    if(png == NULL || ispng(png) == 0){
         printf("%s: Not a PNG file\n",argv[1]);
     } else {
         fseek(png, 16, SEEK_CUR);
@@ -90,7 +87,9 @@ int main(int argc, char **argv){
     free(f_crc);
     free(f_png_width);
     free(f_png_height);
-    fclose(png);
+    if(png != NULL) {
+        fclose(png);
+    }
     return 0;
 }
 
