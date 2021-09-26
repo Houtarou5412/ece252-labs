@@ -74,7 +74,7 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
                 }
             }
             printf("dir path: %s\n", path);
-            DIR *subfolder = opendir(entry->d_name);
+            DIR *subfolder = opendir(path);
             findpng(subfolder, pngExists, path);
             closedir(subfolder);
         } else if(entry->d_type == DT_REG) {
