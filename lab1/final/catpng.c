@@ -13,11 +13,11 @@ int ispng(FILE *f);
 
 int main(int argc, char **argv) {
     int stop = 0;
-    FILE *files[argc-1] = malloc(sizeof(FILE)*(argc-1));
-    int *order[argc-1] = malloc(sizeof(int)*(argc-1));
+    FILE **files = malloc(sizeof(FILE)*(argc-1));
+    int *order = malloc(sizeof(int)*(argc-1));
     for(int i = 1; i < argc; i++) {
         for(int j = 1; j < argc; j++) {
-            if(argc[j][strlen(argc[j])-5] == (char)i) {
+            if(argv[j][strlen(argv[j])-5] == (char)i) {
                 files[i-1] = fopen(argv[j], "rb");
                 order[i-1] = j;
             }
