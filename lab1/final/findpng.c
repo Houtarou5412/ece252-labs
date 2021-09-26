@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     DIR *folder = NULL;
     int *pngExists = malloc(sizeof(int));
     *pngExists = 0;
-    char path[1000000];
+    char path[1000];
     folder = opendir(argv[1]);
     printf("1\n");
     if(folder != NULL) {
