@@ -18,7 +18,9 @@ int main(int argc, char **argv) {
     *pngExists = 0;
     char path[1000000000];
     folder = opendir(argv[1]);
+    printf("1");
     if(folder != NULL) {
+        printf("2");
         findpng(folder, pngExists, path);
     }
 
@@ -48,14 +50,17 @@ int ispng(FILE *f){
 
 void findpng(DIR *folder, int *pngExists, char path[]) {
     struct dirent *entry;
+    printf("3");
     while(1) {
         entry = readdir(folder);
         if(entry == NULL) {
             break;
         }
+        printf("4");
         if(entry->d_type == DT_DIR && strcmp(entry->d_name,".") != 0 && strcmp(entry->d_name,"..") != 0) {
             int j = 0;
             for(int i = 0; j < 1+strlen(entry->d_name); i++) {
+                printf("5");
                 if(path[i] == '\0' && j == 0) {
                     path[i] = '/';
                     j++;
@@ -64,10 +69,12 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
                     j++;
                 }
             }
+            printf("6");
             DIR *subfolder = opendir(entry->d_name);
             findpng(subfolder, pngExists, path);
             closedir(subfolder);
         } else if(entry->d_type == DT_REG) {
+            printf("7");
             FILE *file = fopen(entry->d_name, "rb");
             if(ispng(file)) {
                 printf("%s/%s", path, entry->d_name);
