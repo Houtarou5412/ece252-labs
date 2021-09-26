@@ -32,7 +32,7 @@ int main(int argc, char **argv){
 
         memcpy(&png_width, f_png_width, sizeof(png_width));
         memcpy(&png_height, f_png_height, sizeof(png_height));
-        png_width = (U32)ntohl(pngwidth);
+        png_width = (U32)ntohl(png_width);
         png_height = (U32)ntohl(png_height);
         
         
