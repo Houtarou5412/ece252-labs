@@ -18,8 +18,8 @@ int main(int argc, char **argv) {
     for(int i = 1; i < argc; i++) {
         printf("%d\n", i);
         for(int j = 1; j < argc; j++) {
-            printf("with %d @ char %c vs %c\n", j, argv[j][strlen(argv[j])-5], (char)i);
-            if(argv[j][strlen(argv[j])-5] == (char)i) {
+            printf("with %d @ char %c vs %c\n", j, argv[j][strlen(argv[j])-5], itoa(i)[0]);
+            if(argv[j][strlen(argv[j])-5] == itoa(i)[0]) {
                 printf("true\n");
                 files[i-1] = fopen(argv[j], "rb");
                 order[i-1] = j;
