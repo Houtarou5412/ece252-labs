@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
     skip_len = (U32)ntohl(skip_len);
     fread(IDATtype, 4, 0, files[0]);
     fseek(files[0], skip_len+4, SEEK_CUR);
-    fread(IEND, 12, 0, files][0]);
+    fread(IEND, 12, 0, files[0]);
 
     free(f_skip_len);
     rewind(files[0]);
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
     //
     // end loop, compress, write to file
     for(int m = 0; m < argc-1; m++) {
-        U8 *height = malloc(size(U8)*4);
+        U8 *height = malloc(sizeof(U8)*4);
         U64 part_height = 0;
         U8 *length = malloc(sizeof(U8)*4);
         U64 part_length = 0;
@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
         data = malloc(sizeof(U8)*part_length);
         fread(data, part_length, 1, files[m]);
 
-        part_u_data = malloc(sizeof(U8)*part_height*(width*4 + 1));
+        part_u_data = malloc(sizeof(U8)*part_height*(width_val*4 + 1));
         mem_inf(part_u_data, part_u_data_length, data, part_length);
 
         temp_u_data = malloc(sizeof(U8)*(*part_u_data_length + sizeof(u_data)));
@@ -115,13 +115,18 @@ int main(int argc, char **argv) {
     }
 
     IDATdata = malloc(sizeof(U8)*sizeof(u_data));
-    mem_def(IDATdata, IDATlength, u_data, sizeof(u_data), -1);
+    U32 *temp_size = malloc(sizeof(U64));
+    mem_def(IDATdata, temp_size, u_data, sizeof(u_data), -1);
+    memcpy(IDATdata, temp_size, sizeof(IDATdata));
+    free(temp_size);
 
     memcpy(&total_length, IDATlength, sizeof(total_length));
     total_length = (U32)ntohl(total_length);
     height_val = total_length/(width_val*4 + 1);
     height_val = (U32)htonl(height_val);
     memcpy(height, &height_val, sizeof(height_val));
+
+    U32 *temp_crc = malloc(sizeof(U32));
 
     U8 *IHDRtypedata = malloc(sizeof(U8)*17);
     for(int o = 0; o < 17; o++) {
@@ -135,7 +140,8 @@ int main(int argc, char **argv) {
             IHDRtypedata[o] = after_height[o-12];
         }
     }
-    IHDRcrc = crc(IHDRtypedata, 17);
+    temp_crc = crc(IHDRtypedata, 17);
+    memcpy(IHDRcrc, temp_crc, sizeof(IHDRcrc));
     //free(IHDRtypedata);
 
     U8 *IDATtypedata = malloc(4 + total_length);
@@ -146,24 +152,27 @@ int main(int argc, char **argv) {
             IDATtypedata[p] = IDATdata[p-4];
         }
     }
-    IDATcrc = crc(IDATtypedata, 4 + total_length);
+    temp_crc = crc(IDATtypedata, 4 + total_length);
+    memcpy(IDATcrc, temp_crc, sizeof(IDATcrc));
+
+    free(temp_crc);
     //free(IDATtypedata);
 
     char *outname = "all.png";
     FILE *outfile = fopen(outname, "rb+");
-    fprintf(outfile, before_width);
-    fprintf(outfile, IHDRtypedata);
-    fprintf(outfile, IHDRcrc);
-    fprintf(outfile, IDATlength);
-    fprintf(outfile, IDATtypedata);
-    fprintf(outfile, IDATcrc);
-    fprintf(outfile, IEND);
+    fprintf(outfile, "%s", before_width);
+    fprintf(outfile, "%s", IHDRtypedata);
+    fprintf(outfile, "%s", IHDRcrc);
+    fprintf(outfile, "%s", IDATlength);
+    fprintf(outfile, "%s", IDATtypedata);
+    fprintf(outfile, "%s", IDATcrc);
+    fprintf(outfile, "%s", IEND);
 
     fclose(outfile);
     for(int t = 0; t < argc-1; t++) {
         fclose(files[t]);
     }
-    free(order);
+    //free(order);
     free(before_width);
     free(width);
     free(height);
