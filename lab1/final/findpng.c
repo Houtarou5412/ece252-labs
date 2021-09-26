@@ -13,6 +13,7 @@ void findpng(DIR *folder, int *pngExists, char path[]);
 int ispng(FILE *f);
 
 int main(int argc, char **argv) {
+    printf("0");
     DIR *folder;
     int *pngExists = malloc(sizeof(int));
     *pngExists = 0;
