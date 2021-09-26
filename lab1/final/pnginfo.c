@@ -45,11 +45,14 @@ int main(int argc, char **argv){
         crc_val = (U32)ntohl(crc_val);
 
         crc_calc = crc(f_crc_input, 17);
-        for(int i = 0; i < 4; i++) {
+        if(crc_calc != crc_val) {
+            crc_match = 0;
+        }
+        /*for(int i = 0; i < 4; i++) {
             if(((crc_calc >> (8*i)) & 0xff) != f_crc[i]) {
                 crc_match = 0;
             }
-        }
+        }*/
         
         if(crc_match == 0) {
             printf("%s: %u x %u\n", argv[1], png_width, png_height);
