@@ -18,6 +18,9 @@ int main(int argc, char **argv) {
     int *pngExists = malloc(sizeof(int));
     *pngExists = 0;
     char path[1000];
+    for(int i = 0; i < strlen(argv[1]); i++) {
+        path[i] = argv[1][0];
+    }
     folder = opendir(argv[1]);
     printf("1\n");
     if(folder != NULL) {
@@ -80,11 +83,11 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
             int j = 0;
             for(int i = 0; j < 1+strlen(entry->d_name); i++) {
                 printf("8\n");
-                if(filepath[i] == '\0' && j == 0) {
-                    filepath[i] = '/';
+                if(path[i] == '\0' && j == 0) {
+                    filepath[i] = path[i];
                     j++;
-                } else if(filepath[i] == '\0') {
-                    filepath[i] == entry->d_name[j-1];
+                } else if(path[i] == '\0') {
+                    filepath[i] = entry->d_name[j-1];
                     j++;
                 }
             }
