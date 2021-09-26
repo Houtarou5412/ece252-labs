@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     DIR *folder = NULL;
     int *pngExists = malloc(sizeof(int));
     *pngExists = 0;
-    char path[1000] = {''};
+    char path[1000] = {'\0'};
     for(int i = 0; i < strlen(argv[1]); i++) {
         path[i] = argv[1][i];
     }
