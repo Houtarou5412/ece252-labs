@@ -73,13 +73,13 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
                     j++;
                 }
             }
-            printf("6\n");
+            printf("dir path: %s\n", path);
             DIR *subfolder = opendir(entry->d_name);
             findpng(subfolder, pngExists, path);
             closedir(subfolder);
         } else if(entry->d_type == DT_REG) {
             printf("7\n");
-            char filepath[1000];
+            char filepath[1000] = '\0';
             int j = 0;
             for(int i = 0; j < 1+strlen(entry->d_name); i++) {
                 printf("8\n");
@@ -95,7 +95,7 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
             }
             printf("path is %s\n", filepath);
             FILE *file = fopen(filepath, "rb");
-            printf("%s\n", entry->d_name);
+            printf("entry name: %s\n", entry->d_name);
             if(file != NULL && ispng(file)) {
                 printf("%s", filepath);
                 *pngExists = 1;
