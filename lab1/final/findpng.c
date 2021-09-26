@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     *pngExists = 0;
     char path[1000];
     for(int i = 0; i < strlen(argv[1]); i++) {
-        path[i] = argv[1][0];
+        path[i] = argv[1][i];
     }
     folder = opendir(argv[1]);
     printf("main path: %s\n", path);
