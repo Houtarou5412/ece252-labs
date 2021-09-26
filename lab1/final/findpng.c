@@ -57,7 +57,7 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
     printf("3\n");
     while(1) {
         entry = readdir(folder);
-        if(entry == NULL) {
+        if(entry == NULL || strcmp(entry->d_name, "\0") == 0) {
             break;
         }
         printf("4\n");
