@@ -32,6 +32,8 @@ int main(int argc, char **argv){
 
         memcpy(&png_width, f_png_width, sizeof(png_width));
         memcpy(&png_height, f_png_height, sizeof(png_height));
+        png_width = (U32)ntohl(pngwidth);
+        png_height = (U32)ntohl(png_height);
         
         
         fseek(png, 12, SEEK_SET);
@@ -52,6 +54,7 @@ int main(int argc, char **argv){
         } else {
             fread(f_length,1,4,png);
             memcpy(&length, f_length, sizeof(length));
+            length = (U32)ntohl(length);
 
             f_crc_input = realloc(f_crc_input, 4+length);
             fread(f_crc_input, 4+length, 1, png);
