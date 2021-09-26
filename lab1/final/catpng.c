@@ -14,10 +14,13 @@ int ispng(FILE *f);
 int main(int argc, char **argv) {
     int stop = 0;
     FILE **files = malloc(sizeof(FILE)*(argc-1));
-    int *order = malloc(sizeof(int)*(argc-1));
+    int *order = (int*)malloc(sizeof(int)*(argc-1));
     for(int i = 1; i < argc; i++) {
+        printf("%d\n", i);
         for(int j = 1; j < argc; j++) {
+            printf("with %d\n", j);
             if(argv[j][strlen(argv[j])-5] == (char)i) {
+                printf("true\n");
                 files[i-1] = fopen(argv[j], "rb");
                 order[i-1] = j;
             }
@@ -28,7 +31,10 @@ int main(int argc, char **argv) {
         printf("%s\n", argv[order[s]]);
     }
 
-
+    for(int t = 0; t < argc-1; t++) {
+        fclose(files[t]);
+    }
+    free(order);
     return 0;
 }
 
