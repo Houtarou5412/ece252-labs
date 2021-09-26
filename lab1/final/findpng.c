@@ -13,7 +13,7 @@ void findpng(DIR *folder, int *pngExists, char path[]);
 int ispng(FILE *f);
 
 int main(int argc, char **argv) {
-    printf("0");
+    printf("0\n");
     DIR *folder;
     int *pngExists = malloc(sizeof(int));
     *pngExists = 0;
@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     folder = opendir(argv[1]);
     printf("1");
     if(folder != NULL) {
-        printf("2");
+        printf("2\n");
         findpng(folder, pngExists, path);
     }
 
@@ -51,17 +51,17 @@ int ispng(FILE *f){
 
 void findpng(DIR *folder, int *pngExists, char path[]) {
     struct dirent *entry;
-    printf("3");
+    printf("3\n");
     while(1) {
         entry = readdir(folder);
         if(entry == NULL) {
             break;
         }
-        printf("4");
+        printf("4\n");
         if(entry->d_type == DT_DIR && strcmp(entry->d_name,".") != 0 && strcmp(entry->d_name,"..") != 0) {
             int j = 0;
             for(int i = 0; j < 1+strlen(entry->d_name); i++) {
-                printf("5");
+                printf("5\n");
                 if(path[i] == '\0' && j == 0) {
                     path[i] = '/';
                     j++;
