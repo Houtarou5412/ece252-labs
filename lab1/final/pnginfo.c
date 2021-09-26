@@ -14,6 +14,7 @@ int main(int argc, char **argv){
     U8 *f_length = malloc(sizeof(U8)*4);
     U32 length = 0;
     U8 *f_crc = malloc(sizeof(U8) *4);
+    U32 crc_val = 0;
     U8 *f_png_width = malloc(sizeof(U8) *4);
     U32 png_width = 0;
     U8 *f_png_height = malloc(sizeof(U8) *4);
@@ -40,6 +41,8 @@ int main(int argc, char **argv){
 
         fread(f_crc_input, 1, 17, png);
         fread(f_crc, 1, 4, png);
+        memcpy(&crc_val, f_crc, sizeof(crc_val));
+        crc_val = (U32)ntohl(crc_val);
 
         crc_calc = crc(f_crc_input, 17);
         for(int i = 0; i < 4; i++) {
@@ -50,7 +53,7 @@ int main(int argc, char **argv){
         
         if(crc_match == 0) {
             printf("%s: %u x %u\n", argv[1], png_width, png_height);
-            printf("IDHL chunk CRC error: computed %x, expected %x\n", crc_calc, *f_crc);
+            printf("IDHL chunk CRC error: computed %x, expected %x\n", crc_calc, crc_val);
         } else {
             fread(f_length,1,4,png);
             memcpy(&length, f_length, sizeof(length));
@@ -59,6 +62,8 @@ int main(int argc, char **argv){
             f_crc_input = realloc(f_crc_input, 4+length);
             fread(f_crc_input, 4+length, 1, png);
             fread(f_crc, 4, 1, png);
+            memcpy(&crc_val, f_crc, sizeof(crc_val));
+            crc_val = (U32)ntohl(crc_val);
 
             crc_calc = crc(f_crc_input, 4+length);
             for(int i = 0; i < 4; i++) {
@@ -69,11 +74,13 @@ int main(int argc, char **argv){
             
             if(crc_match == 0) {
                 printf("%s: %u x %u\n", argv[1], png_width, png_height);
-                printf("IDAT chunk CRC error: computed %x, expected %x\n", crc_calc, *f_crc);
+                printf("IDAT chunk CRC error: computed %x, expected %x\n", crc_calc, crc_val);
             } else {
                 fseek(png, 4, SEEK_CUR);
                 fread(f_crc_input, 4, 1, png);
                 fread(f_crc, 4, 1, png);
+                memcpy(&crc_val, f_crc, sizeof(crc_val));
+                crc_val = (U32)ntohl(crc_val);
 
                 crc_calc = crc(f_crc_input, 4);
                 for(int i = 0; i < 4; i++) {
@@ -84,7 +91,7 @@ int main(int argc, char **argv){
                 
                 if(crc_match == 0) {
                     printf("%s: %u x %u\n", argv[1], png_width, png_height);
-                    printf("IEND chunk CRC error: computed %x, expected %x\n", crc_calc, *f_crc);
+                    printf("IEND chunk CRC error: computed %x, expected %x\n", crc_calc, crc_val);
                 } else {
                     printf("%s: %u x %u\n", argv[1], png_width, png_height);
                 }
