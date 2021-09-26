@@ -55,10 +55,10 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
         if(entry->d_type == DT_DIR && strcmp(entry->d_name,".") != 0 && strcmp(entry->d_name,"..") != 0) {
             int j = 0;
             for(int i = 0; j < 1+strlen(entry->d_name); i++) {
-                if(strcmp(path[i],"") && j == 0) {
-                    path[i] = "/";
+                if(path[i] == '' && j == 0) {
+                    path[i] = '/';
                     j++;
-                } else if(strcmp(path[i],"")) {
+                } else if(path[i] == '') {
                     path[i] == entry->d_name[j-1];
                     j++;
                 }
