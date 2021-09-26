@@ -9,7 +9,7 @@
 
 
 int main(int argc, char **argv);
-void findpng(DIR *folderm int pngExists);
+void findpng(DIR *folder, int pngExists);
 int ispng(FILE *f);
 
 int main(int argc, char **argv) {
@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     int pngExists = 0;
     folder = opendir(argv[1]);
     if(folder != NULL) {
-        findpng(folder);
+        findpng(folder, pngExists);
     }
 
     if(pngExists == 0) {
