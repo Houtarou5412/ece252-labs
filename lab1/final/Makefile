@@ -22,7 +22,7 @@ pnginfo: pnginfo.c $(LIB_UTIL)
 findpng: findpng.c $(LIB_UTIL)
 	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS) 
 
-catpng:  catpng.c $(LIB_UTIL)
+catpng: catpng.c $(LIB_UTIL)
  	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS) 
 
 %.o: %.c 
