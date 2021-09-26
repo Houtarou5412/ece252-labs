@@ -77,13 +77,15 @@ void findpng(DIR *folder, int *pngExists, char path[]) {
         } else if(entry->d_type == DT_REG) {
             printf("7\n");
             FILE *file = fopen(entry->d_name, "rb");
-            printf("8\n");
+            printf("%s\n", entry->d_name);
             if(file != NULL && ispng(file)) {
                 printf("%s/%s", path, entry->d_name);
                 *pngExists = 1;
             }
             printf("9\n");
-            fclose(file);
+            if(file !- NULL) {
+                fclose(file);
+            }
         }
     }
     entry = NULL;
