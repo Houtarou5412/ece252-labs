@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
     memcpy(height, &height_val, sizeof(height_val));
 
     printf("6\n");
-    U64 *temp_crc = malloc(sizeof(U64));
+    U64 temp_crc = 0;
 
     U8 *IHDRtypedata = malloc(sizeof(U8)*17);
     for(int o = 0; o < 17; o++) {
