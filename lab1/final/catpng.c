@@ -139,15 +139,16 @@ int main(int argc, char **argv) {
     U32 *temp_size = malloc(sizeof(U32));
     mem_def(IDATdata, temp_size, u_data, u_data_len, -1);
     printf("size of data: %d\n", *temp_size);
-    memcpy(IDATlength, temp_size, sizeof(IDATlength));
+    memcpy(&total_length, temp_size, sizeof(total_length));
     free(temp_size);
 
-    memcpy(&total_length, IDATlength, sizeof(total_length));
+    total_length = htonl(total_length);
+    memcpy(IDATlength, &total_length, sizeof(total_length));
     total_length = (U32)ntohl(total_length);
     height_val = total_length/(width_val*4 + 1);
     printf("new height: %d\n", height_val);
     printf("new length: %d\n", total_length);
-    total_length = (U32)htonl(total_length);
+    //total_length = (U32)htonl(total_length);
     height_val = (U32)htonl(height_val);
     memcpy(height, &height_val, sizeof(height_val));
 
