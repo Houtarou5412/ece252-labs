@@ -162,7 +162,7 @@ int main(int argc, char **argv) {
     printf("6.5\n");
     U8 *IDATtypedata = malloc(4 + total_length);
     for(int p = 0; p < 4 + total_length; p++) {
-        printf("p: %d", p);
+        printf("p: %d out of %d\n", p, total_length);
         if(p < 4) {
             IDATtypedata[p] = IDATtype[p];
         } else {
