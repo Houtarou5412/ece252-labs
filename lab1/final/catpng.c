@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
     printf("skipped: %d\n", skip_len);
     fread(IDATtype, 4, 1, files[0]);
     fseek(files[0], skip_len+4, SEEK_CUR);
-    fread(IEND, 12, 0, files[0]);
+    fread(IEND, 12, 1, files[0]);
 
     free(f_skip_len);
     rewind(files[0]);
