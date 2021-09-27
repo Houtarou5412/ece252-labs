@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
         part_u_data = malloc(sizeof(U8)*part_height*(width_val*4 + 1));
         mem_inf(part_u_data, part_u_data_length, data, part_length);
 
-        //printf("4\n");
+        printf("%d x %lu\n", width_val, part_height);
         temp_u_data = malloc(sizeof(U8)*(*part_u_data_length + sizeof(u_data)));
         for(unsigned long n = 0; n < sizeof(u_data) + *part_u_data_length; n++) {
             //printf("n: %u\n", n);
