@@ -188,18 +188,25 @@ int main(int argc, char **argv) {
     }
     printf("7.5\n");
     fprintf(outfile, "%s", headerlength);
+    fflush(outfile);
     printf("headerlength done\n");
     fprintf(outfile, "%s", IHDRtypedata);
+    fflush(outfile);
     printf("IHDRtypedata done\n");
     fprintf(outfile, "%s", IHDRcrc);
+    fflush(outfile);
     printf("IHDRcrc done\n");
     fprintf(outfile, "%s", IDATlength);
+    fflush(outfile);
     printf("IDATlength done\n");
     fprintf(outfile, "%s", IDATtypedata);
+    fflush(outfile);
     printf("IDATtypedata done\n");
     fprintf(outfile, "%s", IDATcrc);
+    fflush(outfile);
     printf("IDATcrc done\n");
     fprintf(outfile, "%s", IEND);
+    fflush(outfile);
     printf("IEND done\n");
 
     printf("8\n");
