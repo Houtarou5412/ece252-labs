@@ -153,7 +153,7 @@ int main(int argc, char **argv) {
     printf("out\n");
     temp_crc = crc(IHDRtypedata, 17);
     printf("bytes copied: %ld\n", sizeof(IHDRcrc));
-    memcpy(IHDRcrc, temp_crc, sizeof(IHDRcrc));
+    memcpy(IHDRcrc, temp_crc, 4);
     //free(IHDRtypedata);
 
     printf("6.5\n");
