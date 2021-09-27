@@ -139,6 +139,7 @@ int main(int argc, char **argv) {
 
     U8 *IHDRtypedata = malloc(sizeof(U8)*17);
     for(int o = 0; o < 17; o++) {
+        printf("o: %d\n", o);
         if(o < 4) {
             IHDRtypedata[o] = before_width[o+12];
         } else if(o < 8) {
@@ -149,6 +150,7 @@ int main(int argc, char **argv) {
             IHDRtypedata[o] = after_height[o-12];
         }
     }
+    printf("out\n");
     temp_crc = crc(IHDRtypedata, 17);
     memcpy(IHDRcrc, temp_crc, sizeof(IHDRcrc));
     //free(IHDRtypedata);
