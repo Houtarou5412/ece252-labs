@@ -23,8 +23,8 @@ int main(int argc, char **argv) {
     U32 height_val = 0;
     U8 *after_height = malloc(sizeof(U8)*5);
     U8 *IHDRcrc = malloc(sizeof(U8)*4);
-    memset(IHDRcrc, 0, sizeof(U8)*4);
-    printf("bytes copied: %d\n", sizeof(IHDRcrc));
+    //memset(IHDRcrc, 0, sizeof(U8)*4);
+    //printf("bytes copied: %d\n", sizeof(IHDRcrc));
     U8 *IDATlength = malloc(sizeof(U8)*4);
     U32 total_length = 0;
     U8 *IDATtype = malloc(sizeof(U8)*4);
@@ -125,9 +125,9 @@ int main(int argc, char **argv) {
 
     printf("5\n");
     IDATdata = malloc(sizeof(U8)*sizeof(u_data));
-    U64 *temp_size = malloc(sizeof(U64));
+    U32 *temp_size = malloc(sizeof(U64));
     mem_def(IDATdata, temp_size, u_data, sizeof(u_data), -1);
-    memcpy(IDATlength, temp_size + 0x8, sizeof(IDATlength));
+    memcpy(IDATlength, temp_size, sizeof(IDATlength));
     free(temp_size);
 
     memcpy(&total_length, IDATlength, sizeof(total_length));
@@ -155,7 +155,7 @@ int main(int argc, char **argv) {
     printf("out\n");
     temp_crc = crc(IHDRtypedata, 17);
     printf("bytes copied: %ld\n", sizeof(IHDRcrc));
-    temp_crc = htonl(temp_crc);
+    temp_crc = (U32)htonl(temp_crc);
     memcpy(IHDRcrc, &temp_crc, sizeof(IHDRcrc));
     //free(IHDRtypedata);
 
@@ -169,9 +169,9 @@ int main(int argc, char **argv) {
         }
     }
     temp_crc = crc(IDATtypedata, 4 + total_length);
-    memcpy(IDATcrc, temp_crc + 0x8, sizeof(IDATcrc));
+    temp_crc = (U32)htonl(temp_crc);
+    memcpy(IDATcrc, &temp_crc, sizeof(IDATcrc));
 
-    free(temp_crc);
     //free(IDATtypedata);
 
     printf("7\n");
