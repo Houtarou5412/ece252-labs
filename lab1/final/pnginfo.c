@@ -22,7 +22,7 @@ int main(int argc, char **argv){
             filename[k] = argv[1][i];
             k++;
         }
-        printf("%s out of %d\n", filename, sizeof(argv[1]));
+        //printf("%s out of %d\n", filename, sizeof(argv[1]));
     }
     U8 *f_crc_input = malloc(17);
     U8 *f_length = malloc(sizeof(U8)*4);
