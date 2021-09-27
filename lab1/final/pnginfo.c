@@ -10,7 +10,7 @@ int main(int argc, char **argv);
 int ispng(FILE *f);
 
 int main(int argc, char **argv){
-    char filename[200] = {'\0'};
+    U8 *filename = malloc(sizeof(U8)*200);
     int k = 0;
     for(int i = 0; i < sizeof(argv[1]); i++) {
         if(argv[1][i] == '/') {
@@ -100,6 +100,7 @@ int main(int argc, char **argv){
     free(f_crc);
     free(f_png_width);
     free(f_png_height);
+    free(filename);
     if(png != NULL) {
         fclose(png);
     }
