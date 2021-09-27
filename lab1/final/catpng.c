@@ -122,6 +122,7 @@ int main(int argc, char **argv) {
             //printf("loop\n");
         }
         u_data_len += *part_u_data_length;
+        height_val += part_height;
         //printf("4.5\n");
         free(u_data);
         u_data = temp_u_data;
@@ -145,7 +146,6 @@ int main(int argc, char **argv) {
     total_length = htonl(total_length);
     memcpy(IDATlength, &total_length, sizeof(total_length));
     total_length = (U32)ntohl(total_length);
-    height_val = total_length/(width_val*4 + 1);
     printf("new height: %d\n", height_val);
     printf("new length: %d\n", total_length);
     //total_length = (U32)htonl(total_length);
