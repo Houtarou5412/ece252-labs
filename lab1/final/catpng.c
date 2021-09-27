@@ -45,6 +45,11 @@ int main(int argc, char **argv) {
             }
         }
     }
+
+    if(ispng(files[0]) == 0) {
+        printf("not png\n");
+    }
+
     printf("2\n");
     fread(headerlength, 12, 1, files[0]);
     fread(IHDRtype, 4, 1, files[0]);
