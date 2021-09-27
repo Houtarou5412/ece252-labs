@@ -101,12 +101,13 @@ int main(int argc, char **argv) {
         printf("4\n");
         temp_u_data = malloc(sizeof(U8)*(*part_u_data_length + sizeof(u_data)));
         for(unsigned long n = 0; n < sizeof(u_data) + *part_u_data_length; n++) {
-            printf("n: %d\n", n);
-            if(n < sizeof(u_data)) {
+            printf("n: %u\n", n);
+            if(u_data != NULL && n < sizeof(u_data)) {
                 temp_u_data[n] = u_data[n];
             } else {
                 temp_u_data[n] = part_u_data[n - sizeof(u_data)];
             }
+            printf("loop\n");
         }
         printf("4.5\n");
         free(u_data);
