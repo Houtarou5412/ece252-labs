@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
     //
     // end loop, compress, write to file
     for(int m = 0; m < argc-1; m++) {
-        printf("3\n");
+        //printf("3\n");
         U8 *height = malloc(sizeof(U8)*4);
         U64 part_height = 0;
         U8 *length = malloc(sizeof(U8)*4);
@@ -98,18 +98,18 @@ int main(int argc, char **argv) {
         part_u_data = malloc(sizeof(U8)*part_height*(width_val*4 + 1));
         mem_inf(part_u_data, part_u_data_length, data, part_length);
 
-        printf("4\n");
+        //printf("4\n");
         temp_u_data = malloc(sizeof(U8)*(*part_u_data_length + sizeof(u_data)));
         for(unsigned long n = 0; n < sizeof(u_data) + *part_u_data_length; n++) {
-            printf("n: %u\n", n);
+            //printf("n: %u\n", n);
             if(u_data != NULL && n < sizeof(u_data)) {
                 temp_u_data[n] = u_data[n];
             } else {
                 temp_u_data[n] = part_u_data[n - sizeof(u_data)];
             }
-            printf("loop\n");
+            //printf("loop\n");
         }
-        printf("4.5\n");
+        //printf("4.5\n");
         free(u_data);
         u_data = temp_u_data;
         temp_u_data = NULL;
@@ -153,6 +153,7 @@ int main(int argc, char **argv) {
     memcpy(IHDRcrc, temp_crc, sizeof(IHDRcrc));
     //free(IHDRtypedata);
 
+    printf("6.5\n");
     U8 *IDATtypedata = malloc(4 + total_length);
     for(int p = 0; p < 4 + total_length; p++) {
         if(p < 4) {
