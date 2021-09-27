@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
     IDATdata = malloc(sizeof(U8)*sizeof(u_data));
     U32 *temp_size = malloc(sizeof(U64));
     mem_def(IDATdata, temp_size, u_data, sizeof(u_data), -1);
-    printf("size of data: %d", *temp_size);
+    printf("size of data: %d\n", *temp_size);
     memcpy(IDATlength, temp_size, sizeof(IDATlength));
     free(temp_size);
 
@@ -192,8 +192,11 @@ int main(int argc, char **argv) {
     if(outfile == NULL) {
         printf("null\n");
     }
-    printf("7.5\n");
-    fprintf(outfile, "%s", headerlength);
+    //printf("7.5\n");
+    for(int g = 0; g < sizeof(headerlength); g++) {
+        fprintf(outfile, "%c", headerlength[g]);
+    }
+    //fprintf(outfile, "%s", headerlength);
     fflush(outfile);
     printf("headerlength: %s\n", headerlength);
     fprintf(outfile, "%s", IHDRtypedata);
@@ -215,7 +218,7 @@ int main(int argc, char **argv) {
     fflush(outfile);
     printf("IEND done\n");
 
-    printf("8\n");
+    //printf("8\n");
     fclose(outfile);
     for(int t = 0; t < argc-1; t++) {
         fclose(files[t]);
