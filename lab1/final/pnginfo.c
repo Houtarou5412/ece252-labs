@@ -10,7 +10,7 @@ int main(int argc, char **argv);
 int ispng(FILE *f);
 
 int main(int argc, char **argv){
-    char filename[200];
+    char filename[200] = '\0';
     int k = 0;
     for(int i = 0; i < sizeof(argv[1]); i++) {
         if(argv[1][i] == '/') {
