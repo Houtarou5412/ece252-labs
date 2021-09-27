@@ -13,7 +13,7 @@ int ispng(FILE *f);
 
 int main(int argc, char **argv) {
     remove("./all.png");
-    printf("1\n");
+    //printf("1\n");
     int stop = 0;
     FILE **files = malloc(sizeof(FILE)*(argc-1));
     //int *order = (int*)malloc(sizeof(int)*(argc-1));
@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
         printf("not png\n");
     }
 
-    printf("2\n");
+    //printf("2\n");
     fread(headerlength, 12, 1, files[0]);
     fread(IHDRtype, 4, 1, files[0]);
     fread(width, 4, 1, files[0]);
@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
         free(part_u_data_length);
     }
 
-    printf("5\n");
+    //printf("5\n");
     IDATdata = malloc(sizeof(U8)*sizeof(u_data));
     U32 *temp_size = malloc(sizeof(U64));
     mem_def(IDATdata, temp_size, u_data, sizeof(u_data), -1);
@@ -146,12 +146,12 @@ int main(int argc, char **argv) {
     height_val = (U32)htonl(height_val);
     memcpy(height, &height_val, sizeof(height_val));
 
-    printf("6\n");
+    //printf("6\n");
     U32 temp_crc = 0;
 
     U8 *IHDRtypedata = malloc(sizeof(U8)*17);
     for(int o = 0; o < 17; o++) {
-        printf("o: %d\n", o);
+        //printf("o: %d\n", o);
         if(o < 4) {
             IHDRtypedata[o] = IHDRtype[o];
         } else if(o < 8) {
@@ -162,17 +162,17 @@ int main(int argc, char **argv) {
             IHDRtypedata[o] = after_height[o-12];
         }
     }
-    printf("out\n");
+    //printf("out\n");
     temp_crc = crc(IHDRtypedata, 17);
-    printf("bytes copied: %ld\n", sizeof(IHDRcrc));
+    //printf("bytes copied: %ld\n", sizeof(IHDRcrc));
     temp_crc = (U32)htonl(temp_crc);
     memcpy(IHDRcrc, &temp_crc, sizeof(IHDRcrc));
     //free(IHDRtypedata);
 
-    printf("6.5\n");
+    //printf("6.5\n");
     U8 *IDATtypedata = malloc(4 + total_length);
     for(int p = 0; p < 4 + total_length; p++) {
-        printf("p: %d out of %d\n", p, total_length);
+        //printf("p: %d out of %d\n", p, total_length);
         if(p < 4) {
             IDATtypedata[p] = IDATtype[p];
         } else {
@@ -181,13 +181,13 @@ int main(int argc, char **argv) {
     }
     temp_crc = crc(IDATtypedata, 4 + total_length);
     temp_crc = (U32)htonl(temp_crc);
-    printf("6.75\n");
+    //printf("6.75\n");
     memcpy(IDATcrc, &temp_crc, sizeof(IDATcrc));
 
     //free(IDATtypedata);
 
-    printf("7\n");
-    char *outname = "./all.png";
+    //printf("7\n");
+    char outname[10] = "./all.png";
     FILE *outfile = fopen(outname, "wb+");
     if(outfile == NULL) {
         printf("null\n");
