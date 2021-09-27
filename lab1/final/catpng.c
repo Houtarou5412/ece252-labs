@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
 
     printf("7\n");
     char *outname = "./all.png";
-    FILE *outfile = fopen(outname, "rb+");
+    FILE *outfile = fopen(outname, "wb+");
     if(outfile == NULL) {
         printf("null\n");
     }
