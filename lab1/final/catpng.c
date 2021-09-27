@@ -183,12 +183,19 @@ int main(int argc, char **argv) {
     FILE *outfile = fopen(outname, "rb+");
     printf("7.5\n");
     fprintf(outfile, "%s", before_width);
+    printf("before width done\n");
     fprintf(outfile, "%s", IHDRtypedata);
+    printf("IHDRtypedata done\n");
     fprintf(outfile, "%s", IHDRcrc);
+    printf("IHDRcrc done\n");
     fprintf(outfile, "%s", IDATlength);
+    printf("IDATlength done\n");
     fprintf(outfile, "%s", IDATtypedata);
+    printf("IDATtypedata done\n");
     fprintf(outfile, "%s", IDATcrc);
+    printf("IDATcrc done\n");
     fprintf(outfile, "%s", IEND);
+    printf("IEND done\n");
 
     printf("8\n");
     fclose(outfile);
