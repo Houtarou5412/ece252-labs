@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
             if(u_data != NULL && n < u_data_len) {
                 temp_u_data[n] = u_data[n];
             } else {
-                temp_u_data[n] = part_u_data[n - sizeof(u_data)];
+                temp_u_data[n] = part_u_data[n - u_data_len];
             }
             //printf("loop\n");
         }
