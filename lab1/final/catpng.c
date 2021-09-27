@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     fread(width, 4, 1, files[0]);
     fseek(files[0], 4, SEEK_CUR);
     fread(after_height, 5, 1, files[0]);
-    //fseek(files[0], 4, SEEK_CUR);
+    fseek(files[0], 4, SEEK_CUR);
     U8 *f_skip_len = malloc(sizeof(U8)*4);
     U32 skip_len = 0;
     fread(f_skip_len, 4, 1, files[0]);
