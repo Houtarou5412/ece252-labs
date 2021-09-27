@@ -181,6 +181,7 @@ int main(int argc, char **argv) {
     printf("7\n");
     char *outname = "./all.png";
     FILE *outfile = fopen(outname, "rb+");
+    printf("7.5\n");
     fprintf(outfile, "%s", before_width);
     fprintf(outfile, "%s", IHDRtypedata);
     fprintf(outfile, "%s", IHDRcrc);
