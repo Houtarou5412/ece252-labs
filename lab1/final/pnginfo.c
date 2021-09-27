@@ -21,6 +21,7 @@ int main(int argc, char **argv){
         } else {
             filename[k] = argv[1][i];
         }
+        printf("%s\n", filename);
     }
     U8 *f_crc_input = malloc(17);
     U8 *f_length = malloc(sizeof(U8)*4);
