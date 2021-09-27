@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     U32 height_val = 0;
     U8 *after_height = malloc(sizeof(U8)*5);
     U8 *IHDRcrc = malloc(sizeof(U8)*4);
-    printf("bytes copied: %d\n", sizeof(IHDRcrc));
+    printf("bytes copied: %d\n", sizeof(U8));
     U8 *IDATlength = malloc(sizeof(U8)*4);
     U32 total_length = 0;
     U8 *IDATtype = malloc(sizeof(U8)*4);
