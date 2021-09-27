@@ -142,6 +142,7 @@ int main(int argc, char **argv) {
     memcpy(&total_length, IDATlength, sizeof(total_length));
     total_length = (U32)ntohl(total_length);
     height_val = total_length/(width_val*4 + 1);
+    printf("new height: %d\n", height_val);
     total_length = (U32)htonl(total_length);
     height_val = (U32)htonl(height_val);
     memcpy(height, &height_val, sizeof(height_val));
