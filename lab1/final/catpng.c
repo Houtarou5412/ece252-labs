@@ -127,6 +127,7 @@ int main(int argc, char **argv) {
     IDATdata = malloc(sizeof(U8)*sizeof(u_data));
     U32 *temp_size = malloc(sizeof(U64));
     mem_def(IDATdata, temp_size, u_data, sizeof(u_data), -1);
+    printf("size of data: %d" *temp_size);
     memcpy(IDATlength, temp_size, sizeof(IDATlength));
     free(temp_size);
 
@@ -178,7 +179,7 @@ int main(int argc, char **argv) {
     //free(IDATtypedata);
 
     printf("7\n");
-    char *outname = "all.png";
+    char *outname = "./all.png";
     FILE *outfile = fopen(outname, "rb+");
     fprintf(outfile, "%s", before_width);
     fprintf(outfile, "%s", IHDRtypedata);
