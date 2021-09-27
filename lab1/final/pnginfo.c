@@ -12,7 +12,7 @@ int ispng(FILE *f);
 int main(int argc, char **argv){
     U8 *filename = malloc(sizeof(U8)*200);
     int k = 0;
-    for(int i = 0; i < sizeof(argv[1]); i++) {
+    for(int i = 0; argv[1][i] != '\0'; i++) {
         if(argv[1][i] == '/') {
             for(int j = 0; j < i; j++) {
                 filename[j] = '\0';
