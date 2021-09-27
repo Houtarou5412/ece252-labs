@@ -208,7 +208,6 @@ int main(int argc, char **argv) {
         fclose(files[t]);
     }
     //free(order);
-    free(before_width);
     free(width);
     free(height);
     free(after_height);
