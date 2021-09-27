@@ -60,11 +60,11 @@ int main(int argc, char **argv) {
     //fseek(files[0], 4, SEEK_CUR);
     U8 *f_skip_len = malloc(sizeof(U8)*4);
     U32 skip_len = 0;
-    fread(f_skip_len, 4, 0, files[0]);
+    fread(f_skip_len, 4, 1, files[0]);
     memcpy(&skip_len, f_skip_len, sizeof(skip_len));
     skip_len = (U32)ntohl(skip_len);
-    printf("skipped: %d", skip_len);
-    fread(IDATtype, 4, 0, files[0]);
+    printf("skipped: %d\n", skip_len);
+    fread(IDATtype, 4, 1, files[0]);
     fseek(files[0], skip_len+4, SEEK_CUR);
     fread(IEND, 12, 0, files[0]);
 
