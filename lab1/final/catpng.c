@@ -170,6 +170,7 @@ int main(int argc, char **argv) {
     }
     temp_crc = crc(IDATtypedata, 4 + total_length);
     temp_crc = (U32)htonl(temp_crc);
+    printf("6.75\n");
     memcpy(IDATcrc, &temp_crc, sizeof(IDATcrc));
 
     //free(IDATtypedata);
