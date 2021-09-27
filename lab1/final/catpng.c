@@ -12,6 +12,7 @@ int main(int argc, char **argv);
 int ispng(FILE *f);
 
 int main(int argc, char **argv) {
+    remove("./all.png");
     printf("1\n");
     int stop = 0;
     FILE **files = malloc(sizeof(FILE)*(argc-1));
@@ -189,10 +190,10 @@ int main(int argc, char **argv) {
     printf("7.5\n");
     fprintf(outfile, "%s", headerlength);
     fflush(outfile);
-    printf("headerlength done\n");
+    printf("headerlength: %s\n", headerlength);
     fprintf(outfile, "%s", IHDRtypedata);
     fflush(outfile);
-    printf("IHDRtypedata done\n");
+    printf("IHDRtypedata %s\n", IHDRtypedata);
     fprintf(outfile, "%s", IHDRcrc);
     fflush(outfile);
     printf("IHDRcrc done\n");
