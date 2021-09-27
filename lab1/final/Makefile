@@ -35,3 +35,4 @@ catpng:		catpng.c $(LIB_UTIL)
 .PHONY: clean
 clean:
 	rm -f *.d *.o $(TARGETS) 
+	rm all.png
