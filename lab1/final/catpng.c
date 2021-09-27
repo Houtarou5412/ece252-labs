@@ -16,7 +16,8 @@ int main(int argc, char **argv) {
     int stop = 0;
     FILE **files = malloc(sizeof(FILE)*(argc-1));
     //int *order = (int*)malloc(sizeof(int)*(argc-1));
-    U8 *before_width = malloc(sizeof(U8)*16);
+    U8 *headerlength = malloc(sizeof(U8)*12);
+    U8 *IHDRtype = malloc(sizeof(U8)*4);
     U8 *width = malloc(sizeof(U8)*4);
     U32 width_val = 0;
     U8 *height = malloc(sizeof(U8)*4);
@@ -44,7 +45,8 @@ int main(int argc, char **argv) {
         }
     }
     printf("2\n");
-    fread(before_width, 16, 1, files[0]);
+    fread(headerlength, 12, 1, files[0]);
+    fread(IHDRtype, 4, 1, files[0]);
     fread(width, 4, 1, files[0]);
     fseek(files[0], 4, SEEK_CUR);
     fread(after_height, 5, 1, files[0]);
@@ -145,7 +147,7 @@ int main(int argc, char **argv) {
     for(int o = 0; o < 17; o++) {
         printf("o: %d\n", o);
         if(o < 4) {
-            IHDRtypedata[o] = before_width[o+12];
+            IHDRtypedata[o] = IHDRtype[o];
         } else if(o < 8) {
             IHDRtypedata[o] = width[o-4];
         } else if(o < 12) {
@@ -181,9 +183,12 @@ int main(int argc, char **argv) {
     printf("7\n");
     char *outname = "./all.png";
     FILE *outfile = fopen(outname, "rb+");
+    if(outfile == NULL) {
+        printf("null\n");
+    }
     printf("7.5\n");
-    fprintf(outfile, "%s", before_width);
-    printf("before width done\n");
+    fprintf(outfile, "%s", headerlength);
+    printf("headerlength done\n");
     fprintf(outfile, "%s", IHDRtypedata);
     printf("IHDRtypedata done\n");
     fprintf(outfile, "%s", IHDRcrc);
@@ -216,6 +221,8 @@ int main(int argc, char **argv) {
     free(u_data);
     free(IHDRtypedata);
     free(IDATtypedata);
+    free(headerlength);
+    free(IHDRtype);
 
     return 0;
 }
