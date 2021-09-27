@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
     U32 total_length = 0;
     U8 *IDATtype = malloc(sizeof(U8)*4);
     U8 *u_data = NULL;
+    U32 u_data_len = 0;
     U8 *IDATdata = NULL;
     U8 *IDATcrc = malloc(sizeof(U8)*4);
     U8 *IEND = malloc(sizeof(U8)*12);
@@ -110,16 +111,17 @@ int main(int argc, char **argv) {
 
         printf("%d x %lu\n", width_val, part_height);
         printf("part length %d\n", part_length);
-        temp_u_data = malloc(sizeof(U8)*(*part_u_data_length + sizeof(u_data)));
-        for(unsigned long n = 0; n < sizeof(u_data) + *part_u_data_length; n++) {
+        temp_u_data = malloc(sizeof(U8)*(*part_u_data_length + u_data_len));
+        for(unsigned long n = 0; n < u_data_len + *part_u_data_length; n++) {
             //printf("n: %u\n", n);
-            if(u_data != NULL && n < sizeof(u_data)) {
+            if(u_data != NULL && n < u_data_len) {
                 temp_u_data[n] = u_data[n];
             } else {
                 temp_u_data[n] = part_u_data[n - sizeof(u_data)];
             }
             //printf("loop\n");
         }
+        u_data_len += *part_u_data_length;
         //printf("4.5\n");
         free(u_data);
         u_data = temp_u_data;
@@ -133,9 +135,9 @@ int main(int argc, char **argv) {
     }
 
     //printf("5\n");
-    IDATdata = malloc(sizeof(U8)*sizeof(u_data));
-    U32 *temp_size = malloc(sizeof(U64));
-    mem_def(IDATdata, temp_size, u_data, sizeof(u_data), -1);
+    IDATdata = malloc(sizeof(U8) * u_data_len);
+    U32 *temp_size = malloc(sizeof(U32));
+    mem_def(IDATdata, temp_size, u_data, u_data_len, -1);
     printf("size of data: %d\n", *temp_size);
     memcpy(IDATlength, temp_size, sizeof(IDATlength));
     free(temp_size);
