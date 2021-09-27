@@ -63,6 +63,7 @@ int main(int argc, char **argv) {
     fread(f_skip_len, 4, 0, files[0]);
     memcpy(&skip_len, f_skip_len, sizeof(skip_len));
     skip_len = (U32)ntohl(skip_len);
+    printf("skipped: %d", skip_len);
     fread(IDATtype, 4, 0, files[0]);
     fseek(files[0], skip_len+4, SEEK_CUR);
     fread(IEND, 12, 0, files[0]);
