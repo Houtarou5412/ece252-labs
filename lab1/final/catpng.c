@@ -193,10 +193,10 @@ int main(int argc, char **argv) {
         printf("null\n");
     }
     //printf("7.5\n");
-    for(int g = 0; g < sizeof(headerlength); g++) {
+    /*for(int g = 0; g < sizeof(headerlength); g++) {
         fprintf(outfile, "%c", headerlength[g]);
-    }
-    //fprintf(outfile, "%s", headerlength);
+    }*/
+    fwrite(headerfile, 1, 12, outfile);
     fflush(outfile);
     printf("headerlength: %s\n", headerlength);
     fprintf(outfile, "%s", IHDRtypedata);
