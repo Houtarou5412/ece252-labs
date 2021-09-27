@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     U8 *after_height = malloc(sizeof(U8)*5);
     U8 *IHDRcrc = malloc(sizeof(U8)*4);
     memset(IHDRcrc, 0, sizeof(U8)*4);
-    printf("bytes copied: %d\n", sizeof(U8));
+    printf("bytes copied: %d\n", sizeof(IHDRcrc));
     U8 *IDATlength = malloc(sizeof(U8)*4);
     U32 total_length = 0;
     U8 *IDATtype = malloc(sizeof(U8)*4);
