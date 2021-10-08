@@ -392,7 +392,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
         memcpy(data, recv_buf[m].buf + 20 + 4 + 9 + 4 + 4, part_length);
 
         part_u_data = malloc(sizeof(U8)*part_height*(width_val*4 + 1));
-        memset(part_u_data, 0, sizeof(U8)*part_height*(width_val*4 + 1));
+        memset(part_u_data, 0, sizeof(U8)*300*(400*4 + 1));
         mem_inf(part_u_data, &part_u_data_length, data, part_length);
 
         //test
