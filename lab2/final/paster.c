@@ -17,6 +17,8 @@
 
 //FUNCTION DECLARATIONS
 int main(int argc, char **argv);
+int ispng(FILE *f)
+int catpng(int argc, char **argv)
 
 //FUNCTION DEFINITIONS
 int main(int argc, char **argv) {
@@ -26,7 +28,7 @@ int main(int argc, char **argv) {
     //Getting command options
     for(int t = 0; t < argc; t++) {
         if(argv[t] == "-t") {
-            threads = (int)(argv[t+1]-48);
+            threads = (int)(argv[t+1][0]-48);
         } else if(argv[t] == "-n") {
             img_url[strlen(img_url)-2] = argv[t+1][0];
         }
