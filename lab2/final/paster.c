@@ -21,9 +21,9 @@ int catpng(int argc, RECV_BUF recvbuf[]);
 //FUNCTION DEFINITIONS
 int main(int argc, char **argv) {
     //Config
-    int crops = 50;
+    int crops = 1;
 
-    char img_url[] = "http://ece252-1.uwaterloo.ca:2520/image?img=1&part=0";
+    char img_url[] = "http://ece252-1.uwaterloo.ca:2520/image?img=1&part0";
     int threads = 1;
 
     //Getting command options
