@@ -11,6 +11,15 @@
 #include <string.h>
 #include <pthread.h>
 
+#define IMG_URL "http://ece252-1.uwaterloo.ca:2520/image?img=1"
+#define DUM_URL "https://example.com/"
+#define BUF_SIZE 1048576  /* 1024*1024 = 1M */
+#define BUF_INC  524288   /* 1024*512  = 0.5M */
+
+#define max(a, b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
 
 typedef struct recv_buf2 {
     U8 *buf;       /* memory to hold a copy of received data */
