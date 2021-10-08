@@ -11,8 +11,6 @@
 #include <string.h>
 #include <pthread.h>
 #include "main_write_header_cb.c"
-#include "crc.c"
-#include "zutil.c"
 
 
 //FUNCTION DECLARATIONS
