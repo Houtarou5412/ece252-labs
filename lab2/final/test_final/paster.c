@@ -364,7 +364,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
         U8 *data = NULL;
         U8 *part_u_data = NULL;
         U8 *temp_u_data = NULL;
-        U64 part_u_data_length;
+        U64 part_u_data_length = 0;
 
         //FILES
         /*fseek(files[m], 20, SEEK_CUR);
@@ -410,10 +410,10 @@ int catpng(int argc, RECV_BUF * recv_buf) {
 
         printf("%d x %lu\n", width_val, part_height);
         printf("part length %d\n", part_length);
-        printf("part u data length %d\n", *part_u_data_length);
-        temp_u_data = malloc(sizeof(U8)*(*part_u_data_length + u_data_len));
+        printf("part u data length %d\n", part_u_data_length);
+        temp_u_data = malloc(sizeof(U8)*(part_u_data_length + u_data_len));
         int test = 0;
-        for(unsigned long n = 0; n < u_data_len + *part_u_data_length; n++) {
+        for(unsigned long n = 0; n < u_data_len + part_u_data_length; n++) {
             //printf("n: %u\n", n);
             if(u_data != NULL && n < u_data_len) {
                 temp_u_data[n] = u_data[n];
@@ -426,7 +426,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
         }
         printf("test: %d\n", test);
 
-        u_data_len += *part_u_data_length;
+        u_data_len += part_u_data_length;
         height_val += part_height;
         printf("4.5\n");
         free(u_data);
@@ -437,7 +437,6 @@ int catpng(int argc, RECV_BUF * recv_buf) {
         free(length);
         free(data);
         free(part_u_data);
-        free(part_u_data_length);
     }
 
     printf("5\n");
