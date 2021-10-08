@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-int catpng(int argc, RECV_BUF recv_buf[]) {
+int catpng(int argc, RECV_BUF * recv_buf) {
     remove("./all.png");
     printf("1\n");
     int stop = 0;
