@@ -440,7 +440,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
     }
 
     printf("5\n");
-    IDATdata = malloc(sizeof(U8) * u_data_len);
+    IDATdata = malloc(sizeof(U8) * 100000);
     U32 *temp_size = malloc(sizeof(U32));
     mem_def(IDATdata, temp_size, u_data, u_data_len, -1);
     //printf("size of data: %d\n", *temp_size);
