@@ -101,12 +101,15 @@ int main(int argc, char **argv) {
         if(recv_buf[temp_buf.seq].size <= 0) {
             printf("made it\n");
             recv_buf[temp_buf.seq].size = temp_buf.size;
-            memcpy(recv_buf[temp_buf.seq].buf, temp_buf.buf, temp_buf.size);
+            recv_buf[temp_buf.seq].buf = temp_buf.buf;
+            // memcpy(recv_buf[temp_buf.seq].buf, temp_buf.buf, temp_buf.size);
             recv_buf[temp_buf.seq].seq = temp_buf.seq;
             printf("finished\n");
 
             success++;
             printf("Successfully added section %d\n", temp_buf.seq);
+        } else {
+            recv_buf_cleanup(&temp_buf);
         }
         
         if(img_url[14] == '3') {
@@ -114,8 +117,6 @@ int main(int argc, char **argv) {
         } else {
             img_url[14] = img_url[14] + 1;
         }
-
-        recv_buf_cleanup(&temp_buf);
     }
 
     printf("Completed all 50 sections\n");
