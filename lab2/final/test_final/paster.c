@@ -355,7 +355,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
     // concatenate w/ existing data
     //
     // end loop, compress, write to file
-    for(int m = 0; m < argc; m++) {
+    for(int m = 0; m < 1; m++) {
         printf("3\n");
         U8 *height = malloc(sizeof(U8)*4);
         U64 part_height = 0;
