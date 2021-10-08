@@ -281,7 +281,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
             }
         }
         printf("test_size: %d\n",test_size);
-        free(test_u_data);
+        free(test_data);
 
         printf("%d x %lu\n", width_val, part_height);
         printf("part length %d\n", part_length);
