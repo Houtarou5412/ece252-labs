@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     U8 *after_height = malloc(sizeof(U8)*5);
     U8 *IHDRcrc = malloc(sizeof(U8)*4);
     //memset(IHDRcrc, 0, sizeof(U8)*4);
-    //printf("bytes copied: %d\n", sizeof(IHDRcrc));
+    printf("bytes copied: %d\n", sizeof(IHDRcrc));
     U8 *IDATlength = malloc(sizeof(U8)*4);
     U32 total_length = 0;
     U8 *IDATtype = malloc(sizeof(U8)*4);
@@ -36,11 +36,11 @@ int main(int argc, char **argv) {
     U8 *IDATcrc = malloc(sizeof(U8)*4);
     U8 *IEND = malloc(sizeof(U8)*12);
     for(int i = 1; i < argc; i++) {
-        //printf("%d\n", i);
+        printf("%d\n", i);
         for(int j = 1; j < argc; j++) {
-            //printf("with %d @ char %c vs %c\n", j, argv[j][strlen(argv[j])-5], (char)(i+47));
+            printf("with %d @ char %c vs %c\n", j, argv[j][strlen(argv[j])-5], (char)(i+47));
             if(argv[j][strlen(argv[j])-5] == (char)(i+47)) {
-                //printf("true\n");
+                printf("true\n");
                 files[i-1] = fopen(argv[j], "rb");
                 //order[i-1] = j;
             }
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
         printf("not png\n");
     }
 
-    //printf("2\n");
+    printf("2\n");
     fread(headerlength, 12, 1, files[0]);
     fread(IHDRtype, 4, 1, files[0]);
     fread(width, 4, 1, files[0]);
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
     fread(f_skip_len, 4, 1, files[0]);
     memcpy(&skip_len, f_skip_len, sizeof(skip_len));
     skip_len = (U32)ntohl(skip_len);
-    //printf("skipped: %d\n", skip_len);
+    printf("skipped: %d\n", skip_len);
     fread(IDATtype, 4, 1, files[0]);
     fseek(files[0], skip_len+4, SEEK_CUR);
     fread(IEND, 12, 1, files[0]);
@@ -72,9 +72,9 @@ int main(int argc, char **argv) {
     rewind(files[0]);
     memcpy(&width_val, width, sizeof(width_val));
     width_val = (U32)ntohl(width_val);
-    /*for(int s = 0; s < argc-1; s++) {
+    for(int s = 0; s < argc-1; s++) {
         printf("%s\n", argv[order[s]]);
-    }*/
+    }
     
     // For each file
     // get height and IDAT length
@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
     //
     // end loop, compress, write to file
     for(int m = 0; m < argc-1; m++) {
-        //printf("3\n");
+        printf("3\n");
         U8 *height = malloc(sizeof(U8)*4);
         U64 part_height = 0;
         U8 *length = malloc(sizeof(U8)*4);
@@ -110,21 +110,21 @@ int main(int argc, char **argv) {
         part_u_data = malloc(sizeof(U8)*part_height*(width_val*4 + 1));
         mem_inf(part_u_data, part_u_data_length, data, part_length);
 
-        //printf("%d x %lu\n", width_val, part_height);
-        //printf("part length %d\n", part_length);
+        printf("%d x %lu\n", width_val, part_height);
+        printf("part length %d\n", part_length);
         temp_u_data = malloc(sizeof(U8)*(*part_u_data_length + u_data_len));
         for(unsigned long n = 0; n < u_data_len + *part_u_data_length; n++) {
-            //printf("n: %u\n", n);
+            printf("n: %u\n", n);
             if(u_data != NULL && n < u_data_len) {
                 temp_u_data[n] = u_data[n];
             } else {
                 temp_u_data[n] = part_u_data[n - u_data_len];
             }
-            //printf("loop\n");
+            printf("loop\n");
         }
         u_data_len += *part_u_data_length;
         height_val += part_height;
-        //printf("4.5\n");
+        printf("4.5\n");
         free(u_data);
         u_data = temp_u_data;
         temp_u_data = NULL;
@@ -136,29 +136,29 @@ int main(int argc, char **argv) {
         free(part_u_data_length);
     }
 
-    //printf("5\n");
+    printf("5\n");
     IDATdata = malloc(sizeof(U8) * u_data_len);
     U32 *temp_size = malloc(sizeof(U32));
     mem_def(IDATdata, temp_size, u_data, u_data_len, -1);
-    //printf("size of data: %d\n", *temp_size);
+    printf("size of data: %d\n", *temp_size);
     memcpy(&total_length, temp_size, sizeof(total_length));
     free(temp_size);
 
     total_length = htonl(total_length);
     memcpy(IDATlength, &total_length, sizeof(total_length));
     total_length = (U32)ntohl(total_length);
-    //printf("new height: %d\n", height_val);
-    //printf("new length: %d\n", total_length);
-    //total_length = (U32)htonl(total_length);
+    printf("new height: %d\n", height_val);
+    printf("new length: %d\n", total_length);
+    total_length = (U32)htonl(total_length);
     height_val = (U32)htonl(height_val);
     memcpy(height, &height_val, sizeof(height_val));
 
-    //printf("6\n");
+    printf("6\n");
     U32 temp_crc = 0;
 
     U8 *IHDRtypedata = malloc(sizeof(U8)*17);
     for(int o = 0; o < 17; o++) {
-        //printf("o: %d\n", o);
+        printf("o: %d\n", o);
         if(o < 4) {
             IHDRtypedata[o] = IHDRtype[o];
         } else if(o < 8) {
@@ -169,17 +169,17 @@ int main(int argc, char **argv) {
             IHDRtypedata[o] = after_height[o-12];
         }
     }
-    //printf("out\n");
+    printf("out\n");
     temp_crc = crc(IHDRtypedata, 17);
-    //printf("bytes copied: %ld\n", sizeof(IHDRcrc));
+    printf("bytes copied: %ld\n", sizeof(IHDRcrc));
     temp_crc = (U32)htonl(temp_crc);
     memcpy(IHDRcrc, &temp_crc, sizeof(IHDRcrc));
     //free(IHDRtypedata);
 
-    //printf("6.5\n");
+    printf("6.5\n");
     U8 *IDATtypedata = malloc(4 + total_length);
     for(int p = 0; p < 4 + total_length; p++) {
-        //printf("p: %d out of %d\n", p, total_length);
+        printf("p: %d out of %d\n", p, total_length);
         if(p < 4) {
             IDATtypedata[p] = IDATtype[p];
         } else {
@@ -188,44 +188,44 @@ int main(int argc, char **argv) {
     }
     temp_crc = crc(IDATtypedata, 4 + total_length);
     temp_crc = (U32)htonl(temp_crc);
-    //printf("6.75\n");
+    printf("6.75\n");
     memcpy(IDATcrc, &temp_crc, sizeof(IDATcrc));
 
     //free(IDATtypedata);
 
-    //printf("7\n");
+    printf("7\n");
     char outname[10] = "./all.png";
     FILE *outfile = fopen(outname, "wb+");
     if(outfile == NULL) {
         printf("null\n");
     }
-    //printf("7.5\n");
+    printf("7.5\n");
     /*for(int g = 0; g < sizeof(headerlength); g++) {
         fprintf(outfile, "%c", headerlength[g]);
     }*/
     fwrite(headerlength, 1, 12, outfile);
     //fflush(outfile);
-    //printf("headerlength: %s\n", headerlength);
+    printf("headerlength: %s\n", headerlength);
     fwrite(IHDRtypedata, 1, 17, outfile);
     //fflush(outfile);
-    //printf("IHDRtypedata %s\n", IHDRtypedata);
+    printf("IHDRtypedata %s\n", IHDRtypedata);
     fwrite(IHDRcrc, 1, 4, outfile);
     //fflush(outfile);
-    //printf("IHDRcrc done\n");
+    printf("IHDRcrc done\n");
     fwrite(IDATlength, 1, 4, outfile);
     //fflush(outfile);
-    //printf("IDATlength done\n");
+    printf("IDATlength done\n");
     fwrite(IDATtypedata, 1, 4+total_length, outfile);
     //fflush(outfile);
-    //printf("IDATtypedata done\n");
+    printf("IDATtypedata done\n");
     fwrite(IDATcrc, 1, 4, outfile);
     //fflush(outfile);
-    //printf("IDATcrc done\n");
+    printf("IDATcrc done\n");
     fwrite(IEND, 1, 12, outfile);
     //fflush(outfile);
-    //printf("IEND done\n");
+    printf("IEND done\n");
 
-    //printf("8\n");
+    printf("8\n");
     fclose(outfile);
     for(int t = 0; t < argc-1; t++) {
         fclose(files[t]);
