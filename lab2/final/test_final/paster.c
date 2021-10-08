@@ -494,7 +494,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
     temp_crc = crc(IDATtypedata, 4 + total_length);
     temp_crc = (U32)htonl(temp_crc);
     printf("6.75\n");
-    memcpy(IDATcrc, &temp_crc, sizeof(IDATcrc));
+    memcpy(IDATcrc, &temp_crc, sizeof(U8)*4);
 
     //free(IDATtypedata);
 
