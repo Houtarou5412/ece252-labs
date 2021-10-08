@@ -280,13 +280,14 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
             //printf("n: %u\n", n);
             if(u_data != NULL && n < u_data_len) {
                 temp_u_data[n] = u_data[n];
+                printf("wrong n:\n", n);
             } else {
                 temp_u_data[n] = part_u_data[n - u_data_len];
                 test++;
             }
             //printf("loop %d\n", n);
         }
-        printf("test: %d", test);
+        printf("test: %d\n", test);
 
         u_data_len += *part_u_data_length;
         height_val += part_height;
