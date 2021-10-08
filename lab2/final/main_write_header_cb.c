@@ -30,6 +30,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <curl/curl.h>
+#include "zutil.h"
 
 #define IMG_URL "http://ece252-1.uwaterloo.ca:2520/image?img=1"
 #define DUM_URL "https://example.com/"
