@@ -92,6 +92,9 @@ int main(int argc, char **argv) {
                 temp_buf.size, temp_buf.buf, temp_buf.seq, img_url);
         }
 
+        //temp
+        temp_buf.seq = 0;
+
         if(recv_buf[temp_buf.seq].size <= 0) {
             recv_buf[temp_buf.seq].size = temp_buf.size;
             memcpy(recv_buf[temp_buf.seq].buf, temp_buf.buf, temp_buf.size);
