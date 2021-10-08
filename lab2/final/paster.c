@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
 
 int catpng(int argc, RECV_BUF recv_buf[]) {
     remove("./all.png");
-    //printf("1\n");
+    printf("1\n");
     int stop = 0;
     //FILE **files = malloc(sizeof(FILE)*(argc-1));
     //int *order = (int*)malloc(sizeof(int)*(argc-1));
@@ -174,7 +174,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
         printf("not png\n");
     }*/
 
-    //printf("2\n");
+    printf("2\n");
 
     //Collecting variables for files
     /*fread(headerlength, 12, 1, files[0]);
@@ -208,6 +208,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     memcpy(f_skip_len, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4, sizeof(f_skip_len));
     memcpy(&skip_len, f_skip_len, sizeof(skip_len));
     skip_len = (U32)ntohl(skip_len);
+    printf("skipped: %d\n", skip_len);
     memcpy(IDATtype, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4 + 4, sizeof(IDATtype));
     memcpy(IEND, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4 + 4 + 4 + skip_len + 4, sizeof(IEND));
 
@@ -227,7 +228,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     //
     // end loop, compress, write to file
     for(int m = 0; m < argc; m++) {
-        //printf("3\n");
+        printf("3\n");
         U8 *height = malloc(sizeof(U8)*4);
         U64 part_height = 0;
         U8 *length = malloc(sizeof(U8)*4);
@@ -279,7 +280,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
         }
         u_data_len += *part_u_data_length;
         height_val += part_height;
-        //printf("4.5\n");
+        printf("4.5\n");
         free(u_data);
         u_data = temp_u_data;
         temp_u_data = NULL;
@@ -291,7 +292,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
         free(part_u_data_length);
     }
 
-    //printf("5\n");
+    printf("5\n");
     IDATdata = malloc(sizeof(U8) * u_data_len);
     U32 *temp_size = malloc(sizeof(U32));
     mem_def(IDATdata, temp_size, u_data, u_data_len, -1);
@@ -308,7 +309,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     height_val = (U32)htonl(height_val);
     memcpy(height, &height_val, sizeof(height_val));
 
-    //printf("6\n");
+    printf("6\n");
     U32 temp_crc = 0;
 
     U8 *IHDRtypedata = malloc(sizeof(U8)*17);
@@ -331,7 +332,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     memcpy(IHDRcrc, &temp_crc, sizeof(IHDRcrc));
     //free(IHDRtypedata);
 
-    //printf("6.5\n");
+    printf("6.5\n");
     U8 *IDATtypedata = malloc(4 + total_length);
     for(int p = 0; p < 4 + total_length; p++) {
         //printf("p: %d out of %d\n", p, total_length);
@@ -343,18 +344,18 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     }
     temp_crc = crc(IDATtypedata, 4 + total_length);
     temp_crc = (U32)htonl(temp_crc);
-    //printf("6.75\n");
+    printf("6.75\n");
     memcpy(IDATcrc, &temp_crc, sizeof(IDATcrc));
 
     //free(IDATtypedata);
 
-    //printf("7\n");
+    printf("7\n");
     char outname[10] = "./all.png";
     FILE *outfile = fopen(outname, "wb+");
     if(outfile == NULL) {
         printf("null\n");
     }
-    //printf("7.5\n");
+    printf("7.5\n");
     /*for(int g = 0; g < sizeof(headerlength); g++) {
         fprintf(outfile, "%c", headerlength[g]);
     }*/
@@ -380,7 +381,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     //fflush(outfile);
     //printf("IEND done\n");
 
-    //printf("8\n");
+    printf("8\n");
     fclose(outfile);
     /*for(int t = 0; t < argc-1; t++) {
         fclose(files[t]);
