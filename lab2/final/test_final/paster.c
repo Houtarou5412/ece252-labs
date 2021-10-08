@@ -327,18 +327,18 @@ int catpng(int argc, RECV_BUF * recv_buf) {
     width_val = (U32)ntohl(width_val);*/
 
     //Collecting variables for recv_buf array
-    memcpy(headerlength, recv_buf[0].buf, sizeof(headerlength));
-    memcpy(IHDRtype, recv_buf[0].buf + 12, sizeof(IHDRtype));
-    memcpy(width, recv_buf[0].buf + 12 + 4, sizeof(width));
-    memcpy(after_height, recv_buf[0].buf + 12 + 4 + 4 + 4, sizeof(after_height));
+    memcpy(headerlength, recv_buf[0].buf, sizeof(U8)*12);
+    memcpy(IHDRtype, recv_buf[0].buf + 12, sizeof(U8)*4);
+    memcpy(width, recv_buf[0].buf + 12 + 4, sizeof(U8)*4);
+    memcpy(after_height, recv_buf[0].buf + 12 + 4 + 4 + 4, sizeof(U8)*5);
     U8 *f_skip_len = malloc(sizeof(U8)*4);
     U32 skip_len = 0;
-    memcpy(f_skip_len, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4, sizeof(f_skip_len));
-    memcpy(&skip_len, f_skip_len, sizeof(skip_len));
+    memcpy(f_skip_len, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4, sizeof(U8)*4);
+    memcpy(&skip_len, f_skip_len, sizeof(U8)*4);
     skip_len = (U32)ntohl(skip_len);
     printf("skipped: %d\n", skip_len);
-    memcpy(IDATtype, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4 + 4, sizeof(IDATtype));
-    memcpy(IEND, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4 + 4 + 4 + skip_len + 4, sizeof(IEND));
+    memcpy(IDATtype, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4 + 4, sizeof(U8)*4);
+    memcpy(IEND, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4 + 4 + 4 + skip_len + 4, sizeof(U8)*12);
 
     free(f_skip_len);
     memcpy(&width_val, width, sizeof(width_val));
@@ -381,10 +381,10 @@ int catpng(int argc, RECV_BUF * recv_buf) {
         fread(data, part_length, 1, files[m]);*/
 
         //RECV_BUF
-        memcpy(height, recv_buf[m].buf + 20, sizeof(height));
+        memcpy(height, recv_buf[m].buf + 20, sizeof(U8)*4);
         memcpy(&part_height, height, sizeof(part_height));
         part_height = (U64)ntohl(part_height);
-        memcpy(length, recv_buf[m].buf + 20 + 4 + 9, sizeof(length));
+        memcpy(length, recv_buf[m].buf + 20 + 4 + 9, sizeof(U8)*4);
         memcpy(&part_length, length, sizeof(part_length));
         part_length = (U64)ntohl(part_length);
 
