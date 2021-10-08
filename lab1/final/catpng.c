@@ -72,9 +72,9 @@ int main(int argc, char **argv) {
     rewind(files[0]);
     memcpy(&width_val, width, sizeof(width_val));
     width_val = (U32)ntohl(width_val);
-    for(int s = 0; s < argc-1; s++) {
+    /*for(int s = 0; s < argc-1; s++) {
         printf("%s\n", argv[order[s]]);
-    }
+    }*/
     
     // For each file
     // get height and IDAT length
