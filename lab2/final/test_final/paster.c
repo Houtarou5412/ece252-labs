@@ -213,7 +213,7 @@ int main(int argc, char **argv) {
         }
 
         //temp
-        temp_buf.seq = 0;
+        //temp_buf.seq = 0;
 
         if(recv_buf[temp_buf.seq].size <= 0) {
             printf("made it\n");
