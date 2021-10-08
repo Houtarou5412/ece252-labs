@@ -282,7 +282,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
                 temp_u_data[n] = u_data[n];
                 printf("wrong n:\n", n);
             } else {
-                temp_u_data[n] = part_u_data[n - u_data_len];
+                temp_u_data[n] = part_u_data[n/* - u_data_len*/];
                 test++;
             }
             //printf("loop %d\n", n);
