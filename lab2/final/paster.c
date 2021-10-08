@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     //Config
     int crops = 1;
 
-    char img_url[] = "http://ece252-1.uwaterloo.ca:2530/image?img=1&part0";
+    char img_url[] = "http://ece252-1.uwaterloo.ca:2530/image?img=1&part=0";
     int threads = 1;
 
     //Getting command options
