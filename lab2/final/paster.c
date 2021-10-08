@@ -84,14 +84,20 @@ int main(int argc, char **argv) {
         if( res != CURLE_OK) {
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
         } else {
-        printf("%lu bytes received in memory %p, seq=%d.\n", \
-                temp_buf.size, temp_buf.buf, temp_buf.seq);
+        printf("%lu bytes received in memory %p, seq=%d, using url %s.\n", \
+                temp_buf.size, temp_buf.buf, temp_buf.seq, img_url);
         }
 
         if(recv_buf[temp_buf.seq].size <= 0) {
             recv_buf[temp_buf.seq] = temp_buf;
             success++;
             printf("Successfully added section %d\n", temp_buf.seq);
+        }
+        
+        if(img_url[14] == '3') {
+            img_url[14] = '1';
+        } else {
+            img_url[14] = img_url[14] + 1;
         }
 
         recv_buf_cleanup(&temp_buf);
