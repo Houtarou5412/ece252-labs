@@ -20,6 +20,7 @@ int catpng(int argc, RECV_BUF recvbuf[]);
 
 //FUNCTION DEFINITIONS
 int main(int argc, char **argv) {
+    printf("something\n");
     //Config
     int crops = 1;
 
