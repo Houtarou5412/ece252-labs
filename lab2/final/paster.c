@@ -207,7 +207,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     U32 skip_len = 0;
     memcpy(f_skip_len, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4, sizeof(f_skip_len));
     memcpy(&skip_len, f_skip_len, sizeof(skip_len));
-    skip_len = (U32)ntohl(skip_len);
+    //skip_len = (U32)ntohl(skip_len);
     printf("skipped: %d\n", skip_len);
     memcpy(IDATtype, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4 + 4, sizeof(IDATtype));
     memcpy(IEND, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4 + 4 + 4 + skip_len + 4, sizeof(IEND));
