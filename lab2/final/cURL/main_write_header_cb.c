@@ -30,6 +30,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <curl/curl.h>
+#include "zutil.h"
 
 #define IMG_URL "http://ece252-1.uwaterloo.ca:2520/image?img=1"
 #define DUM_URL "https://example.com/"
@@ -43,7 +44,7 @@
      _a > _b ? _a : _b; })
 
 typedef struct recv_buf2 {
-    char *buf;       /* memory to hold a copy of received data */
+    U8 *buf;       /* memory to hold a copy of received data */
     size_t size;     /* size of valid data in buf in bytes*/
     size_t max_size; /* max capacity of buf in bytes*/
     int seq;         /* >=0 sequence number extracted from http header */
