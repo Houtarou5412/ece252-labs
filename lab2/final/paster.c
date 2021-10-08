@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
     
     for(int i = 0; i < 50; i++) {
         recv_buf_init(&(recv_buf[i]), BUF_SIZE);
+        printf("recv_buf[%d] located at %p\n", i, &(recv_buf[i]));
     }
     
     //printf("%s: URL is %s\n", argv[0], url);
