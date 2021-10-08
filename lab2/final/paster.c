@@ -98,6 +98,10 @@ int main(int argc, char **argv) {
 
     printf("Completed all 50 sections\n");
 
+    for(int m = 0; m < 50; m++) {
+        printf("Verify %lu bytes received in memory %p, seq=%d.\n", recv_buf[m].size, recv_buf[m].buf, recv_buf[m].seq);
+    }
+
     //sprintf(fname, "./output_%d_%d.png", recv_buf.seq, pid);
     //write_file(fname, recv_buf.buf, recv_buf.size);
 
