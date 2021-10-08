@@ -16,7 +16,7 @@
 //FUNCTION DECLARATIONS
 int main(int argc, char **argv);
 int ispng(FILE *f);
-int catpng(int argc, char **argv);
+int catpng(int argc, RECV_BUF recvbuf[]);
 
 //FUNCTION DEFINITIONS
 int main(int argc, char **argv) {
@@ -197,7 +197,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     memcpy(IHDRtype, recv_buf[0].buf + 12, sizeof(IHDRtype));
     memcpy(width, recv_buf[0].buf + 12 + 4, sizeof(width));
     memcpy(after_height, recv_buf[0].buf + 12 + 4 + 4 + 4, sizeof(after_height));
-    U8 *f_skip_len = malloc(sizoef(U8)*4);
+    U8 *f_skip_len = malloc(sizeof(U8)*4);
     U32 skip_len = 0;
     memcpy(f_skip_len, recv_buf[0].buf + 12 + 4 + 4 + 4 + 5 + 4, sizeof(f_skip_len));
     memcpy(&skip_len, f_skip_len, sizeof(skip_len));
