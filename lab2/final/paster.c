@@ -282,7 +282,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
                 temp_u_data[n] = u_data[n];
                 printf("wrong n:\n", n);
             } else {
-                temp_u_data[n] = part_u_data[n/* - u_data_len*/];
+                temp_u_data[n] = part_u_data[n - u_data_len];
                 test++;
             }
             //printf("loop %d\n", n);
@@ -315,7 +315,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     memcpy(IDATlength, &total_length, sizeof(total_length));
     total_length = (U32)ntohl(total_length);
     printf("new height: %d\n", height_val);
-    printf("new length: %d\n", total_length);
+    printf("new length: %d\n", *temp_size);
     printf("u data len: %d\n", u_data_len);
     //total_length = (U32)htonl(total_length);
     height_val = (U32)htonl(height_val);
