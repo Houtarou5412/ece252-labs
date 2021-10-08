@@ -89,7 +89,10 @@ int main(int argc, char **argv) {
         }
 
         if(recv_buf[temp_buf.seq].size <= 0) {
-            recv_buf[temp_buf.seq] = temp_buf;
+            recv_buf[temp_buf.seq].size = temp_buf.size;
+            memcpy(recv_buf[temp_buf.seq].buf, temp_buf.buf, temp_buf.size);
+            recv_buf[temp_buf.seq].seq = temp_buf.seq;
+
             success++;
             printf("Successfully added section %d\n", temp_buf.seq);
         }
