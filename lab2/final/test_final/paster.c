@@ -10,7 +10,6 @@
 #include <curl/curl.h>
 #include <string.h>
 #include <pthread.h>
-#include "main_write_header_cb.c"
 
 
 //FUNCTION DECLARATIONS

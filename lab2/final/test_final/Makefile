@@ -16,7 +16,7 @@ TARGETS= paster
 
 all: ${TARGETS}
 
-paster: paster.c $(LIB_UTIL) 
+paster: paster.c main_writer_header_cb.c $(LIB_UTIL) 
 	$(LD) -o $@ $^ $(LDLIBS) $(LDFLAGS) 
 
 %.o: %.c 
