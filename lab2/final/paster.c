@@ -39,15 +39,17 @@ int main(int argc, char **argv) {
     //cURL
     CURL *curl_handle;
     CURLcode res;
-    RECV_BUF recv_buf[crops];
+    RECV_BUF * recv_buf = malloc(sizeof(RECV_BUF) * crops);
+
+    memset(recv_buf, 0, sizeof(RECV_BUF) * crops);
     char fname[256];
     pid_t pid =getpid();
     
     //Initialize recv_buf array
-    for(int i = 0; i < crops; i++) {
-        recv_buf_init(&(recv_buf[i]), BUF_SIZE);
-        printf("recv_buf[%d] located at %p\n", i, &(recv_buf[i]));
-    }
+    // for(int i = 0; i < crops; i++) {
+    //     recv_buf_init(&(recv_buf[i]), BUF_SIZE);
+    //     printf("recv_buf[%d] located at %p\n", i, &(recv_buf[i]));
+    // }
     
     //printf("%s: URL is %s\n", argv[0], url);
 
