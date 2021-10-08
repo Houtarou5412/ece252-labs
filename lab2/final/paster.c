@@ -309,7 +309,6 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     mem_def(IDATdata, temp_size, u_data, u_data_len, -1);
     //printf("size of data: %d\n", *temp_size);
     memcpy(&total_length, temp_size, sizeof(total_length));
-    free(temp_size);
 
     total_length = htonl(total_length);
     memcpy(IDATlength, &total_length, sizeof(total_length));
@@ -320,6 +319,8 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     //total_length = (U32)htonl(total_length);
     height_val = (U32)htonl(height_val);
     memcpy(height, &height_val, sizeof(height_val));
+
+    free(temp_size);
 
     printf("6\n");
     U32 temp_crc = 0;
