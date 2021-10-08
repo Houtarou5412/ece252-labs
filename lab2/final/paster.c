@@ -271,6 +271,13 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
         part_u_data = malloc(sizeof(U8)*part_height*(width_val*4 + 1));
         mem_inf(part_u_data, part_u_data_length, data, part_length);
 
+        //test
+        U8 *test_u_data = malloc(part_u_data_length);
+        U32 test_size = 0;
+        mem_def(test_u_data, &test_size, part_u_data, part_u_data_length);
+        printf("test_size: %d\n",test_size);
+        free(test_u_data);
+
         printf("%d x %lu\n", width_val, part_height);
         printf("part length %d\n", part_length);
         printf("part u data length %d\n", *part_u_data_length);
