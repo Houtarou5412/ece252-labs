@@ -6,7 +6,7 @@ CC = gcc
 CFLAGS = -Wall -g -std=c99 
 LD = gcc
 LDFLAGS = -g -std=c99
-LDLIBS = -pthread -lcurl
+LDLIBS = -pthread -lcurl -lz
 
 LIB_UTIL = zutil.o crc.o 
 SRCS   = paster.c catpng.c crc.c zutil.c main_writer_header_cb.c
