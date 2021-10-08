@@ -149,7 +149,7 @@ int main(int argc, char **argv) {
     total_length = (U32)ntohl(total_length);
     printf("new height: %d\n", height_val);
     printf("new length: %d\n", total_length);
-    total_length = (U32)htonl(total_length);
+    //total_length = (U32)htonl(total_length);
     height_val = (U32)htonl(height_val);
     memcpy(height, &height_val, sizeof(height_val));
 
