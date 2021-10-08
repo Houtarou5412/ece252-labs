@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
         if( res != CURLE_OK) {
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
         } else {
-        printf("%lu bytes received in memory %p, seq=%d, using url %s.\n", \
+            printf("%lu bytes received in memory %p, seq=%d, using url %s.\n", \
                 temp_buf.size, temp_buf.buf, temp_buf.seq, img_url);
         }
 
@@ -99,9 +99,11 @@ int main(int argc, char **argv) {
         temp_buf.seq = 0;
 
         if(recv_buf[temp_buf.seq].size <= 0) {
+            printf("made it\n");
             recv_buf[temp_buf.seq].size = temp_buf.size;
             memcpy(recv_buf[temp_buf.seq].buf, temp_buf.buf, temp_buf.size);
             recv_buf[temp_buf.seq].seq = temp_buf.seq;
+            printf("finished\n");
 
             success++;
             printf("Successfully added section %d\n", temp_buf.seq);
