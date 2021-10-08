@@ -122,6 +122,11 @@ int main(int argc, char **argv) {
     //sprintf(fname, "./output_%d_%d.png", recv_buf.seq, pid);
     //write_file(fname, recv_buf.buf, recv_buf.size);
 
+    char name[] = "pic0";
+    FILE *f = fopen(name, "wb+");
+    fwrite(recv_buf[0].buf, 1, recv_buf[0].size, f);
+    fclose(f);
+
     catpng(crops, recv_buf);
 
     /* cleaning up */
