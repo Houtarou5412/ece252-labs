@@ -137,7 +137,7 @@ int recv_buf_cleanup(RECV_BUF *ptr)
 }
 
 int main(int argc, char **argv) {
-    printf("something\n");
+    //printf("something\n");
     //Config
     int crops = 50;
 
@@ -208,7 +208,7 @@ int main(int argc, char **argv) {
         if( res != CURLE_OK) {
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
         } else {
-            printf("%lu bytes received in memory %p, seq=%d, using url %s.\n", \
+            //printf("%lu bytes received in memory %p, seq=%d, using url %s.\n", \
                 temp_buf.size, temp_buf.buf, temp_buf.seq, img_url);
         }
 
@@ -216,15 +216,15 @@ int main(int argc, char **argv) {
         //temp_buf.seq = 0;
 
         if(recv_buf[temp_buf.seq].size <= 0) {
-            printf("made it\n");
+            //printf("made it\n");
             recv_buf[temp_buf.seq].size = temp_buf.size;
             recv_buf[temp_buf.seq].buf = temp_buf.buf;
             // memcpy(recv_buf[temp_buf.seq].buf, temp_buf.buf, temp_buf.size);
             recv_buf[temp_buf.seq].seq = temp_buf.seq;
-            printf("finished\n");
+            //printf("finished\n");
 
             success++;
-            printf("Successfully added section %d\n", temp_buf.seq);
+            //printf("Successfully added section %d\n", temp_buf.seq);
         } else {
             recv_buf_cleanup(&temp_buf);
         }
@@ -238,9 +238,9 @@ int main(int argc, char **argv) {
 
     printf("Completed all 50 sections\n");
 
-    for(int m = 0; m < crops; m++) {
+    /*for(int m = 0; m < crops; m++) {
         printf("Verify %lu bytes received in memory %p, seq=%d.\n", recv_buf[m].size, recv_buf[m].buf, recv_buf[m].seq);
-    }
+    }*/
 
     //sprintf(fname, "./output_%d_%d.png", recv_buf.seq, pid);
     //write_file(fname, recv_buf.buf, recv_buf.size);
@@ -418,7 +418,6 @@ int catpng(int argc, RECV_BUF * recv_buf) {
             //printf("n: %u\n", n);
             if(u_data != NULL && n < u_data_len) {
                 temp_u_data[n] = u_data[n];
-                //printf("wrong n:\n", n);
             } else {
                 temp_u_data[n] = part_u_data[n - u_data_len];
                 test++;
@@ -441,7 +440,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
     }
 
     printf("5\n");
-    IDATdata = malloc(sizeof(U8) * 100000);
+    IDATdata = malloc(sizeof(U8) * u_data_len);
     U64 *temp_size = malloc(sizeof(U64));
     mem_def(IDATdata, temp_size, u_data, u_data_len, -1);
     //printf("size of data: %d\n", *temp_size);
