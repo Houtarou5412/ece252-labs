@@ -17,8 +17,8 @@
 
 //FUNCTION DECLARATIONS
 int main(int argc, char **argv);
-int ispng(FILE *f)
-int catpng(int argc, char **argv)
+int ispng(FILE *f);
+int catpng(int argc, char **argv);
 
 //FUNCTION DEFINITIONS
 int main(int argc, char **argv) {
