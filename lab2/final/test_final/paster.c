@@ -364,7 +364,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
         U8 *data = NULL;
         U8 *part_u_data = NULL;
         U8 *temp_u_data = NULL;
-        U64 *part_u_data_length = malloc(sizeof(U64));
+        U64 part_u_data_length;
 
         //FILES
         /*fseek(files[m], 20, SEEK_CUR);
@@ -392,18 +392,20 @@ int catpng(int argc, RECV_BUF * recv_buf) {
         memcpy(data, recv_buf[m].buf + 20 + 4 + 9 + 4 + 4, part_length);
 
         part_u_data = malloc(sizeof(U8)*part_height*(width_val*4 + 1));
-        mem_inf(part_u_data, part_u_data_length, data, part_length);
+        memset(part_u_data, 0, sizeof(U8)*part_height*(width_val*4 + 1));
+        mem_inf(part_u_data, &part_u_data_length, data, part_length);
 
         //test
-        U8 *test_data = malloc(*part_u_data_length);
-        U32 test_size = 0;
-        mem_def(test_data, &test_size, part_u_data, *part_u_data_length, Z_DEFAULT_COMPRESSION);
-        for(int n = 0; n < part_length; n++) {
-            if(data[n] != test_data[n]) {
-                printf("n: %d\n", n);
-            }
-        }
-        printf("test_size: %d\n",test_size);
+        U8 *test_data = malloc(part_u_data_length);
+        memset(test_data, 0, part_u_data_length);
+        U64 test_size = 0;
+        mem_def(test_data, &test_size, part_u_data, part_u_data_length, Z_DEFAULT_COMPRESSION);
+        // for(int n = 0; n < part_length; n++) {
+        //     if(data[n] != test_data[n]) {
+        //         printf("n: %d\n", n);
+        //     }
+        // }
+        printf("test_size: %lu\n",test_size);
         free(test_data);
 
         printf("%d x %lu\n", width_val, part_height);
