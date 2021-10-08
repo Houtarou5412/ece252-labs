@@ -272,9 +272,14 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
         mem_inf(part_u_data, part_u_data_length, data, part_length);
 
         //test
-        U8 *test_u_data = malloc(*part_u_data_length);
+        U8 *test_data = malloc(*part_u_data_length);
         U32 test_size = 0;
-        mem_def(test_u_data, &test_size, part_u_data, *part_u_data_length, Z_DEFAULT_COMPRESSION);
+        mem_def(test_data, &test_size, part_u_data, *part_u_data_length, Z_DEFAULT_COMPRESSION);
+        for(int n = 0; n < part_length; n++) {
+            if(data[n] != test_data[n]) {
+                printf("n: %d\n", n);
+            }
+        }
         printf("test_size: %d\n",test_size);
         free(test_u_data);
 
