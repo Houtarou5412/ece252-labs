@@ -13,7 +13,7 @@ int ispng(FILE *f);
 
 int main(int argc, char **argv) {
     remove("./all.png");
-    //printf("1\n");
+    printf("1\n");
     int stop = 0;
     FILE **files = malloc(sizeof(FILE)*(argc-1));
     //int *order = (int*)malloc(sizeof(int)*(argc-1));
