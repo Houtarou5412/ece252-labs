@@ -478,7 +478,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
     temp_crc = crc(IHDRtypedata, 17);
     //printf("bytes copied: %ld\n", sizeof(IHDRcrc));
     temp_crc = (U32)htonl(temp_crc);
-    memcpy(IHDRcrc, &temp_crc, sizeof(IHDRcrc));
+    memcpy(IHDRcrc, &temp_crc, sizeof(U8)*4);
     //free(IHDRtypedata);
 
     printf("6.5\n");
