@@ -90,10 +90,13 @@ int main(int argc, char **argv) {
         if(recv_buf[temp_buf.seq].size <= 0) {
             recv_buf[temp_buf.seq] = temp_buf;
             success++;
+            printf("Successfully added section %d\n", temp_buf.seq);
         }
 
         recv_buf_cleanup(&temp_buf);
     }
+
+    printf("Completed all 50 sections\n");
 
     //sprintf(fname, "./output_%d_%d.png", recv_buf.seq, pid);
     //write_file(fname, recv_buf.buf, recv_buf.size);
