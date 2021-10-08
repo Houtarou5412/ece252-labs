@@ -20,7 +20,10 @@ int catpng(int argc, RECV_BUF recvbuf[]);
 
 //FUNCTION DEFINITIONS
 int main(int argc, char **argv) {
-    char img_url[] = "http://ece252-1.uwaterloo.ca:2520/image?img=1";
+    //Config
+    int crops = 50;
+
+    char img_url[] = "http://ece252-1.uwaterloo.ca:2520/image?img=1&part=0";
     int threads = 1;
 
     //Getting command options
@@ -35,12 +38,12 @@ int main(int argc, char **argv) {
     //cURL
     CURL *curl_handle;
     CURLcode res;
-    RECV_BUF recv_buf[50];
+    RECV_BUF recv_buf[crops];
     char fname[256];
     pid_t pid =getpid();
     
     //Initialize recv_buf array
-    for(int i = 0; i < 50; i++) {
+    for(int i = 0; i < crops; i++) {
         recv_buf_init(&(recv_buf[i]), BUF_SIZE);
         printf("recv_buf[%d] located at %p\n", i, &(recv_buf[i]));
     }
@@ -58,7 +61,7 @@ int main(int argc, char **argv) {
     }
 
     int success = 0;
-    while(success < 50) {
+    while(success < crops) {
         RECV_BUF temp_buf;
         recv_buf_init(&temp_buf, BUF_SIZE);
 
@@ -109,19 +112,19 @@ int main(int argc, char **argv) {
 
     printf("Completed all 50 sections\n");
 
-    for(int m = 0; m < 50; m++) {
+    for(int m = 0; m < crops; m++) {
         printf("Verify %lu bytes received in memory %p, seq=%d.\n", recv_buf[m].size, recv_buf[m].buf, recv_buf[m].seq);
     }
 
     //sprintf(fname, "./output_%d_%d.png", recv_buf.seq, pid);
     //write_file(fname, recv_buf.buf, recv_buf.size);
 
-    catpng(50, recv_buf);
+    catpng(crops, recv_buf);
 
     /* cleaning up */
     curl_easy_cleanup(curl_handle);
     curl_global_cleanup();
-    for(int j = 0; j < 50; j++) {
+    for(int j = 0; j < crops; j++) {
         recv_buf_cleanup(&(recv_buf[j]));
     }
 
