@@ -139,9 +139,9 @@ int recv_buf_cleanup(RECV_BUF *ptr)
 int main(int argc, char **argv) {
     printf("something\n");
     //Config
-    int crops = 1;
+    int crops = 50;
 
-    char img_url[] = "http://ece252-1.uwaterloo.ca:2530/image?img=1&part=0";
+    char img_url[] = "http://ece252-1.uwaterloo.ca:2520/image?img=1";
     int threads = 1;
 
     //Getting command options
@@ -229,11 +229,11 @@ int main(int argc, char **argv) {
             recv_buf_cleanup(&temp_buf);
         }
         
-        if(img_url[14] == '3') {
+        /*if(img_url[14] == '3') {
             img_url[14] = '1';
         } else {
             img_url[14] = img_url[14] + 1;
-        }
+        }*/
     }
 
     printf("Completed all 50 sections\n");
@@ -245,10 +245,10 @@ int main(int argc, char **argv) {
     //sprintf(fname, "./output_%d_%d.png", recv_buf.seq, pid);
     //write_file(fname, recv_buf.buf, recv_buf.size);
 
-    char name[] = "pic0.png";
+    /*(char name[] = "pic0.png";
     FILE *f = fopen(name, "wb+");
     fwrite(recv_buf[0].buf, 1, recv_buf[0].size, f);
-    fclose(f);
+    fclose(f);*/
 
     catpng(crops, recv_buf);
 
@@ -258,6 +258,7 @@ int main(int argc, char **argv) {
     for(int j = 0; j < crops; j++) {
         recv_buf_cleanup(&(recv_buf[j]));
     }
+    free(recv_buf);
 
     return 0;
 }
@@ -355,7 +356,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
     // concatenate w/ existing data
     //
     // end loop, compress, write to file
-    for(int m = 0; m < 1; m++) {
+    for(int m = 0; m < argc; m++) {
         printf("3\n");
         U8 *height = malloc(sizeof(U8)*4);
         U64 part_height = 0;
@@ -396,7 +397,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
         mem_inf(part_u_data, &part_u_data_length, data, part_length);
 
         //test
-        U8 *test_data = malloc(part_u_data_length);
+        /*U8 *test_data = malloc(part_u_data_length);
         memset(test_data, 0, part_u_data_length);
         U64 test_size = 0;
         mem_def(test_data, &test_size, part_u_data, part_u_data_length, Z_DEFAULT_COMPRESSION);
@@ -406,7 +407,7 @@ int catpng(int argc, RECV_BUF * recv_buf) {
         //     }
         // }
         printf("test_size: %lu\n",test_size);
-        free(test_data);
+        free(test_data);*/
 
         printf("%d x %lu\n", width_val, part_height);
         printf("part length %d\n", part_length);
