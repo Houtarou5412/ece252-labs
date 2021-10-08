@@ -3,7 +3,6 @@
 #include <errno.h>    /* for errno                   */
 #include "crc.h"      /* for crc()                   */
 #include "zutil.h"    /* for mem_def() and mem_inf() */
-#include "lab_png.h"  /* simple PNG data structures  */
 #include <arpa/inet.h>
 #include <dirent.h>
 
