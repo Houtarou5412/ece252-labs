@@ -273,6 +273,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
 
         printf("%d x %lu\n", width_val, part_height);
         printf("part length %d\n", part_length);
+        printf("part u data length %d\n", *part_u_data_length);
         temp_u_data = malloc(sizeof(U8)*(*part_u_data_length + u_data_len));
         for(unsigned long n = 0; n < u_data_len + *part_u_data_length; n++) {
             //printf("n: %u\n", n);
@@ -281,7 +282,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
             } else {
                 temp_u_data[n] = part_u_data[n - u_data_len];
             }
-            //printf("loop\n");
+            //printf("loop %d\n", n);
         }
         u_data_len += *part_u_data_length;
         height_val += part_height;
@@ -310,6 +311,7 @@ int catpng(int argc, RECV_BUF recv_buf[]) {
     total_length = (U32)ntohl(total_length);
     printf("new height: %d\n", height_val);
     printf("new length: %d\n", total_length);
+    printf("u data len: %d\n", u_data_len);
     //total_length = (U32)htonl(total_length);
     height_val = (U32)htonl(height_val);
     memcpy(height, &height_val, sizeof(height_val));
