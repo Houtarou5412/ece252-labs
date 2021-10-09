@@ -162,14 +162,14 @@ void get_strips(char *img_url) {
     //strcpy(thread_url, img_url);
     while(success < crops) {
         //printf("5\n");
-        //pthread_mutex_unlock(&synch);
+        pthread_mutex_unlock(&synch);
         RECV_BUF temp_buf;
         recv_buf_init(&temp_buf, BUF_SIZE);
 
         /* specify URL to get */
         curl_easy_setopt(curl_handle, CURLOPT_URL, img_url);
 
-        pthread_mutex_unlock(&synch);
+        //pthread_mutex_unlock(&synch);
 
         /* register write call back function to process received data */
         curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_cb_curl3); 
@@ -285,13 +285,14 @@ int main(int argc, char **argv) {
 
         pthread_mutex_lock(&synch);
         pthread_create(p_tids + i, NULL, get_strips, img_url);
-        pthread_mutex_unlock(&synch);
+        //pthread_mutex_unlock(&synch);
 
         if(img_url[14] == '3') {
             img_url[14] = '1';
         } else {
             img_url[14] = img_url[14] + 1;
         }
+        pthread_mutex_unlock(&synch);
     }
 
     for (int i=0; i<threads; i++) {
