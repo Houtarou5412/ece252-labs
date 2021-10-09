@@ -226,10 +226,10 @@ int main(int argc, char **argv) {
     //Getting command options
     for(int t = 0; t < argc; t++) {
         printf("at arg: %d, t: %s\n", t, argv[t]);
-        if(strcmp(argv[0],"-t") == 0) {
+        if(strcmp(argv[t],"-t") == 0) {
             printf("assigning threads\n");
             threads = atoi(argv[t+1]);
-        } else if(strcmp(argv[0],"-n") == 0) {
+        } else if(strcmp(argv[t],"-n") == 0) {
             printf("assigning image\n");
             img_url[strlen(img_url)-2] = argv[t+1][0];
         }
@@ -251,10 +251,13 @@ int main(int argc, char **argv) {
     printf("%s: URL is %s\n", argv[0], img_url);
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
+    printf("curl started\n");
+
     success = 0;
 
     //MUTEX INIT
     pthread_mutex_init(&synch, NULL);
+    printf("mutex started\n");
 
     //THREADS HERE
     pthread_t *p_tids = malloc(sizeof(pthread_t) * threads);
