@@ -190,7 +190,7 @@ void get_strips(char *img_url) {
         //temp
         //temp_buf.seq = 0;
 
-        pthread_mutex_lock(synch);
+        pthread_mutex_lock(&synch);
         if(recv_buf[temp_buf.seq].size <= 0) {
             //printf("made it\n");
             recv_buf[temp_buf.seq].size = temp_buf.size;
