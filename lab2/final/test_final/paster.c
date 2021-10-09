@@ -142,7 +142,7 @@ int recv_buf_cleanup(RECV_BUF *ptr)
     return 0;
 }
 
-void get_strips(char *img_url) {
+void *get_strips(char *img_url) {
     //printf("1\n");
     CURL *curl_handle;
     CURLcode res;
