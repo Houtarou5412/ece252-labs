@@ -154,7 +154,7 @@ void get_strips(char *img_url) {
         fprintf(stderr, "curl_easy_init: returned NULL\n");
         return 1;
     }*/
-    char *thread_url;
+    char thread_url[46];
 
     printf("4\n");
 
