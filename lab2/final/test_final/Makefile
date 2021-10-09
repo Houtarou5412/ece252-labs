@@ -1,6 +1,7 @@
 
 # Makefile, ECE252  
 # YOUNG HA AHN, BRIAN PENG
+# LAB2 Brian and Jason
 
 CC = gcc
 CFLAGS = -Wall -g -std=c99 

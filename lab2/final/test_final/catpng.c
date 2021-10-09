@@ -5,7 +5,7 @@
 #include "zutil.h"    /* for mem_def() and mem_inf() */
 #include <arpa/inet.h>
 #include <dirent.h>
-
+//LAB2 Brian and Jason
 
 int main(int argc, char **argv);
 int ispng(FILE *f);

@@ -3,6 +3,8 @@
  * @brief: crc calculation functions for PNG file
  */
 
+ //LAB2 Brian and Jason
+
 #pragma once
 
 void make_crc_table(void);

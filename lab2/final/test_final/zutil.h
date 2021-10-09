@@ -9,6 +9,8 @@
  *            https://www.zlib.net/zlib_how.html
  */
 
+ //LAB2 Brian and Jason
+
 #pragma once
 
 /* INCLUDES */

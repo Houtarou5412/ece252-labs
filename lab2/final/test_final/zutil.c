@@ -9,6 +9,8 @@
  * This software may be freely redistributed under the terms of MIT License
  */
 
+ //LAB2 Brian and Jason
+
 #include <stdio.h>
 #include "zutil.h"
 
