@@ -188,11 +188,13 @@ void get_strips(char *img_url) {
         res = curl_easy_perform(curl_handle);
 
         if( res != CURLE_OK) {
+            pthread_mutex_unlock(&synch);
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-        } else {
-            //printf("%lu bytes received in memory %p, seq=%d, using url %s.\n", \
+            pthread_mutex_lock(&synch);
+        }/* else {
+            printf("%lu bytes received in memory %p, seq=%d, using url %s.\n", \
                 temp_buf.size, temp_buf.buf, temp_buf.seq, img_url);
-        }
+        }*/
 
         //temp
         //temp_buf.seq = 0;
@@ -300,8 +302,8 @@ int main(int argc, char **argv) {
     }
 
     /* cleaning up */
-
     free(p_tids);
+    pthread_mutex_destroy(&synch);
 
     //printf("Completed all 50 sections\n");
 
@@ -325,7 +327,6 @@ int main(int argc, char **argv) {
         recv_buf_cleanup(&(recv_buf[j]));
     }
     free(recv_buf);
-    pthread_mutex_destroy(&synch);
 
     return 0;
 }
