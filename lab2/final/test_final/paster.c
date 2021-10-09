@@ -242,7 +242,7 @@ int main(int argc, char **argv) {
             //printf("threads: %d\n", threads);
         } else if(strcmp(argv[t],"-n") == 0) {
             //printf("assigning image\n");
-            img_url[strlen(img_url)-2] = argv[t+1][0];
+            img_url[strlen(img_url)-2] = atoi(argv[t+1]);
         }
     }
 
