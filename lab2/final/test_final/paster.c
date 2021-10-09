@@ -225,7 +225,7 @@ int main(int argc, char **argv) {
 
     //Getting command options
     for(int t = 0; t < argc; t++) {
-        printf("at arg: %d\n", t);
+        printf("at arg: %d, t: %s\n", t, argv[t]);
         if(strcmp(argv[0],"-t") == 0) {
             printf("assigning threads\n");
             threads = atoi(argv[t+1]);
