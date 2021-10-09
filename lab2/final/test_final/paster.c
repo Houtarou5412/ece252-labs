@@ -162,12 +162,14 @@ void get_strips(char *img_url) {
     //strcpy(thread_url, img_url);
     while(success < crops) {
         //printf("5\n");
-        pthread_mutex_unlock(&synch);
+        //pthread_mutex_unlock(&synch);
         RECV_BUF temp_buf;
         recv_buf_init(&temp_buf, BUF_SIZE);
 
         /* specify URL to get */
         curl_easy_setopt(curl_handle, CURLOPT_URL, img_url);
+
+        pthread_mutex_unlock(&synch);
 
         /* register write call back function to process received data */
         curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_cb_curl3); 
