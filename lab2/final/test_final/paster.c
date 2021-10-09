@@ -246,7 +246,7 @@ int main(int argc, char **argv) {
     //     printf("recv_buf[%d] located at %p\n", i, &(recv_buf[i]));
     // }
     
-    printf("%s: URL is %s\n", argv[0], url);
+    printf("%s: URL is %s\n", argv[0], img_url);
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     success = 0;
