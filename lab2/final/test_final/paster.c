@@ -143,6 +143,7 @@ int recv_buf_cleanup(RECV_BUF *ptr)
 }
 
 void get_strips(char *img_url) {
+    printf("1\n");
     CURL *curl_handle;
     CURLcode res;
     curl_handle = curl_easy_init();
@@ -156,6 +157,7 @@ void get_strips(char *img_url) {
     pthread_mutex_lock(&synch);
     strcpy(thread_url, img_url);
     while(success < crops) {
+        printf("5\n");
         pthread_mutex_unlock(&synch);
         RECV_BUF temp_buf;
         recv_buf_init(&temp_buf, BUF_SIZE);
@@ -175,8 +177,9 @@ void get_strips(char *img_url) {
 
         /* some servers requires a user-agent field */
         curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+ 
+        printf("10\n");
 
-        
         /* get it! */
         res = curl_easy_perform(curl_handle);
 
@@ -189,6 +192,8 @@ void get_strips(char *img_url) {
 
         //temp
         //temp_buf.seq = 0;
+
+        printf("15\n");
 
         pthread_mutex_lock(&synch);
         if(recv_buf[temp_buf.seq].size <= 0) {
@@ -205,6 +210,7 @@ void get_strips(char *img_url) {
             recv_buf_cleanup(&temp_buf);
         }
 
+        printf("20\n");
         /*if(img_url[14] == '3') {
             img_url[14] = '1';
         } else {
@@ -252,17 +258,17 @@ int main(int argc, char **argv) {
     printf("%s: URL is %s\n", argv[0], img_url);
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
-    printf("curl started\n");
+    //printf("curl started\n");
 
     success = 0;
 
     //MUTEX INIT
     pthread_mutex_init(&synch, NULL);
-    printf("mutex started\n");
+    //printf("mutex started\n");
 
     //THREADS HERE
     pthread_t *p_tids = malloc(sizeof(pthread_t) * threads);
-    printf("p_tids started\n");
+    //printf("p_tids started\n");
     //struct thread_ret *p_results[threads];
      
     for (int i=0; i<threads; i++) {
