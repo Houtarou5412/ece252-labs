@@ -212,6 +212,7 @@ void get_strips(char *img_url) {
         }*/
     }
     pthread_mutex_unlock(&synch);
+    curl_easy_cleanup(curl_handle);
 }
 
 int main(int argc, char **argv) {
@@ -250,7 +251,7 @@ int main(int argc, char **argv) {
     success = 0;
 
     //MUTEX INIT
-    pthread_mutex_init(&synch);
+    pthread_mutex_init(&synch, NULL);
 
     //THREADS HERE
     pthread_t *p_tids = malloc(sizeof(pthread_t) * threads);
@@ -300,7 +301,6 @@ int main(int argc, char **argv) {
     catpng(crops, recv_buf);
 
     /* cleaning up */
-    curl_easy_cleanup(curl_handle);
     curl_global_cleanup();
     for(int j = 0; j < crops; j++) {
         recv_buf_cleanup(&(recv_buf[j]));
