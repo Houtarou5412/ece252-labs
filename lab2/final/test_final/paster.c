@@ -143,12 +143,12 @@ int recv_buf_cleanup(RECV_BUF *ptr)
 }
 
 void get_strips(char *img_url) {
-    printf("1\n");
+    //printf("1\n");
     CURL *curl_handle;
     CURLcode res;
     curl_handle = curl_easy_init();
 
-    printf("3\n");
+    //printf("3\n");
 
     /*if (curl_handle == NULL) {
         fprintf(stderr, "curl_easy_init: returned NULL\n");
@@ -156,12 +156,12 @@ void get_strips(char *img_url) {
     }*/
     char thread_url[46];
 
-    printf("4\n");
+    //printf("4\n");
 
     pthread_mutex_lock(&synch);
     strcpy(thread_url, img_url);
     while(success < crops) {
-        printf("5\n");
+        //printf("5\n");
         pthread_mutex_unlock(&synch);
         RECV_BUF temp_buf;
         recv_buf_init(&temp_buf, BUF_SIZE);
@@ -182,7 +182,7 @@ void get_strips(char *img_url) {
         /* some servers requires a user-agent field */
         curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
  
-        printf("10\n");
+        //printf("10\n");
 
         /* get it! */
         res = curl_easy_perform(curl_handle);
@@ -197,7 +197,7 @@ void get_strips(char *img_url) {
         //temp
         //temp_buf.seq = 0;
 
-        printf("15\n");
+        //printf("15\n");
 
         pthread_mutex_lock(&synch);
         if(recv_buf[temp_buf.seq].size <= 0) {
@@ -214,7 +214,7 @@ void get_strips(char *img_url) {
             recv_buf_cleanup(&temp_buf);
         }
 
-        printf("20\n");
+        //printf("20\n");
         /*if(img_url[14] == '3') {
             img_url[14] = '1';
         } else {
