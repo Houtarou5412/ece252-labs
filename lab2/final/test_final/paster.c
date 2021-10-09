@@ -225,12 +225,12 @@ int main(int argc, char **argv) {
 
     //Getting command options
     for(int t = 0; t < argc; t++) {
-        printf("at arg: %d, t: %s\n", t, argv[t]);
+        //printf("at arg: %d, t: %s\n", t, argv[t]);
         if(strcmp(argv[t],"-t") == 0) {
-            printf("assigning threads\n");
+            //printf("assigning threads\n");
             threads = atoi(argv[t+1]);
         } else if(strcmp(argv[t],"-n") == 0) {
-            printf("assigning image\n");
+            //printf("assigning image\n");
             img_url[strlen(img_url)-2] = argv[t+1][0];
         }
     }
@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
 
     //THREADS HERE
     pthread_t *p_tids = malloc(sizeof(pthread_t) * threads);
-    struct thread_ret *p_results[threads];
+    //struct thread_ret *p_results[threads];
      
     for (int i=0; i<threads; i++) {
         printf("Creating thread: %d", i);
@@ -278,7 +278,7 @@ int main(int argc, char **argv) {
     }
 
     for (int i=0; i<threads; i++) {
-        pthread_join(p_tids[i], (void **)&(p_results[i]));
+        pthread_join(p_tids[i], NULL);
         //printf("Thread ID %lu joined.\n", p_tids[i]);
         //printf("sum(%d,%d) = %d.\n", \
                in_params[i].x, in_params[i].y, p_results[i]->sum); 
