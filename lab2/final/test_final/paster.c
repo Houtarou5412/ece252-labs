@@ -153,10 +153,10 @@ void get_strips(char *img_url) {
     }*/
     char *thread_url;
 
-    pthread_mutex_lock(synch);
+    pthread_mutex_lock(&synch);
     strcpy(thread_url, img_url);
     while(success < crops) {
-        pthread_mutex_unlock(synch);
+        pthread_mutex_unlock(&synch);
         RECV_BUF temp_buf;
         recv_buf_init(&temp_buf, BUF_SIZE);
 
@@ -211,7 +211,7 @@ void get_strips(char *img_url) {
             img_url[14] = img_url[14] + 1;
         }*/
     }
-    pthread_mutex_unlock(synch);
+    pthread_mutex_unlock(&synch);
 }
 
 int main(int argc, char **argv) {
@@ -250,7 +250,7 @@ int main(int argc, char **argv) {
     success = 0;
 
     //MUTEX INIT
-    pthread_mutex_init(synch);
+    pthread_mutex_init(&synch);
 
     //THREADS HERE
     pthread_t *p_tids = malloc(sizeof(pthread_t) * threads);
@@ -259,9 +259,9 @@ int main(int argc, char **argv) {
     for (int i=0; i<threads; i++) {
         printf("Creating thread: %d", i);
 
-        pthread_mutex_lock(synch);
+        pthread_mutex_lock(&synch);
         pthread_create(p_tids + i, NULL, get_strips, img_url);
-        pthread_mutex_unlock(synch);
+        pthread_mutex_unlock(&synch);
 
         if(img_url[14] == '3') {
             img_url[14] = '1';
@@ -306,7 +306,7 @@ int main(int argc, char **argv) {
         recv_buf_cleanup(&(recv_buf[j]));
     }
     free(recv_buf);
-    pthread_mutex_destroy(synch);
+    pthread_mutex_destroy(&synch);
 
     return 0;
 }
