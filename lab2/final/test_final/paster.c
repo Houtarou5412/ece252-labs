@@ -148,11 +148,15 @@ void get_strips(char *img_url) {
     CURLcode res;
     curl_handle = curl_easy_init();
 
+    printf("3\n");
+
     /*if (curl_handle == NULL) {
         fprintf(stderr, "curl_easy_init: returned NULL\n");
         return 1;
     }*/
     char *thread_url;
+
+    printf("4\n");
 
     pthread_mutex_lock(&synch);
     strcpy(thread_url, img_url);
