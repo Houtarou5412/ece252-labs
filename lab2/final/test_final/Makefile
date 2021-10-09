@@ -10,7 +10,7 @@ LDFLAGS = -g -std=c99
 LDLIBS = -pthread -lcurl -lz
 
 LIB_UTIL = zutil.o crc.o 
-SRCS   = paster.c catpng.c crc.c zutil.c main_writer_header_cb.c
+SRCS   = paster.c crc.c zutil.c main_writer_header_cb.c
 OBJS   = paster.c
 
 TARGETS= paster
@@ -32,4 +32,3 @@ paster: paster.c $(LIB_UTIL)
 clean:
 	rm -f *~ *.d *.o $(TARGETS) 
 	rm all.png
-	rm paster
