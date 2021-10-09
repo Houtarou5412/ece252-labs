@@ -16,6 +16,12 @@
 #define BUF_SIZE 1048576  /* 1024*1024 = 1M */
 #define BUF_INC  524288   /* 1024*512  = 0.5M */
 
+//GLOBALS
+RECV_BUF * recv_buf;
+int success;
+int crops;
+pthread_mutex_t synch;
+
 #define max(a, b) \
    ({ __typeof__ (a) _a = (a); \
        __typeof__ (b) _b = (b); \
@@ -136,57 +142,26 @@ int recv_buf_cleanup(RECV_BUF *ptr)
     return 0;
 }
 
-int main(int argc, char **argv) {
-    //printf("something\n");
-    //Config
-    int crops = 50;
-
-    char img_url[] = "http://ece252-1.uwaterloo.ca:2520/image?img=1";
-    int threads = 1;
-
-    //Getting command options
-    for(int t = 0; t < argc; t++) {
-        if(argv[t] == "-t") {
-            threads = (int)(argv[t+1][0]-48);
-        } else if(argv[t] == "-n") {
-            img_url[strlen(img_url)-2] = argv[t+1][0];
-        }
-    }
-
-    //cURL
+void get_strips(char *img_url) {
     CURL *curl_handle;
     CURLcode res;
-    RECV_BUF * recv_buf = malloc(sizeof(RECV_BUF) * crops);
-
-    memset(recv_buf, 0, sizeof(RECV_BUF) * crops);
-    char fname[256];
-    pid_t pid =getpid();
-    
-    //Initialize recv_buf array
-    // for(int i = 0; i < crops; i++) {
-    //     recv_buf_init(&(recv_buf[i]), BUF_SIZE);
-    //     printf("recv_buf[%d] located at %p\n", i, &(recv_buf[i]));
-    // }
-    
-    //printf("%s: URL is %s\n", argv[0], url);
-
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-
-    /* init a curl session */
     curl_handle = curl_easy_init();
 
     if (curl_handle == NULL) {
         fprintf(stderr, "curl_easy_init: returned NULL\n");
         return 1;
     }
+    char *thread_url;
 
-    int success = 0;
+    pthread_mutex_lock(synch);
+    strcpy(thread_url, img_url);
     while(success < crops) {
+        pthread_mutex_unlock(synch);
         RECV_BUF temp_buf;
         recv_buf_init(&temp_buf, BUF_SIZE);
 
         /* specify URL to get */
-        curl_easy_setopt(curl_handle, CURLOPT_URL, img_url);
+        curl_easy_setopt(curl_handle, CURLOPT_URL, thread_url);
 
         /* register write call back function to process received data */
         curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_cb_curl3); 
@@ -215,6 +190,7 @@ int main(int argc, char **argv) {
         //temp
         //temp_buf.seq = 0;
 
+        pthread_mutex_lock(synch);
         if(recv_buf[temp_buf.seq].size <= 0) {
             //printf("made it\n");
             recv_buf[temp_buf.seq].size = temp_buf.size;
@@ -228,13 +204,84 @@ int main(int argc, char **argv) {
         } else {
             recv_buf_cleanup(&temp_buf);
         }
-        
+
         /*if(img_url[14] == '3') {
             img_url[14] = '1';
         } else {
             img_url[14] = img_url[14] + 1;
         }*/
     }
+    pthread_mutex_unlock(synch);
+}
+
+int main(int argc, char **argv) {
+    //printf("something\n");
+    //Config
+    crops = 50;
+
+    char img_url[] = "http://ece252-1.uwaterloo.ca:2520/image?img=1";
+    int threads = 1;
+
+    //Getting command options
+    for(int t = 0; t < argc; t++) {
+        if(strcmp(argv[0],"-t") == 0) {
+            threads = atoi(argv[t+1]);
+        } else if(strcmp(argv[0],"-n") == 0) {
+            img_url[strlen(img_url)-2] = argv[t+1][0];
+        }
+    }
+
+    //cURL
+    recv_buf = malloc(sizeof(RECV_BUF) * crops);
+
+    memset(recv_buf, 0, sizeof(RECV_BUF) * crops);
+    char fname[256];
+    pid_t pid =getpid();
+    
+    //Initialize recv_buf array
+    // for(int i = 0; i < crops; i++) {
+    //     recv_buf_init(&(recv_buf[i]), BUF_SIZE);
+    //     printf("recv_buf[%d] located at %p\n", i, &(recv_buf[i]));
+    // }
+    
+    //printf("%s: URL is %s\n", argv[0], url);
+
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    success = 0;
+
+    //MUTEX INIT
+    pthread_mutex_init(synch);
+
+    //THREADS HERE
+    pthread_t *p_tids = malloc(sizeof(pthread_t) * threads);
+    struct thread_ret *p_results[threads];
+     
+    for (int i=0; i<threads; i++) {
+        printf("Creating thread: %d", i);
+
+        pthread_mutex_lock(synch);
+        pthread_create(p_tids + i, NULL, get_strips, img_url);
+        pthread_mutex_unlock(synch);
+
+        if(img_url[14] == '3') {
+            img_url[14] = '1';
+        } else {
+            img_url[14] = img_url[14] + 1;
+        }
+    }
+
+    for (int i=0; i<threads; i++) {
+        pthread_join(p_tids[i], (void **)&(p_results[i]));
+        //printf("Thread ID %lu joined.\n", p_tids[i]);
+        //printf("sum(%d,%d) = %d.\n", \
+               in_params[i].x, in_params[i].y, p_results[i]->sum); 
+        //printf("product(%d,%d) = %d.\n\n", \
+               in_params[i].x, in_params[i].y, p_results[i]->product); 
+    }
+
+    /* cleaning up */
+
+    free(p_tids);
 
     printf("Completed all 50 sections\n");
 
@@ -259,6 +306,7 @@ int main(int argc, char **argv) {
         recv_buf_cleanup(&(recv_buf[j]));
     }
     free(recv_buf);
+    pthread_mutex_destroy(synch);
 
     return 0;
 }
