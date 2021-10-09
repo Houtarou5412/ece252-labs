@@ -266,7 +266,7 @@ int main(int argc, char **argv) {
     //struct thread_ret *p_results[threads];
      
     for (int i=0; i<threads; i++) {
-        printf("Creating thread: %d", i);
+        printf("Creating thread: %d\n", i);
 
         pthread_mutex_lock(&synch);
         pthread_create(p_tids + i, NULL, get_strips, img_url);
