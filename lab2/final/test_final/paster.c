@@ -16,12 +16,6 @@
 #define BUF_SIZE 1048576  /* 1024*1024 = 1M */
 #define BUF_INC  524288   /* 1024*512  = 0.5M */
 
-//GLOBALS
-RECV_BUF * recv_buf;
-int success;
-int crops;
-pthread_mutex_t synch;
-
 #define max(a, b) \
    ({ __typeof__ (a) _a = (a); \
        __typeof__ (b) _b = (b); \
@@ -34,6 +28,12 @@ typedef struct recv_buf2 {
     int seq;         /* >=0 sequence number extracted from http header */
                      /* <0 indicates an invalid seq number */
 } RECV_BUF;
+
+//GLOBALS
+RECV_BUF * recv_buf;
+int success;
+int crops;
+pthread_mutex_t synch;
 
 //FUNCTION DECLARATIONS
 int main(int argc, char **argv);
@@ -147,10 +147,10 @@ void get_strips(char *img_url) {
     CURLcode res;
     curl_handle = curl_easy_init();
 
-    if (curl_handle == NULL) {
+    /*if (curl_handle == NULL) {
         fprintf(stderr, "curl_easy_init: returned NULL\n");
         return 1;
-    }
+    }*/
     char *thread_url;
 
     pthread_mutex_lock(synch);
