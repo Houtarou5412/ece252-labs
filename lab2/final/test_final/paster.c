@@ -216,7 +216,7 @@ void get_strips(char *img_url) {
 }
 
 int main(int argc, char **argv) {
-    //printf("something\n");
+    printf("something\n");
     //Config
     crops = 50;
 
@@ -225,6 +225,7 @@ int main(int argc, char **argv) {
 
     //Getting command options
     for(int t = 0; t < argc; t++) {
+        printf("at arg: %d", t);
         if(strcmp(argv[0],"-t") == 0) {
             threads = atoi(argv[t+1]);
         } else if(strcmp(argv[0],"-n") == 0) {
@@ -245,7 +246,7 @@ int main(int argc, char **argv) {
     //     printf("recv_buf[%d] located at %p\n", i, &(recv_buf[i]));
     // }
     
-    //printf("%s: URL is %s\n", argv[0], url);
+    printf("%s: URL is %s\n", argv[0], url);
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     success = 0;
