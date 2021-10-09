@@ -154,12 +154,12 @@ void get_strips(char *img_url) {
         fprintf(stderr, "curl_easy_init: returned NULL\n");
         return 1;
     }*/
-    char thread_url[46];
+    //char thread_url[46];
 
     //printf("4\n");
 
     pthread_mutex_lock(&synch);
-    strcpy(thread_url, img_url);
+    //strcpy(thread_url, img_url);
     while(success < crops) {
         //printf("5\n");
         pthread_mutex_unlock(&synch);
@@ -167,7 +167,7 @@ void get_strips(char *img_url) {
         recv_buf_init(&temp_buf, BUF_SIZE);
 
         /* specify URL to get */
-        curl_easy_setopt(curl_handle, CURLOPT_URL, thread_url);
+        curl_easy_setopt(curl_handle, CURLOPT_URL, img_url);
 
         /* register write call back function to process received data */
         curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_cb_curl3); 
