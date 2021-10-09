@@ -225,10 +225,12 @@ int main(int argc, char **argv) {
 
     //Getting command options
     for(int t = 0; t < argc; t++) {
-        printf("at arg: %d", t);
+        printf("at arg: %d\n", t);
         if(strcmp(argv[0],"-t") == 0) {
+            printf("assigning threads\n");
             threads = atoi(argv[t+1]);
         } else if(strcmp(argv[0],"-n") == 0) {
+            printf("assigning image\n");
             img_url[strlen(img_url)-2] = argv[t+1][0];
         }
     }
