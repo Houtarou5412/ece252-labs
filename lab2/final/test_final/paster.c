@@ -243,7 +243,7 @@ int main(int argc, char **argv) {
         } else if(strcmp(argv[t],"-n") == 0) {
             //printf("assigning image\n");
             img_url[strlen(img_url)-1] = argv[t+1][0];
-            //printf("img_url: %s\n", img_url);
+            printf("img_url: %s\n", img_url);
         }
     }
 
