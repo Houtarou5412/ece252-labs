@@ -62,12 +62,13 @@ int main(int argc, char **argv) {
     url[44] = pic[0];
     RECV_BUF **p_shm_recv_buf;
     int *shmid = malloc(buffer_size*sizeof(int));
-    int shm_size = buffer_size*sizeof_shm_recv_buf(BUF_SIZE);
-    char fname[256];
+    int shm_size = sizeof_shm_recv_buf(BUF_SIZE);
+    //char fname[256];
     pid_t pid = getpid();
 
     printf("shm_size = %d.\n", shm_size);
     for(int t = 0; t < buffer_size; t++) {
+        printf("getting %dth shm\n",t);
         shmid[t] = shmget(IPC_PRIVATE, shm_size, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
         if ( shmid[t] == -1 ) {
             perror("shmget");
@@ -75,6 +76,7 @@ int main(int argc, char **argv) {
         }
 
         p_shm_recv_buf[t] = shmat(shmid[t], NULL, 0);
+        printf("got %dth shm\n", t);
         shm_recv_buf_init(p_shm_recv_buf[t], BUF_SIZE);
     }
 
