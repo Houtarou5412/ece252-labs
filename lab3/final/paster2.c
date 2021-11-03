@@ -139,12 +139,13 @@ int main(int argc, char **argv) {
                 }
             }*/
 
-            sprintf(url, "%s%d", url, p);
+            char temp_url[256] = "";
+            sprintf(temp_url, "%s%d", url, p);
             //url[51] = (char)(p+48);
-            printf("%s: new URL is %s\n", argv[0], url);
+            printf("%s: new URL is %s\n", argv[0], temp_url);
 
             /* specify URL to get */
-            curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+            curl_easy_setopt(curl_handle, CURLOPT_URL, temp_url);
 
             /* register write call back function to process received data */
             curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_cb_curl); 
