@@ -196,27 +196,6 @@ int main(int argc, char **argv) {
         return 0;
     }
 
-    // Stuff for Parent
-    U8 *headerlength = malloc(sizeof(U8)*12);
-    U8 *IHDRtype = malloc(sizeof(U8)*4);
-    U8 *width = malloc(sizeof(U8)*4);
-    U32 width_val = 0;
-    U8 *height = malloc(sizeof(U8)*4);
-    U32 height_val = htonl(300);
-    memcpy(height, &height_val, sizeof(U8)*4);
-    height_val = ntohl(height_val);
-    U8 *after_height = malloc(sizeof(U8)*5);
-    U8 *IHDRcrc = malloc(sizeof(U8)*4);
-    //memset(IHDRcrc, 0, sizeof(U8)*4);
-    //printf("bytes copied: %d\n", sizeof(IHDRcrc));
-    U8 *IDATlength = malloc(sizeof(U8)*4);
-    U32 total_length = 0;
-    U8 *IDATtype = malloc(sizeof(U8)*4);
-    U32 u_data_len = 0;
-    U8 *IDATdata = NULL;
-    U8 *IDATcrc = malloc(sizeof(U8)*4);
-    U8 *IEND = malloc(sizeof(U8)*12);
-
     // Consumers
     int all_shmid = shmget(IPC_PRIVATE, 50*BUF_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     char *p_all_shm = shmat(all_shmid, NULL, 0);
@@ -350,6 +329,27 @@ int main(int argc, char **argv) {
     }
 
     //Parent
+    // Stuff for Parent
+    U8 *headerlength = malloc(sizeof(U8)*12);
+    U8 *IHDRtype = malloc(sizeof(U8)*4);
+    U8 *width = malloc(sizeof(U8)*4);
+    U32 width_val = 0;
+    U8 *height = malloc(sizeof(U8)*4);
+    U32 height_val = htonl(300);
+    memcpy(height, &height_val, sizeof(U8)*4);
+    height_val = ntohl(height_val);
+    U8 *after_height = malloc(sizeof(U8)*5);
+    U8 *IHDRcrc = malloc(sizeof(U8)*4);
+    //memset(IHDRcrc, 0, sizeof(U8)*4);
+    //printf("bytes copied: %d\n", sizeof(IHDRcrc));
+    U8 *IDATlength = malloc(sizeof(U8)*4);
+    U32 total_length = 0;
+    U8 *IDATtype = malloc(sizeof(U8)*4);
+    U32 u_data_len = 0;
+    U8 *IDATdata = NULL;
+    U8 *IDATcrc = malloc(sizeof(U8)*4);
+    U8 *IEND = malloc(sizeof(U8)*12);
+
     for(int w = 0; w < num_prod + num_cons; w++) {
         wait(NULL);
         printf("%dth child done\n", w);
