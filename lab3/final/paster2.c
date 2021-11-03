@@ -250,9 +250,9 @@ int main(int argc, char **argv) {
             g++;
         }
 
-        /*if(g == buffer_size) {
-            continue;
-        }*/
+        if(g == buffer_size) {
+            printf("wtf\n");
+        }
 
         // Sample
         pthread_mutex_lock(mutex);
