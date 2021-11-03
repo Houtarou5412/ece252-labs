@@ -139,7 +139,9 @@ int main(int argc, char **argv) {
                 }
             }*/
 
-            url[sizeof(url)-1] = (char)(p+48);
+            url[51] = (char)(p+48);
+            printf("%s: new URL is %s\n", argv[0], url);
+
             /* specify URL to get */
             curl_easy_setopt(curl_handle, CURLOPT_URL, url);
 
