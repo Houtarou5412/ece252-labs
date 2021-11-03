@@ -227,6 +227,7 @@ int main(int argc, char **argv) {
             }
         }*/
         pthread_mutex_lock(mutex);
+        printf("num processed: %d\n", p_sizes_shm[STRIP_NUM]);
         if(p_sizes_shm[STRIP_NUM] != STRIP_NUM) {
             p_sizes_shm[STRIP_NUM]++;
             pthread_mutex_unlock(mutex);
