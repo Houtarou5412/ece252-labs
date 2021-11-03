@@ -222,9 +222,9 @@ int main(int argc, char **argv) {
     char *p_all_shm = shmat(all_shmid, NULL, 0);
     int sizes_shmid = shmget(IPC_PRIVATE, 51*sizeof(U64), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     U64 *p_sizes_shm = shmat(sizes_shmid, NULL, 0);
-    int sample_shmid = shmget(IPC_PRIVATE, sizeof(int), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
-    int *p_sample_shm = shmat(sample_shmid, NULL, 0);
-    memset(p_sample_shm, 0, sizeof(int));
+    int sample_shmid = shmget(IPC_PRIVATE, BUF_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
+    char *p_sample_shm = shmat(sample_shmid, NULL, 0);
+    memset(p_sample_shm, 0, BUF_SIZE);
 
     for(int f = 0; f < num_cons; f++) {
         cpid = fork();
@@ -273,23 +273,7 @@ int main(int argc, char **argv) {
         // Sample
         pthread_mutex_lock(mutex);
         if(p_sample_shm[0] == 0) {
-            p_sample_shm[0] = 1;
-            memcpy(headerlength, p_shm_recv_buf[g]->buf, sizeof(U8)*12);
-            memcpy(IHDRtype, p_shm_recv_buf[g]->buf + 12, sizeof(U8)*4);
-            memcpy(width, p_shm_recv_buf[g]->buf + 12 + 4, sizeof(U8)*4);
-            memcpy(after_height, p_shm_recv_buf[g]->buf + 12 + 4 + 4 + 4, sizeof(U8)*5);
-            U8 *f_skip_len = malloc(sizeof(U8)*4);
-            U32 skip_len = 0;
-            memcpy(f_skip_len, p_shm_recv_buf[g]->buf + 12 + 4 + 4 + 4 + 5 + 4, sizeof(U8)*4);
-            memcpy(&skip_len, f_skip_len, sizeof(U8)*4);
-            skip_len = (U32)ntohl(skip_len);
-            //printf("skipped: %d\n", skip_len);
-            memcpy(IDATtype, p_shm_recv_buf[g]->buf + 12 + 4 + 4 + 4 + 5 + 4 + 4, sizeof(U8)*4);
-            memcpy(IEND, p_shm_recv_buf[g]->buf + 12 + 4 + 4 + 4 + 5 + 4 + 4 + 4 + skip_len + 4, sizeof(U8)*12);
-
-            free(f_skip_len);
-            memcpy(&width_val, width, sizeof(width_val));
-            width_val = (U32)ntohl(width_val);
+            memcpy(p_sample_shm, p_shm_recv_buf[g]->buf, p_shm_recv_buf[g]->size);
         }
         pthread_mutex_unlock(mutex);
 
@@ -373,6 +357,23 @@ int main(int argc, char **argv) {
     for(int s = 0; s < 50; s++) {
         u_data_len += p_sizes_shm[s];
     }
+
+    memcpy(headerlength, p_sample_shm, sizeof(U8)*12);
+    memcpy(IHDRtype, p_sample_shm + 12, sizeof(U8)*4);
+    memcpy(width, p_sample_shm + 12 + 4, sizeof(U8)*4);
+    memcpy(after_height, p_sample_shm + 12 + 4 + 4 + 4, sizeof(U8)*5);
+    U8 *f_skip_len = malloc(sizeof(U8)*4);
+    U32 skip_len = 0;
+    memcpy(f_skip_len, p_sample_shm + 12 + 4 + 4 + 4 + 5 + 4, sizeof(U8)*4);
+    memcpy(&skip_len, f_skip_len, sizeof(U8)*4);
+    skip_len = (U32)ntohl(skip_len);
+    //printf("skipped: %d\n", skip_len);
+    memcpy(IDATtype, p_sample_shm + 12 + 4 + 4 + 4 + 5 + 4 + 4, sizeof(U8)*4);
+    memcpy(IEND, p_sample_shm + 12 + 4 + 4 + 4 + 5 + 4 + 4 + 4 + skip_len + 4, sizeof(U8)*12);
+
+    free(f_skip_len);
+    memcpy(&width_val, width, sizeof(width_val));
+    width_val = (U32)ntohl(width_val);
 
     //printf("5\n");
     IDATdata = malloc(sizeof(U8) * u_data_len);
