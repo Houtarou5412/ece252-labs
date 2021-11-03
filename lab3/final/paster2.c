@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
         printf("buffer_size: %d, shmid: %d\n", buffer_size, shmid[t]);
 
         void * shmat_return = shmat(shmid[t], NULL, 0);
-        p_shm_recv_buf[t] = (RECV_BUF *)shmat_return;
+        // p_shm_recv_buf[t] = (RECV_BUF *)shmat_return;
         printf("got %dth shm\n", t);
         shm_recv_buf_init(p_shm_recv_buf[t], BUF_SIZE);
     }
