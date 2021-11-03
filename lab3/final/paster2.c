@@ -207,6 +207,7 @@ int main(int argc, char **argv) {
     char *p_all_shm = shmat(all_shmid, NULL, 0);
     int sizes_shmid = shmget(IPC_PRIVATE, (STRIP_NUM+1)*sizeof(U64), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     U64 *p_sizes_shm = shmat(sizes_shmid, NULL, 0);
+    memset(p_sizes_shm, 0, (STRIP_NUM+1)*sizeof(U64));
     int sample_shmid = shmget(IPC_PRIVATE, BUF_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     char *p_sample_shm = shmat(sample_shmid, NULL, 0);
     memset(p_sample_shm, 0, BUF_SIZE);
@@ -247,6 +248,7 @@ int main(int argc, char **argv) {
             //printf("second slot has: %d with size: %d\n", p_shm_recv_buf[1]->seq, p_sizes_shm[p_shm_recv_buf[1]->seq]);
             if(p_shm_recv_buf[g]->seq != -1 && p_sizes_shm[p_shm_recv_buf[g]->seq] == 0) {
                 p_sizes_shm[p_shm_recv_buf[g]->seq] = -1;
+                printf("processing sequence: %d\n", p_shm_recv_buf[g]->seq);
                 pthread_mutex_unlock(mutex);
                 break;
             }
