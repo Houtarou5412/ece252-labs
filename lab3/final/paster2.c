@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
     CURLcode res;
     char url[256] = "http://ece252-1.uwaterloo.ca:2530/image?img=n&part=";
     url[44] = pic[0];
-    RECV_BUF **p_shm_recv_buf;
+    RECV_BUF **p_shm_recv_buf = malloc(sizeof_shm_recv_buf(BUF_SIZE) * buffer_size);
     int *shmid = malloc(buffer_size*sizeof(int));
     int shm_size = sizeof_shm_recv_buf(BUF_SIZE);
     //char fname[256];
