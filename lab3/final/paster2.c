@@ -367,6 +367,7 @@ int main(int argc, char **argv) {
     //Parent
     for(int w = 0; w < num_prod + num_cons; w++) {
         wait(NULL);
+        printf("%dth child done\n", w);
     }
     for(int s = 0; s < 50; s++) {
         u_data_len += p_sizes_shm[s];
