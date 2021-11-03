@@ -14,6 +14,7 @@
 #include <dirent.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <sys/time.h>
 
 
 int main(int argc, char **argv) {
