@@ -197,6 +197,8 @@ int main(int argc, char **argv) {
     }
 
     // Consumers
+    U32 width_val = 400;
+
     int all_shmid = shmget(IPC_PRIVATE, 50*BUF_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     char *p_all_shm = shmat(all_shmid, NULL, 0);
     int sizes_shmid = shmget(IPC_PRIVATE, 51*sizeof(U64), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
@@ -333,7 +335,7 @@ int main(int argc, char **argv) {
     U8 *headerlength = malloc(sizeof(U8)*12);
     U8 *IHDRtype = malloc(sizeof(U8)*4);
     U8 *width = malloc(sizeof(U8)*4);
-    U32 width_val = 0;
+    //U32 width_val = 0;
     U8 *height = malloc(sizeof(U8)*4);
     U32 height_val = htonl(300);
     memcpy(height, &height_val, sizeof(U8)*4);
@@ -372,8 +374,8 @@ int main(int argc, char **argv) {
     memcpy(IEND, p_sample_shm + 12 + 4 + 4 + 4 + 5 + 4 + 4 + 4 + skip_len + 4, sizeof(U8)*12);
 
     free(f_skip_len);
-    memcpy(&width_val, width, sizeof(width_val));
-    width_val = (U32)ntohl(width_val);
+    //memcpy(&width_val, width, sizeof(width_val));
+    //width_val = (U32)ntohl(width_val);
 
     //printf("5\n");
     IDATdata = malloc(sizeof(U8) * u_data_len);
