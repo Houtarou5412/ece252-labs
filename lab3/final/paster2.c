@@ -180,8 +180,10 @@ int main(int argc, char **argv) {
             if( res != CURLE_OK) {
                 fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
             } else {
+                pthread_mutex_lock(mutex);
                 printf("%lu bytes received in memory %p, seq=%d.\n",  \
                     p_shm_recv_buf[q]->size, p_shm_recv_buf[q]->buf, p_shm_recv_buf[q]->seq);
+                pthread_mutex_unlock(mutex);
                 
             }
 
