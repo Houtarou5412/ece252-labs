@@ -97,7 +97,8 @@ int main(int argc, char **argv) {
         }
     }
 
-    for(int p = 0; p < 50 && cpid == 0) {
+    int p = 0;
+    while(p < 50 && cpid == 0) {
         pthread_mutex_lock(mutex);
         if(p_seq_shm[p] != 0) {
             pthread_mutex_unlock(mutex);
@@ -464,7 +465,6 @@ int main(int argc, char **argv) {
     free(IDATdata);
     free(IDATcrc);
     free(IEND);
-    free(u_data);
     free(IHDRtypedata);
     free(IDATtypedata);
     free(headerlength);
