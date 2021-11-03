@@ -137,7 +137,7 @@ int main(int argc, char **argv) {
                 }
             }*/
 
-            url[sizeof(url)-1] = itoa(p);
+            url[sizeof(url)-1] = (char)(p+48);
             /* specify URL to get */
             curl_easy_setopt(curl_handle, CURLOPT_URL, url);
 
