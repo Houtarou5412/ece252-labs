@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
     while(p < STRIP_NUM && cpid == 0) {
         pthread_mutex_lock(mutex);
         if(p_seq_shm[p] != 0) {
-            printf("%d has already been produced\n", p);
+            //printf("%d has already been produced\n", p);
             pthread_mutex_unlock(mutex);
             p++;
         } else {
@@ -260,7 +260,8 @@ int main(int argc, char **argv) {
 
         // Sample
         pthread_mutex_lock(mutex);
-        if(p_sample_shm[0] == 0) {
+        if(p_sample_shm[BUF_SIZE-1] == 0) {
+            p_sample_shm[BUF_SIZE-1] = 1;
             memcpy(p_sample_shm, p_shm_recv_buf[g]->buf, p_shm_recv_buf[g]->size);
         }
         pthread_mutex_unlock(mutex);
