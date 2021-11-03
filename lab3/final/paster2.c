@@ -241,6 +241,7 @@ int main(int argc, char **argv) {
         int g = 0;
         while(g < buffer_size) {
             pthread_mutex_lock(mutex);
+            printf("second slot has: %d with size: %d\n", p_shm_recv_buf[g]->seq, p_sizes_shm[p_shm_recv_buf[g]->seq]);
             if(p_shm_recv_buf[g]->seq != -1 && p_sizes_shm[p_shm_recv_buf[g]->seq] == 0) {
                 p_sizes_shm[p_shm_recv_buf[g]->seq] = -1;
                 pthread_mutex_unlock(mutex);
