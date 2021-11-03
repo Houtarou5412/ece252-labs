@@ -139,8 +139,8 @@ int main(int argc, char **argv) {
                 }
             }*/
 
-            char temp_url[256] = "";
-            sprintf(url, "%s%d", url, p);
+            char temp_url[256];
+            sprintf(temp_url, "%s%d", url, p);
             //url[51] = (char)(p+48);
             printf("%s: new URL is %s\n", argv[0], temp_url);
 
