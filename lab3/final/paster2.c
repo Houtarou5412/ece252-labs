@@ -358,6 +358,7 @@ int main(int argc, char **argv) {
         free(part_u_data);
         free(p_temp);
         pthread_mutex_lock(mutex);
+        printf("%dth seq processed\n", p_shm_recv_buf[g]->seq);
         shm_recv_buf_init(p_shm_recv_buf[g], BUF_SIZE);
         pthread_mutex_unlock(mutex);
 
