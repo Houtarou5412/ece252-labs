@@ -247,6 +247,7 @@ int main(int argc, char **argv) {
                 pthread_mutex_unlock(mutex);
                 break;
             }
+            pthread_mutex_unlock(mutex);
             g++;
         }
 
