@@ -302,9 +302,9 @@ int main(int argc, char **argv) {
             }
             pthread_mutex_unlock(mutex);
         }
-        char *p_temp = malloc(STRIP_NUM*BUF_SIZE);
+        char *p_temp = malloc(3*STRIP_NUM*BUF_SIZE);
         pthread_mutex_lock(mutex);
-        memcpy(p_temp, p_all_shm, sizeof(p_all_shm));
+        memcpy(p_temp, p_all_shm, 3*STRIP_NUM*BUF_SIZE);
         pthread_mutex_unlock(mutex);
         for(int b = 0; b < before_cur + after_cur + part_u_data_length; b++) {
             pthread_mutex_lock(mutex);
