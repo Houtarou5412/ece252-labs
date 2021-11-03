@@ -200,7 +200,7 @@ int main(int argc, char **argv) {
     // Consumers
     U32 width_val = 400;
 
-    int all_shmid = shmget(IPC_PRIVATE, STRIP_NUM*BUF_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
+    int all_shmid = shmget(IPC_PRIVATE, 3*STRIP_NUM*BUF_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     char *p_all_shm = shmat(all_shmid, NULL, 0);
     int sizes_shmid = shmget(IPC_PRIVATE, (STRIP_NUM+1)*sizeof(U64), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     U64 *p_sizes_shm = shmat(sizes_shmid, NULL, 0);
