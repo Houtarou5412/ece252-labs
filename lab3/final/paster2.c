@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
     //Producers
     CURL *curl_handle;
     CURLcode res;
-    char url[256] = "http://ece252-1.uwaterloo.ca:2530/image?img=n&part=m";
+    char url[256] = "http://ece252-1.uwaterloo.ca:2530/image?img=n&part=";
     url[44] = pic[0];
     RECV_BUF **p_shm_recv_buf;
     int *shmid = malloc(buffer_size*sizeof(int));
@@ -139,7 +139,10 @@ int main(int argc, char **argv) {
                 }
             }*/
 
-            url[51] = (char)(p+48);
+            char seq_num[2] = "";
+            itoa(p, seq_num, 10);
+            strcat(url, seq_num);
+            //url[51] = (char)(p+48);
             printf("%s: new URL is %s\n", argv[0], url);
 
             /* specify URL to get */
