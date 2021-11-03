@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
     printf("get seq_shmid\n");
     int seq_shmid = shmget(IPC_PRIVATE, STRIP_NUM*sizeof(int), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     int *p_seq_shm = shmat(seq_shmid, NULL, 0);
-    memset(p_seq_shm, 0, STRIP_NUM);
+    memset(p_seq_shm, 0, STRIP_NUM*sizeof(int));
     
     printf("%s: URL is %s\n", argv[0], url);
 
@@ -110,6 +110,7 @@ int main(int argc, char **argv) {
     while(p < STRIP_NUM && cpid == 0) {
         pthread_mutex_lock(mutex);
         if(p_seq_shm[p] != 0) {
+            printf("%d has already been produced\n", p);
             pthread_mutex_unlock(mutex);
             p++;
         } else {
@@ -227,7 +228,7 @@ int main(int argc, char **argv) {
             }
         }*/
         pthread_mutex_lock(mutex);
-        printf("num processed: %d\n", p_sizes_shm[STRIP_NUM]);
+        //printf("num processed: %d\n", p_sizes_shm[STRIP_NUM]);
         if(p_sizes_shm[STRIP_NUM] != STRIP_NUM) {
             p_sizes_shm[STRIP_NUM]++;
             pthread_mutex_unlock(mutex);
@@ -241,7 +242,7 @@ int main(int argc, char **argv) {
         int g = 0;
         while(g < buffer_size) {
             pthread_mutex_lock(mutex);
-            printf("second slot has: %d with size: %d\n", p_shm_recv_buf[1]->seq, p_sizes_shm[p_shm_recv_buf[1]->seq]);
+            //printf("second slot has: %d with size: %d\n", p_shm_recv_buf[1]->seq, p_sizes_shm[p_shm_recv_buf[1]->seq]);
             if(p_shm_recv_buf[g]->seq != -1 && p_sizes_shm[p_shm_recv_buf[g]->seq] == 0) {
                 p_sizes_shm[p_shm_recv_buf[g]->seq] = -1;
                 pthread_mutex_unlock(mutex);
