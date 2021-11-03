@@ -78,6 +78,7 @@ int main(int argc, char **argv) {
         shm_recv_buf_init(p_shm_recv_buf[t], BUF_SIZE);
     }
 
+    printf("get seq_shmid\n");
     int seq_shmid = shmget(IPC_PRIVATE, 50*sizeof(int), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     int *p_seq_shm = shmat(seq_shmid, NULL, 0);
     memset(p_seq_shm, 0, 50);
