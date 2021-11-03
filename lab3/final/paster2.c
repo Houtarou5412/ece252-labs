@@ -1,4 +1,5 @@
 #define _DEFAULT_SOURCE
+#define STRIP_NUM 50
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,9 +84,9 @@ int main(int argc, char **argv) {
     }
 
     printf("get seq_shmid\n");
-    int seq_shmid = shmget(IPC_PRIVATE, 50*sizeof(int), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
+    int seq_shmid = shmget(IPC_PRIVATE, STRIP_NUM*sizeof(int), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     int *p_seq_shm = shmat(seq_shmid, NULL, 0);
-    memset(p_seq_shm, 0, 50);
+    memset(p_seq_shm, 0, STRIP_NUM);
     
     printf("%s: URL is %s\n", argv[0], url);
 
@@ -106,7 +107,7 @@ int main(int argc, char **argv) {
     }
 
     int p = 0;
-    while(p < 50 && cpid == 0) {
+    while(p < STRIP_NUM && cpid == 0) {
         pthread_mutex_lock(mutex);
         if(p_seq_shm[p] != 0) {
             pthread_mutex_unlock(mutex);
@@ -199,9 +200,9 @@ int main(int argc, char **argv) {
     // Consumers
     U32 width_val = 400;
 
-    int all_shmid = shmget(IPC_PRIVATE, 50*BUF_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
+    int all_shmid = shmget(IPC_PRIVATE, STRIP_NUM*BUF_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     char *p_all_shm = shmat(all_shmid, NULL, 0);
-    int sizes_shmid = shmget(IPC_PRIVATE, 51*sizeof(U64), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
+    int sizes_shmid = shmget(IPC_PRIVATE, (STRIP_NUM+1)*sizeof(U64), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     U64 *p_sizes_shm = shmat(sizes_shmid, NULL, 0);
     int sample_shmid = shmget(IPC_PRIVATE, BUF_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     char *p_sample_shm = shmat(sample_shmid, NULL, 0);
@@ -216,7 +217,7 @@ int main(int argc, char **argv) {
     }
 
     while(cpid == 0) {
-        /*for(int h = 0; h < 50; h++) {
+        /*for(int h = 0; h < STRIP_NUM; h++) {
             pthread_mutex_lock(mutex);
             if(p_sizes_shm[h] == 0) {
                 pthread_mutex_lock(mutex);
@@ -226,8 +227,8 @@ int main(int argc, char **argv) {
             }
         }*/
         pthread_mutex_lock(mutex);
-        if(p_sizes_shm[50] != 50) {
-            p_sizes_shm[50]++;
+        if(p_sizes_shm[STRIP_NUM] != STRIP_NUM) {
+            p_sizes_shm[STRIP_NUM]++;
             pthread_mutex_unlock(mutex);
         } else {
             pthread_mutex_unlock(mutex);
@@ -292,7 +293,7 @@ int main(int argc, char **argv) {
 
         U64 before_cur = 0;
         U64 after_cur = 0;
-        for(int a = 0; a < 50; a++) {
+        for(int a = 0; a < STRIP_NUM; a++) {
             pthread_mutex_lock(mutex);
             if(a < p_shm_recv_buf[g]->seq) {
                 before_cur += p_sizes_shm[a];
@@ -301,7 +302,7 @@ int main(int argc, char **argv) {
             }
             pthread_mutex_unlock(mutex);
         }
-        char *p_temp = malloc(50*BUF_SIZE);
+        char *p_temp = malloc(STRIP_NUM*BUF_SIZE);
         pthread_mutex_lock(mutex);
         memcpy(p_temp, p_all_shm, sizeof(p_all_shm));
         pthread_mutex_unlock(mutex);
@@ -356,7 +357,7 @@ int main(int argc, char **argv) {
         wait(NULL);
         printf("%dth child done\n", w);
     }
-    for(int s = 0; s < 50; s++) {
+    for(int s = 0; s < STRIP_NUM; s++) {
         u_data_len += p_sizes_shm[s];
     }
 
