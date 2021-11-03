@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
             perror("shmget");
             abort();
         }
-        printf("buffer_size: %d\n", buffer_size);
+        printf("buffer_size: %d, shmid: %d\n", buffer_size, shmid[t]);
 
         p_shm_recv_buf[t] = shmat(shmid[t], NULL, 0);
         printf("got %dth shm\n", t);
