@@ -55,7 +55,8 @@ int main(int argc, char **argv) {
     //Producers
     CURL *curl_handle;
     CURLcode res;
-    char url[256] = "http://ece252-1.uwaterloo.ca:2530/image?img=" + pic + "&part=m";
+    char url[256] = "http://ece252-1.uwaterloo.ca:2530/image?img=n&part=m";
+    url[44] = pic[0];
     RECV_BUF **p_shm_recv_buf;
     int *shmid = malloc(buffer_size*sizeof(int));
     int shm_size = buffer_size*sizeof_shm_recv_buf(BUF_SIZE);
