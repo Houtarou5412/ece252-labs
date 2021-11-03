@@ -240,8 +240,8 @@ int main(int argc, char **argv) {
         int g = 0;
         while(g < buffer_size) {
             pthread_mutex_lock(mutex);
-            if(p_shm_recv_buf[g]->seq != -1 && p_sizes_shm[p_shm_recv_buf[g]->seq] == 0) {
-                p_sizes_shm[p_shm_recv_buf[g]->seq] = 1;
+            if(p_shm_recv_buf[g]->seq != -1 && p_sizes_shm[p_shm_recv_buf[g]->seq] > 0) {
+                p_sizes_shm[p_shm_recv_buf[g]->seq] = -1;
                 pthread_mutex_unlock(mutex);
                 break;
             }
@@ -295,9 +295,9 @@ int main(int argc, char **argv) {
         U64 after_cur = 0;
         for(int a = 0; a < STRIP_NUM; a++) {
             pthread_mutex_lock(mutex);
-            if(a < p_shm_recv_buf[g]->seq) {
+            if(a < p_shm_recv_buf[g]->seq && p_sizes_shm[a] > 0) {
                 before_cur += p_sizes_shm[a];
-            } else if (a > p_shm_recv_buf[g]->seq) {
+            } else if (a > p_shm_recv_buf[g]->seq && p_sizes_shm[a] > 0) {
                 after_cur += p_sizes_shm[a];
             }
             pthread_mutex_unlock(mutex);
