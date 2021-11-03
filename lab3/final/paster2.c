@@ -1,5 +1,5 @@
 #define _DEFAULT_SOURCE
-#define STRIP_NUM 2
+#define STRIP_NUM 50
 
 #include <stdio.h>
 #include <stdlib.h>
