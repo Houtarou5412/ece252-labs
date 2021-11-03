@@ -139,9 +139,7 @@ int main(int argc, char **argv) {
                 }
             }*/
 
-            char seq_num[2] = "";
-            itoa(p, seq_num, 10);
-            strcat(url, seq_num);
+            sprintf(url, "%s%d", url, p);
             //url[51] = (char)(p+48);
             printf("%s: new URL is %s\n", argv[0], url);
 
