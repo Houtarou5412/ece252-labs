@@ -253,7 +253,7 @@ int main(int argc, char **argv) {
             if(p_shm_recv_buf[g]->seq > -1 && p_sizes_shm[p_shm_recv_buf[g]->seq] == 0) {
                 p_sizes_shm[p_shm_recv_buf[g]->seq] = -1;
                 printf("processing sequence: %d\n", p_shm_recv_buf[g]->seq);
-                pthread_mutex_unlock(mutex);
+                //pthread_mutex_unlock(mutex);
                 break;
             }
             pthread_mutex_unlock(mutex);
@@ -265,7 +265,7 @@ int main(int argc, char **argv) {
         }
 
         // Sample
-        pthread_mutex_lock(mutex);
+        //pthread_mutex_lock(mutex);
         if(p_sample_shm[BUF_SIZE-1] == 0) {
             p_sample_shm[BUF_SIZE-1] = 1;
             memcpy(p_sample_shm, p_shm_recv_buf[g]->buf, p_shm_recv_buf[g]->size);
