@@ -198,6 +198,8 @@ int main(int argc, char **argv) {
     // Producer Cleanup
     if(cpid == 0) {
         //printf("prod complete\n");
+        free(p_shm_recv_buf);
+        free(shmid);
         curl_easy_cleanup(curl_handle);
         return 0;
     }
@@ -240,6 +242,8 @@ int main(int argc, char **argv) {
             pthread_mutex_unlock(mutex);
         } else {
             //printf("cons complete\n");
+            free(p_shm_recv_buf);
+            free(shmid);
             pthread_mutex_unlock(mutex);
             return 0;
         }
