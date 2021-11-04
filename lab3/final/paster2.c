@@ -279,25 +279,25 @@ int main(int argc, char **argv) {
 
         pthread_mutex_lock(mutex);
         memcpy(p_height, p_shm_recv_buf[g]->buf + 20, sizeof(U8)*4);
-        //pthread_mutex_unlock(mutex);
+        pthread_mutex_unlock(mutex);
         memcpy(&part_height, p_height, sizeof(part_height));
         part_height = (U64)ntohl(part_height);
-        //pthread_mutex_lock(mutex);
+        pthread_mutex_lock(mutex);
         memcpy(length, p_shm_recv_buf[g]->buf + 20 + 4 + 9, sizeof(U8)*4);
-        //pthread_mutex_unlock(mutex);
+        pthread_mutex_unlock(mutex);
         memcpy(&part_length, length, sizeof(part_length));
         part_length = (U64)ntohl(part_length);
 
         data = malloc(sizeof(U8)*part_length);
-        //pthread_mutex_lock(mutex);
+        pthread_mutex_lock(mutex);
         memcpy(data, p_shm_recv_buf[g]->buf + 20 + 4 + 9 + 4 + 4, part_length);
-        //pthread_mutex_unlock(mutex);
+        pthread_mutex_unlock(mutex);
 
         part_u_data = malloc(sizeof(U8)*part_height*(width_val*4 + 1));
         memset(part_u_data, 0, sizeof(U8)*part_height*(width_val*4 + 1));
         mem_inf(part_u_data, &part_u_data_length, data, part_length);
 
-        //pthread_mutex_lock(mutex);
+        pthread_mutex_lock(mutex);
         p_sizes_shm[p_shm_recv_buf[g]->seq] = part_u_data_length;
  
         U64 before_cur = 0;
