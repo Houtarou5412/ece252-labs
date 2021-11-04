@@ -482,8 +482,6 @@ int main(int argc, char **argv) {
     shmctl(cons_sem_id, IPC_RMID, NULL);
     shmctl(mutex_id, IPC_RMID, NULL);
 
-    free(p_shm_recv_buf);
-    free(shmid);
     free(width);
     free(height);
     free(after_height);
