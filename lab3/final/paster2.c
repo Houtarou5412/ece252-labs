@@ -267,7 +267,7 @@ int main(int argc, char **argv) {
             p_sample_shm[BUF_SIZE-1] = 1;
             memcpy(p_sample_shm, p_shm_recv_buf[g]->buf, p_shm_recv_buf[g]->size);
         }
-        //pthread_mutex_unlock(mutex);
+        pthread_mutex_unlock(mutex);
 
         U8 *p_height = malloc(sizeof(U8)*4);
         U64 part_height = 0;
@@ -277,7 +277,7 @@ int main(int argc, char **argv) {
         U8 *part_u_data = NULL;
         U64 part_u_data_length = 0;
 
-        //pthread_mutex_lock(mutex);
+        pthread_mutex_lock(mutex);
         memcpy(p_height, p_shm_recv_buf[g]->buf + 20, sizeof(U8)*4);
         //pthread_mutex_unlock(mutex);
         memcpy(&part_height, p_height, sizeof(part_height));
