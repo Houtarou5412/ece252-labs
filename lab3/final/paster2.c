@@ -196,7 +196,7 @@ int main(int argc, char **argv) {
 
     // Producer Cleanup
     if(cpid == 0) {
-        printf("child complete\n");
+        printf("prod complete\n");
         curl_easy_cleanup(curl_handle);
         return 0;
     }
@@ -238,6 +238,7 @@ int main(int argc, char **argv) {
             p_sizes_shm[STRIP_NUM]++;
             pthread_mutex_unlock(mutex);
         } else {
+            printf("cons complete\n");
             pthread_mutex_unlock(mutex);
             return 0;
         }
