@@ -299,9 +299,7 @@ int main(int argc, char **argv) {
 
         pthread_mutex_lock(mutex);
         p_sizes_shm[p_shm_recv_buf[g]->seq] = part_u_data_length;
-        pthread_mutex_unlock(mutex);
-
-        pthread_mutex_lock(mutex);
+ 
         U64 before_cur = 0;
         U64 after_cur = 0;
         for(int a = 0; a < STRIP_NUM; a++) {
@@ -386,6 +384,7 @@ int main(int argc, char **argv) {
 
     //printf("5\n");
     IDATdata = malloc(sizeof(U8) * u_data_len);
+    memset(IDATdata, 0, sizeof(U8)*u_data_len);
     U64 *temp_size = malloc(sizeof(U64));
     mem_def(IDATdata, temp_size, p_all_shm, u_data_len, -1);
     //printf("size of data: %d\n", *temp_size);
