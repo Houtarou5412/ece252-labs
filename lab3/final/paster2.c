@@ -301,23 +301,19 @@ int main(int argc, char **argv) {
         p_sizes_shm[p_shm_recv_buf[g]->seq] = part_u_data_length;
         pthread_mutex_unlock(mutex);
 
+        pthread_mutex_lock(mutex);
         U64 before_cur = 0;
         U64 after_cur = 0;
         for(int a = 0; a < STRIP_NUM; a++) {
-            pthread_mutex_lock(mutex);
             if(a < p_shm_recv_buf[g]->seq && p_sizes_shm[a] > 0) {
                 before_cur += p_sizes_shm[a];
             } else if (a > p_shm_recv_buf[g]->seq && p_sizes_shm[a] > 0) {
                 after_cur += p_sizes_shm[a];
             }
-            pthread_mutex_unlock(mutex);
         }
         char *p_temp = malloc(3*STRIP_NUM*BUF_SIZE);
-        pthread_mutex_lock(mutex);
         memcpy(p_temp, p_all_shm, 3*STRIP_NUM*BUF_SIZE);
-        pthread_mutex_unlock(mutex);
         for(int b = 0; b < before_cur + after_cur + part_u_data_length; b++) {
-            pthread_mutex_lock(mutex);
             if(b < before_cur) {
                 p_all_shm[b] = p_temp[b];
             } else if(b < before_cur + part_u_data_length) {
@@ -325,8 +321,8 @@ int main(int argc, char **argv) {
             } else {
                 p_all_shm[b] = p_temp[b - part_u_data_length];
             }
-            pthread_mutex_unlock(mutex);
         }
+        pthread_mutex_unlock(mutex);
         
         free(p_height);
         free(length);
