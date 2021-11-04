@@ -68,28 +68,28 @@ int main(int argc, char **argv) {
     //char fname[256];
     pid_t pid = getpid();
 
-    printf("shm_size = %d.\n", shm_size);
+    //printf("shm_size = %d.\n", shm_size);
     for(int t = 0; t < buffer_size; t++) {
-        printf("getting %dth shm\n",t);
+        //printf("getting %dth shm\n",t);
         shmid[t] = shmget(IPC_PRIVATE, shm_size, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
         if ( shmid[t] == -1 ) {
             perror("shmget");
             abort();
         }
-        printf("buffer_size: %d, shmid: %d\n", buffer_size, shmid[t]);
+        //printf("buffer_size: %d, shmid: %d\n", buffer_size, shmid[t]);
 
         //void * shmat_return = shmat(shmid[t], NULL, 0);
         p_shm_recv_buf[t] = shmat(shmid[t], NULL, 0);
-        printf("got %dth shm\n", t);
+        //printf("got %dth shm\n", t);
         shm_recv_buf_init(p_shm_recv_buf[t], BUF_SIZE);
     }
 
-    printf("get seq_shmid\n");
+    //printf("get seq_shmid\n");
     int seq_shmid = shmget(IPC_PRIVATE, STRIP_NUM*sizeof(int), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     int *p_seq_shm = shmat(seq_shmid, NULL, 0);
     memset(p_seq_shm, 0, STRIP_NUM*sizeof(int));
     
-    printf("%s: URL is %s\n", argv[0], url);
+    //printf("%s: URL is %s\n", argv[0], url);
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
 
@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
             char temp_url[256];
             sprintf(temp_url, "%s%d", url, p);
             //url[51] = (char)(p+48);
-            printf("%s: new URL is %s\n", argv[0], temp_url);
+            //printf("%s: new URL is %s\n", argv[0], temp_url);
 
             /* specify URL to get */
             curl_easy_setopt(curl_handle, CURLOPT_URL, temp_url);
@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
             } else {
                 pthread_mutex_lock(mutex);
-                printf("%lu bytes received in memory %p, seq=%d.\n",  \
+                //printf("%lu bytes received in memory %p, seq=%d.\n",  \
                     p_shm_recv_buf[q]->size, p_shm_recv_buf[q]->buf, p_shm_recv_buf[q]->seq);
                 pthread_mutex_unlock(mutex);
                 
@@ -197,7 +197,7 @@ int main(int argc, char **argv) {
 
     // Producer Cleanup
     if(cpid == 0) {
-        printf("prod complete\n");
+        //printf("prod complete\n");
         curl_easy_cleanup(curl_handle);
         return 0;
     }
@@ -239,7 +239,7 @@ int main(int argc, char **argv) {
             p_sizes_shm[STRIP_NUM]++;
             pthread_mutex_unlock(mutex);
         } else {
-            printf("cons complete\n");
+            //printf("cons complete\n");
             pthread_mutex_unlock(mutex);
             return 0;
         }
@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
             //printf("second slot has: %d with size: %d\n", p_shm_recv_buf[1]->seq, p_sizes_shm[p_shm_recv_buf[1]->seq]);
             if(p_shm_recv_buf[g]->seq > -1 && p_sizes_shm[p_shm_recv_buf[g]->seq] == 0) {
                 p_sizes_shm[p_shm_recv_buf[g]->seq] = -1;
-                printf("processing sequence: %d\n", p_shm_recv_buf[g]->seq);
+                //printf("processing sequence: %d\n", p_shm_recv_buf[g]->seq);
                 //pthread_mutex_unlock(mutex);
                 break;
             }
@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
         }
 
         if(g == buffer_size) {
-            printf("wtf\n");
+            //printf("wtf\n");
         }
 
         // Sample
@@ -331,7 +331,7 @@ int main(int argc, char **argv) {
         free(part_u_data);
         free(p_temp);
         pthread_mutex_lock(mutex);
-        printf("%dth seq processed\n", p_shm_recv_buf[g]->seq);
+        //printf("%dth seq processed\n", p_shm_recv_buf[g]->seq);
         shm_recv_buf_init(p_shm_recv_buf[g], BUF_SIZE);
         pthread_mutex_unlock(mutex);
 
@@ -362,7 +362,7 @@ int main(int argc, char **argv) {
 
     for(int w = 0; w < num_prod + num_cons; w++) {
         wait(NULL);
-        printf("%dth child done\n", w);
+        //printf("%dth child done\n", w);
     }
     for(int s = 0; s < STRIP_NUM; s++) {
         u_data_len += p_sizes_shm[s];
