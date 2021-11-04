@@ -196,6 +196,7 @@ int main(int argc, char **argv) {
 
     // Producer Cleanup
     if(cpid == 0) {
+        printf("child complete\n");
         curl_easy_cleanup(curl_handle);
         return 0;
     }
