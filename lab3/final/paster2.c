@@ -250,7 +250,7 @@ int main(int argc, char **argv) {
         while(g < buffer_size) {
             pthread_mutex_lock(mutex);
             //printf("second slot has: %d with size: %d\n", p_shm_recv_buf[1]->seq, p_sizes_shm[p_shm_recv_buf[1]->seq]);
-            if(p_shm_recv_buf[g]->seq != -1 && p_sizes_shm[p_shm_recv_buf[g]->seq] == 0) {
+            if(p_shm_recv_buf[g]->seq > -1 && p_sizes_shm[p_shm_recv_buf[g]->seq] == 0) {
                 p_sizes_shm[p_shm_recv_buf[g]->seq] = -1;
                 printf("processing sequence: %d\n", p_shm_recv_buf[g]->seq);
                 pthread_mutex_unlock(mutex);
