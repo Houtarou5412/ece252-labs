@@ -287,12 +287,12 @@ int main(int argc, char **argv) {
         part_height = (U64)ntohl(part_height);
         //pthread_mutex_lock(mutex);
         memcpy(length, p_shm_recv_buf[g]->buf + 20 + 4 + 9, sizeof(U8)*4);
-        //pthread_mutex_unlock(mutex);
+        pthread_mutex_unlock(mutex);
         memcpy(&part_length, length, sizeof(part_length));
         part_length = (U64)ntohl(part_length);
 
         data = malloc(sizeof(U8)*part_length);
-        //pthread_mutex_lock(mutex);
+        pthread_mutex_lock(mutex);
         memcpy(data, p_shm_recv_buf[g]->buf + 20 + 4 + 9 + 4 + 4, part_length);
         //pthread_mutex_unlock(mutex);
 
