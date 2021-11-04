@@ -62,6 +62,7 @@ int main(int argc, char **argv) {
     char url[256] = "http://ece252-1.uwaterloo.ca:2530/image?img=n&part=";
     url[44] = pic[0];
     RECV_BUF **p_shm_recv_buf = malloc(sizeof(RECV_BUF*) * buffer_size);
+    memset(p_shm_recv_buf, 0, sizeof(RECV_BUF*)*buffer_size);
     int *shmid = malloc(buffer_size*sizeof(int));
     int shm_size = sizeof_shm_recv_buf(BUF_SIZE);
     //char fname[256];
