@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/time.h>
+#include <semaphore.h>
 #include <unistd.h>
 #include <curl/curl.h>
 #include <libxml/HTMLparser.h>
@@ -9,6 +11,7 @@
 #include <libxml/xpath.h>
 #include <libxml/uri.h>
 #include <search.h>
+#include "curl.h"
 
 #define BUF_SIZE 100000
 typedef struct list{
@@ -20,7 +23,7 @@ typedef struct list{
 list *png_head;
 list *urls_to_check_head;
 list *visited_urls_head;
-int log = 0;
+int log_check = 0;
 int pngs_found = 0;
 int max_pngs = 50;
 int waiting = 0;
@@ -28,7 +31,7 @@ pthread_mutex_t mutex;
 sem_t url_avail;
 
 void pop_head(list *head) {
-    free(head.url);
+    free(head->url);
     list *temp = head->p_next;
     free(head);
     head = temp;
@@ -185,7 +188,7 @@ void *check_urls(void *ignore) {
         pop_head(urls_to_check_head);
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
 
-        if(visited_urls_head == NULL && log) {
+        if(visited_urls_head == NULL && log_check) {
             visited_urls_head = malloc(sizeof(list));
         } else {
             push_head(visited_urls_head);
@@ -241,7 +244,7 @@ int main(int argc, char **argv) {
         }
         else if(strcmp(argv[t], "-v")){
             logfile = argv[t+1];
-            log = 1;
+            log_check = 1;
             t++;
         } else {
             ENTRY e;
@@ -283,11 +286,11 @@ int main(int argc, char **argv) {
     }
     
     FILE l;
-    if(log) {
+    if(log_check) {
         l = fopen(logfile);
     }
     while(visited_urls_head != NULL) {
-        if(log) {
+        if(log_check) {
             fprintf(&l, "%s\n", visited_urls_head->url);
         }
         pop_head(visited_urls_head);
