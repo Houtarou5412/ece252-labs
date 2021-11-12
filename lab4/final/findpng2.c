@@ -11,9 +11,9 @@
 #include <libxml/xpath.h>
 #include <libxml/uri.h>
 #include <search.h>
+#include <pthread.h>
 #include "curl.h"
 
-#define BUF_SIZE 100000
 typedef struct list{
     char *url;
     struct list *p_next;
