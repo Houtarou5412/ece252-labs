@@ -72,14 +72,14 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
             }
             if ( href != NULL && !strncmp((const char *)href, "http", 4) ) {
                 ENTRY e;
-                e.key = href;
+                e.key = (char *)href;
                 if(hsearch(e, FIND) == NULL) {
                     hsearch(e, ENTER);
 
                     pthread_mutex_lock(&mutex);
                     push_head(urls_to_check_head);
-                    urls_to_check_head->url = malloc(sizeof(e.key));
-                    memcpy(urls_to_check_head->url, e.key, sizeof(e.key));
+                    urls_to_check_head->url = malloc(strlen(e.key)+1);
+                    memcpy(urls_to_check_head->url, e.key, strlen(e.key)+1);
                     pthread_mutex_unlock(&mutex);
                 }
             }
@@ -92,11 +92,11 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
     return 0;
 }
 
-int process_html(CURL *curl_handle, RECV_BUF *p_recv_buf)
+void process_html(CURL *curl_handle, RECV_BUF *p_recv_buf)
 {
     int follow_relative_link = 1;
     char *url = NULL; 
-    pid_t pid =getpid();
+    //pid_t pid =getpid();
 
     curl_easy_getinfo(curl_handle, CURLINFO_EFFECTIVE_URL, &url);
     find_http(p_recv_buf->buf, p_recv_buf->size, follow_relative_link, url);
@@ -105,15 +105,15 @@ int process_html(CURL *curl_handle, RECV_BUF *p_recv_buf)
 
 void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf)
 {
-    pid_t pid =getpid();
+    //pid_t pid =getpid();
     char *eurl = NULL;          /* effective URL */
     curl_easy_getinfo(curl_handle, CURLINFO_EFFECTIVE_URL, &eurl);
     if ( eurl != NULL) {
         //printf("The PNG url is: %s\n", eurl);
         pthread_mutex_lock(&mutex);
         push_head(png_head);
-        png_head->url = malloc(sizeof(eurl));
-        memcpy(png_head->url, eurl, sizeof(eurl));
+        png_head->url = malloc(strlen(eurl)+1);
+        memcpy(png_head->url, eurl, strlen(eurl)+1);
         pngs_found++;
         pthread_mutex_unlock(&mutex);
     }
@@ -130,7 +130,7 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf)
 int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf)
 {
     CURLcode res;
-    pid_t pid =getpid();
+    //pid_t pid =getpid();
     long response_code;
 
     res = curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &response_code);
@@ -164,7 +164,7 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf)
 void *check_urls(void *ignore) {
     RECV_BUF recv;
     CURL *curl_handle = easy_handle_init(&recv, NULL);
-    while(png_found < max_pngs) {
+    while(pngs_found < max_pngs) {
 
         ENTRY e;
         CURLcode res;
@@ -195,13 +195,21 @@ void *check_urls(void *ignore) {
         }
 
         if(visited_urls_head == NULL) {
-            visited_urls_head->url = malloc(sizeof(e.key));
-            memcpy(visited_urls_head->url, e.key, sizeof(e.key));
+            visited_urls_head->url = malloc(strlen(e.key)+1);
+            memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
         }
 
         pthread_mutex_unlock(&mutex);
 
         res = curl_easy_perform(curl_handle);
+
+        if( res != CURLE_OK) {
+            printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+        exit(1);
+        } else {
+            //printf("%lu bytes received in memory %p, seq=%d.\n", \
+                recv_buf.size, recv_buf.buf, recv_buf.seq);
+        }
 
         curl_easy_get_info(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
 
@@ -221,12 +229,12 @@ void *check_urls(void *ignore) {
 
         }*/
     }
-    cleanup(curl_handle, recv);
-    return;
+    cleanup(curl_handle, &recv);
+    return NULL;
 }
 
 int main(int argc, char **argv) {
-    pthread_mutex_init(&mutex);
+    pthread_mutex_init(&mutex, NULL);
     sem_init(&url_avail, 0, 0);
     int threads = 1;
     char *logfile = NULL;
@@ -250,15 +258,15 @@ int main(int argc, char **argv) {
             ENTRY e;
             e.key = argv[t];
             hsearch(e, ENTER);
-            urls_to_check_head->url = malloc(sizeof(argv[t]));
-            memcpy(urls_to_check_head->url, argv[t], sizeof(argv[t]));
+            urls_to_check_head->url = malloc(strlen(argv[t])+1);
+            memcpy(urls_to_check_head->url, argv[t], strlen(argv[t])+1);
             sem_post(&url_avail);
         }
     }
 
-    p_thread_t *ptids = malloc(threads*sizeof(p_thread_t));
+    pthread_t *ptids = malloc(threads*sizeof(pthread_t));
     for(int u = 0; t < threads; t++) {
-        p_thread_create(ptids + u, NULL, check_urls, NULL);
+        pthread_create(ptids + u, NULL, check_urls, NULL);
     }
 
     while(pngs_found < max_pngs) {
@@ -271,7 +279,7 @@ int main(int argc, char **argv) {
     }
 
     for(int v = 0; v < threads; v++) {
-        p_thread_join(ptids[v], NULL);
+        pthread_join(ptids[v], NULL);
     }
     char *fname = "./png_urls.txt";
     FILE f = fopen(fname);
