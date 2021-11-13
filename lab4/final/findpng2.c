@@ -79,15 +79,18 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
             printf("find_http 5\n");
 
             if ( href != NULL && !strncmp((const char *)href, "http", 4) ) {
+                printf("find_http 5.1\n");
                 ENTRY e;
                 e.key = (char *)href;
                 if(hsearch(e, FIND) == NULL) {
+                    printf("find_http 5.2\n");
                     hsearch(e, ENTER);
 
                     pthread_mutex_lock(&mutex);
                     push_head(urls_to_check_head);
                     urls_to_check_head->url = malloc(strlen(e.key)+1);
                     memcpy(urls_to_check_head->url, e.key, strlen(e.key)+1);
+                    sem_push(&url_avail);
                     pthread_mutex_unlock(&mutex);
                 }
             }
