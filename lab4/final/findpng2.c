@@ -173,7 +173,7 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
 
     res = curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &response_code);
     if ( res == CURLE_OK ) {
-	    printf("Response code: %ld\n", response_code);
+	    //printf("Response code: %ld\n", response_code);
     }
 
     //printf("process_data 2\n");
@@ -188,17 +188,19 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     char *ct = NULL;
     res = curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &ct);
     if ( res == CURLE_OK && ct != NULL ) {
-    	printf("Content-Type: %s, len=%ld\n", ct, strlen(ct));
+    	//printf("Content-Type: %s, len=%ld\n", ct, strlen(ct));
     } else {
-        fprintf(stderr, "Failed obtain Content-Type\n");
+        printf("Failed obtain Content-Type\n");
         return 2;
     }
 
     //printf("process_data 4\n");
 
     if ( strstr(ct, CT_HTML) ) {
+        printf("html\n");
         process_html(curl_handle, p_recv_buf);
     } else if ( strstr(ct, CT_PNG) ) {
+        printf("png\n");
         process_png(curl_handle, p_recv_buf);
     }
 
