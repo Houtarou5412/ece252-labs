@@ -217,6 +217,7 @@ void *check_urls(void *ignore) {
         }*/
         pop_head(urls_to_check_head);
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
+        printf("%s\n", e.key);
 
         if(visited_urls_head == NULL && log_check) {
             visited_urls_head = malloc(sizeof(list));
