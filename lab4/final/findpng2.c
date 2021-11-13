@@ -283,10 +283,10 @@ int main(int argc, char **argv) {
     char *fname = "./png_urls.txt";
     FILE *f = fopen(fname, "w+");
     for(int w = 0; w < max_pngs && png_head != NULL; w++) {
-        fprintf(&f, "%s\n", png_head->url);
+        fprintf(f, "%s\n", png_head->url);
         pop_head(png_head);
     }
-    fclose(&f);
+    fclose(f);
 
     while(png_head != NULL) {
         pop_head(png_head);
@@ -298,12 +298,12 @@ int main(int argc, char **argv) {
     }
     while(visited_urls_head != NULL) {
         if(log_check) {
-            fprintf(&l, "%s\n", visited_urls_head->url);
+            fprintf(l, "%s\n", visited_urls_head->url);
         }
         pop_head(visited_urls_head);
     }
     if(log_check) {
-        fclose(&l);
+        fclose(l);
     }
 
     while(urls_to_check_head != NULL) {
