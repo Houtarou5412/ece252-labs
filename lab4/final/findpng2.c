@@ -103,7 +103,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                     urls_to_check_head->url = malloc(strlen(e.key)+1);
                     memcpy(urls_to_check_head->url, e.key, strlen(e.key)+1);
 
-                    printf("new first url: %s\n", urls_to_check_head->url);
+                    //printf("new first url: %s\n", urls_to_check_head->url);
                     sem_post(&url_avail);
                     pthread_mutex_unlock(&mutex);
                 }
@@ -224,7 +224,7 @@ void *check_urls(void *ignore) {
             continue;
         }*/
 
-        printf("check_urls 1.3\n");
+        printf("urls_to_check_head %p, e.key %s\n", urls_to_check_head, e.key);
 
         pop_head(&urls_to_check_head);
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
