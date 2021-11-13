@@ -293,13 +293,9 @@ int main(int argc, char **argv) {
         } else {
             ENTRY e;
             e.key = argv[t];
-            printf("a\n");
             hsearch(e, ENTER);
-            printf("b\n");
             urls_to_check_head->url = malloc(strlen(argv[t])+1);
-            printf("c\n");
             memcpy(urls_to_check_head->url, argv[t], strlen(argv[t])+1);
-            printf("d\n");
             sem_post(&url_avail);
         }
     }
@@ -309,7 +305,7 @@ int main(int argc, char **argv) {
     pthread_t *ptids = malloc(threads*sizeof(pthread_t));
     for(int u = 0; u < threads; u++) {
         pthread_create(ptids + u, NULL, check_urls, NULL);
-        printf("thread %d created\n", u);
+        //printf("thread %d created\n", u);
     }
 
     printf("main 3\n");
