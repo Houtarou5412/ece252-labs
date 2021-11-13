@@ -162,7 +162,7 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     printf("process_data 2\n");
 
     if ( response_code >= 400 ) { 
-    	fprintf(stderr, "Error.\n");
+    	printf("Error in response code.\n");
         return 1;
     }
 
@@ -208,6 +208,7 @@ void *check_urls(void *ignore) {
 
         pthread_mutex_lock(&mutex);
         waiting--;
+        e.key = malloc(strlen(urls_to_check_head->url)+1);
         memcpy(e.key, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
         /*if(hsearch(e, FIND) == NULL) {
             hsearch(e, ENTER);
@@ -264,6 +265,8 @@ void *check_urls(void *ignore) {
         } else if(strcmp(content_type, "text/html") == 0) {
 
         }*/
+
+        free(e.key);
     }
     cleanup(curl_handle, &recv);
     return NULL;
