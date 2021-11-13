@@ -32,7 +32,7 @@ pthread_mutex_t mutex;
 sem_t url_avail;
 
 void pop_head(list **head) {
-    //printf("head at %p\nurl: %s at %p\n", *head, (*head)->url, &((*head)->url));
+    printf("head at %p\nurl: %s at %p\n", *head, (*head)->url, &((*head)->url));
     free((*head)->url);
     list *temp = *head;
     *head = (*head)->p_next;
@@ -227,6 +227,7 @@ void *check_urls(void *ignore) {
         printf("urls_to_check_head %p, e.key %s\n", urls_to_check_head, e.key);
 
         pop_head(&urls_to_check_head);
+        printf("1.3\n");
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
         printf("%s\n", e.key);
 
