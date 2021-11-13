@@ -264,7 +264,7 @@ CURL *easy_handle_init(RECV_BUF *ptr, const char *url)
 {
     CURL *curl_handle = NULL;
 
-    if ( ptr == NULL || url == NULL) {
+    if ( ptr == NULL ) {
         return NULL;
     }
 
