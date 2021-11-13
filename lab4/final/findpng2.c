@@ -305,6 +305,7 @@ int main(int argc, char **argv) {
     pthread_t *ptids = malloc(threads*sizeof(pthread_t));
     for(int u = 0; u < threads; u++) {
         pthread_create(ptids + u, NULL, check_urls, NULL);
+        printf("thread %d created\n", u);
     }
 
     printf("main 3\n");
