@@ -277,7 +277,7 @@ int main(int argc, char **argv) {
     png_head = malloc(sizeof(list));
     urls_to_check_head = malloc(sizeof(list));
     printf("main 1\n");
-    for(int t = 0; t < argc; t++) {
+    for(int t = 1; t < argc; t++) {
         if(strcmp(argv[t],"-t")) {
             threads = atoi(argv[t+1]);
             t++;
