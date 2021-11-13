@@ -208,7 +208,7 @@ void *check_urls(void *ignore) {
 
         pthread_mutex_lock(&mutex);
         waiting--;
-        e.key = urls_to_check_head->url;
+        memcpy(e.key, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
         /*if(hsearch(e, FIND) == NULL) {
             hsearch(e, ENTER);
         } else {
