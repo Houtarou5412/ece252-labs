@@ -240,7 +240,7 @@ void *check_urls(void *ignore) {
 
         res = curl_easy_perform(curl_handle);
 
-        if( res != CURLE_OK && strcmp(curl_easy_strerror(res),"Number of redirects hit maximum account") != 0 ) {
+        if( res != CURLE_OK && strcmp(curl_easy_strerror(res),"Number of redirects hit maximum amount") != 0 ) {
             printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
             continue;
         } else {
@@ -276,7 +276,7 @@ void *check_urls(void *ignore) {
                     curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
                     res = curl_easy_perform(curl_handle);
 
-                    if( res != CURLE_OK && strcmp(curl_easy_strerror(res),"Number of redirects hit maximum account") != 0 ) {
+                    if( res != CURLE_OK && strcmp(curl_easy_strerror(res),"Number of redirects hit maximum amount") != 0 ) {
                         printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
                         ignore = 1;
                     } else {
