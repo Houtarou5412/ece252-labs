@@ -50,6 +50,7 @@ void pop_head(list *head) {
 }
 
 void push_head(list *head) {
+    //printf("push 1\n");
     list *temp = malloc(sizeof(list));
     temp->p_next = head;
     head = temp;
@@ -313,7 +314,7 @@ int main(int argc, char **argv) {
             log_check = 1;
             t++;
         } else {
-            printf("%p -> %p", urls_to_check_head, urls_to_check_head->p_next);
+            printf("%p -> %p\n", urls_to_check_head, urls_to_check_head->p_next);
             ENTRY e;
             e.key = argv[t];
             hsearch(e, ENTER);
