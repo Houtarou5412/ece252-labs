@@ -36,6 +36,7 @@ void pop_head(list *head) {
     free(head->url);
     list *temp = head;
     head = head->p_next;
+    printf("temp at %p, head at %p\n", temp, head);
     free(temp);
 
     /*printf("pop_head 1\n");
