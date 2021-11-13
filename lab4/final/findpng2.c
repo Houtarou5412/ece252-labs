@@ -21,9 +21,9 @@ typedef struct list{
 }list;
 
 //GLOBAL
-list *png_head;
-list *urls_to_check_head;
-list *visited_urls_head;
+list *png_head = NULL;
+list *urls_to_check_head = NULL;
+list *visited_urls_head = NULL;
 int log_check = 0;
 int pngs_found = 0;
 int max_pngs = 50;
@@ -243,13 +243,8 @@ void *check_urls(void *ignore) {
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
         printf("%s\n", e.key);
 
-        if(visited_urls_head == NULL && log_check) {
-            visited_urls_head = malloc(sizeof(list));
-        } else {
-            push_head(visited_urls_head);
-        }
-
         if(log_check) {
+            push_head(visited_urls_head);
             visited_urls_head->url = malloc(strlen(e.key)+1);
             memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
         }
@@ -301,8 +296,8 @@ int main(int argc, char **argv) {
     int threads = 1;
     char *logfile = NULL;
     hcreate(200000);
-    png_head = malloc(sizeof(list));
-    urls_to_check_head = malloc(sizeof(list));
+    push_head(png_head);
+    push_head(urls_to_check_head);
     printf("main 1\n");
     for(int t = 1; t < argc; t++) {
         if(strcmp(argv[t],"-t") == 0) {
