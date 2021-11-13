@@ -49,11 +49,11 @@ void pop_head(list *head) {
     return;
 }
 
-void push_head(list *head) {
+void push_head(list **head) {
     printf("push 1\n");
     list *temp = malloc(sizeof(list));
-    temp->p_next = head;
-    head = temp;
+    temp->p_next = *head;
+    *head = temp;
     return;
 }
 
@@ -297,8 +297,8 @@ int main(int argc, char **argv) {
     int threads = 1;
     char *logfile = NULL;
     hcreate(200000);
-    push_head(png_head);
-    push_head(urls_to_check_head);
+    push_head(&png_head);
+    push_head(&urls_to_check_head);
     printf("main 1\n");
     for(int t = 1; t < argc; t++) {
         printf("main 1.1\n");
