@@ -292,6 +292,7 @@ int main(int argc, char **argv) {
             log_check = 1;
             t++;
         } else {
+            printf("%s\n",argv[t]);
             ENTRY e;
             e.key = argv[t];
             hsearch(e, ENTER);
