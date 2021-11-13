@@ -45,9 +45,8 @@ void push_head(list *head) {
     return;
 }
 
-int find_http(char *buf, int size, int follow_relative_links, const char *base_url) // gets the URL
-{
-
+int find_http(char *buf, int size, int follow_relative_links, const char *base_url) {
+    printf("find_http 1\n");
     int i;
     htmlDocPtr doc;
     xmlChar *xpath = (xmlChar*) "//a/@href";
@@ -59,17 +58,26 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
         return 1;
     }
 
+    printf("find_http 2\n");
+
     doc = mem_getdoc(buf, size, base_url);
     result = getnodeset (doc, xpath);
     if (result) {
+        printf("find_http 3\n");
         nodeset = result->nodesetval;
         for (i=0; i < nodeset->nodeNr; i++) {
+
+            printf("find_http 4\n");
+
             href = xmlNodeListGetString(doc, nodeset->nodeTab[i]->xmlChildrenNode, 1);
             if ( follow_relative_links ) {
                 xmlChar *old = href;
                 href = xmlBuildURI(href, (xmlChar *) base_url);
                 xmlFree(old);
             }
+
+            printf("find_http 5\n");
+
             if ( href != NULL && !strncmp((const char *)href, "http", 4) ) {
                 ENTRY e;
                 e.key = (char *)href;
@@ -83,32 +91,44 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                     pthread_mutex_unlock(&mutex);
                 }
             }
+
+            printf("find_http 6\n");
+
             xmlFree(href);
         }
         xmlXPathFreeObject (result);
     }
+
+    printf("find_http 7\n");
+
     xmlFreeDoc(doc);
     xmlCleanupParser();
     return 0;
 }
 
-void process_html(CURL *curl_handle, RECV_BUF *p_recv_buf)
-{
+void process_html(CURL *curl_handle, RECV_BUF *p_recv_buf) {
+    printf("process_html 1\n");
     int follow_relative_link = 1;
     char *url = NULL; 
     //pid_t pid =getpid();
 
     curl_easy_getinfo(curl_handle, CURLINFO_EFFECTIVE_URL, &url);
+
+    printf("process_html 2\n");
+
     find_http(p_recv_buf->buf, p_recv_buf->size, follow_relative_link, url);
+
+    printf("process_html 3\n");
     return;
 }
 
-void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf)
-{
+void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
+    printf("process_png 1\n");
     //pid_t pid =getpid();
     char *eurl = NULL;          /* effective URL */
     curl_easy_getinfo(curl_handle, CURLINFO_EFFECTIVE_URL, &eurl);
     if ( eurl != NULL) {
+        printf("process_png 2\n");
         //printf("The PNG url is: %s\n", eurl);
         pthread_mutex_lock(&mutex);
         push_head(png_head);
@@ -117,6 +137,7 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf)
         pngs_found++;
         pthread_mutex_unlock(&mutex);
     }
+    printf("process_png 3\n");
 
     return;
 }
@@ -127,8 +148,8 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf)
  * @return 0 on success; non-zero otherwise
  */
 
-int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf)
-{
+int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
+    printf("process_data 1\n");
     CURLcode res;
     //pid_t pid =getpid();
     long response_code;
@@ -138,10 +159,14 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf)
 	    printf("Response code: %ld\n", response_code);
     }
 
+    printf("process_data 2\n");
+
     if ( response_code >= 400 ) { 
     	fprintf(stderr, "Error.\n");
         return 1;
     }
+
+    printf("process_data 3\n");
 
     char *ct = NULL;
     res = curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &ct);
@@ -152,16 +177,21 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf)
         return 2;
     }
 
+    printf("process_data 4\n");
+
     if ( strstr(ct, CT_HTML) ) {
         process_html(curl_handle, p_recv_buf);
     } else if ( strstr(ct, CT_PNG) ) {
         process_png(curl_handle, p_recv_buf);
     }
 
+    printf("process_data 5\n");
+
     return 0;
 }
 
 void *check_urls(void *ignore) {
+    printf("check_urls 1\n");
     RECV_BUF recv;
     CURL *curl_handle = easy_handle_init(&recv, NULL);
     while(pngs_found < max_pngs) {
@@ -194,10 +224,12 @@ void *check_urls(void *ignore) {
             push_head(visited_urls_head);
         }
 
-        if(visited_urls_head == NULL) {
+        if(log_check) {
             visited_urls_head->url = malloc(strlen(e.key)+1);
             memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
         }
+
+        printf("check_urls 2\n");
 
         pthread_mutex_unlock(&mutex);
 
@@ -210,9 +242,13 @@ void *check_urls(void *ignore) {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
         }
 
+        printf("check_urls 3\n");
+
         curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
 
         process_data(curl_handle, &recv);
+
+        printf("check_urls 4\n");
 
         /*if(strcmp(content_type, "image/png") == 0) {
             char *temp = malloc(8);
@@ -240,6 +276,7 @@ int main(int argc, char **argv) {
     hcreate(200000);
     png_head = malloc(sizeof(list));
     urls_to_check_head = malloc(sizeof(list));
+    printf("main 1\n");
     for(int t = 0; t < argc; t++) {
         if(strcmp(argv[t],"-t")) {
             threads = atoi(argv[t+1]);
@@ -263,10 +300,14 @@ int main(int argc, char **argv) {
         }
     }
 
+    printf("main 2\n");
+
     pthread_t *ptids = malloc(threads*sizeof(pthread_t));
     for(int u = 0; u < threads; u++) {
         pthread_create(ptids + u, NULL, check_urls, NULL);
     }
+
+    printf("main 3\n");
 
     while(pngs_found < max_pngs) {
         if(waiting == 10) {
@@ -277,9 +318,14 @@ int main(int argc, char **argv) {
         }
     }
 
+    printf("main 4\n");
+
     for(int v = 0; v < threads; v++) {
         pthread_join(ptids[v], NULL);
     }
+
+    printf("main 5\n");
+
     char *fname = "./png_urls.txt";
     FILE *f = fopen(fname, "w+");
     for(int w = 0; w < max_pngs && png_head != NULL; w++) {
