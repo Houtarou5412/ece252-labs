@@ -32,11 +32,11 @@ pthread_mutex_t mutex;
 sem_t url_avail;
 
 void pop_head(list **head) {
-    printf("head at %p\nurl: %s at %p\n", *head, (*head)->url, &((*head)->url));
+    //printf("head at %p\nurl: %s at %p\n", *head, (*head)->url, &((*head)->url));
     free((*head)->url);
     list *temp = *head;
     *head = (*head)->p_next;
-    printf("temp at %p, head at %p\n", temp, *head);
+    //printf("temp at %p, head at %p\n", temp, *head);
     free(temp);
 
     /*printf("pop_head 1\n");
@@ -50,7 +50,7 @@ void pop_head(list **head) {
 }
 
 void push_head(list **head) {
-    printf("push 1\n");
+    //printf("push 1\n");
     list *temp = malloc(sizeof(list));
     temp->p_next = *head;
     *head = temp;
@@ -58,7 +58,7 @@ void push_head(list **head) {
 }
 
 int find_http(char *buf, int size, int follow_relative_links, const char *base_url) {
-    printf("find_http 1\n");
+    //printf("find_http 1\n");
     int i;
     htmlDocPtr doc;
     xmlChar *xpath = (xmlChar*) "//a/@href";
@@ -70,12 +70,12 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
         return 1;
     }
 
-    printf("find_http 2\n");
+    //printf("find_http 2\n");
 
     doc = mem_getdoc(buf, size, base_url);
     result = getnodeset (doc, xpath);
     if (result) {
-        printf("find_http 3\n");
+        //printf("find_http 3\n");
         nodeset = result->nodesetval;
         for (i=0; i < nodeset->nodeNr; i++) {
 
@@ -103,7 +103,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                     urls_to_check_head->url = malloc(strlen(e.key)+1);
                     memcpy(urls_to_check_head->url, e.key, strlen(e.key)+1);
 
-                    printf("new first url: %s\n", urls_to_check_head->url);
+                    //printf("new first url: %s\n", urls_to_check_head->url);
                     sem_post(&url_avail);
                     pthread_mutex_unlock(&mutex);
                 }
@@ -116,7 +116,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
         xmlXPathFreeObject (result);
     }
 
-    printf("find_http 7\n");
+    //printf("find_http 7\n");
 
     xmlFreeDoc(doc);
     xmlCleanupParser();
@@ -124,28 +124,28 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
 }
 
 void process_html(CURL *curl_handle, RECV_BUF *p_recv_buf) {
-    printf("process_html 1\n");
+    //printf("process_html 1\n");
     int follow_relative_link = 1;
     char *url = NULL; 
     //pid_t pid =getpid();
 
     curl_easy_getinfo(curl_handle, CURLINFO_EFFECTIVE_URL, &url);
 
-    printf("process_html 2\n");
+    //printf("process_html 2\n");
 
     find_http(p_recv_buf->buf, p_recv_buf->size, follow_relative_link, url);
 
-    printf("process_html 3\n");
+    //printf("process_html 3\n");
     return;
 }
 
 void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
-    printf("process_png 1\n");
+    //printf("process_png 1\n");
     //pid_t pid =getpid();
     char *eurl = NULL;          /* effective URL */
     curl_easy_getinfo(curl_handle, CURLINFO_EFFECTIVE_URL, &eurl);
     if ( eurl != NULL) {
-        printf("process_png 2\n");
+        //printf("process_png 2\n");
         //printf("The PNG url is: %s\n", eurl);
         pthread_mutex_lock(&mutex);
         push_head(&png_head);
@@ -154,7 +154,7 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
         pngs_found++;
         pthread_mutex_unlock(&mutex);
     }
-    printf("process_png 3\n");
+    //printf("process_png 3\n");
 
     return;
 }
@@ -166,7 +166,7 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
  */
 
 int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
-    printf("process_data 1\n");
+    //printf("process_data 1\n");
     CURLcode res;
     //pid_t pid =getpid();
     long response_code;
@@ -176,14 +176,14 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
 	    printf("Response code: %ld\n", response_code);
     }
 
-    printf("process_data 2\n");
+    //printf("process_data 2\n");
 
     if ( response_code >= 400 ) { 
     	printf("Error in response code.\n");
         return 1;
     }
 
-    printf("process_data 3\n");
+    //printf("process_data 3\n");
 
     char *ct = NULL;
     res = curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &ct);
@@ -194,7 +194,7 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
         return 2;
     }
 
-    printf("process_data 4\n");
+    //printf("process_data 4\n");
 
     if ( strstr(ct, CT_HTML) ) {
         process_html(curl_handle, p_recv_buf);
@@ -202,23 +202,24 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
         process_png(curl_handle, p_recv_buf);
     }
 
-    printf("process_data 5\n");
+    //printf("process_data 5\n");
 
     return 0;
 }
 
 void *check_urls(void *ignore) {
-    printf("check_urls 1\n");
+    //printf("check_urls 1\n");
     RECV_BUF recv;
     CURL *curl_handle = easy_handle_init(&recv, NULL);
     while(pngs_found < max_pngs) {
 
-        printf("check_urls 1.1\n");
+        //printf("check_urls 1.1\n");
         ENTRY e;
         CURLcode res;
         //char *content_type;
 
         pthread_mutex_lock(&mutex);
+        printf("pngs_found: %s\n", pngs_found);
         waiting++;
         pthread_mutex_unlock(&mutex);
 
@@ -227,7 +228,7 @@ void *check_urls(void *ignore) {
         pthread_mutex_lock(&mutex);
         waiting--;
 
-        printf("check_urls 1.2\n");
+        //printf("check_urls 1.2\n");
 
         e.key = malloc(strlen(urls_to_check_head->url)+1);
         memcpy(e.key, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
@@ -238,7 +239,7 @@ void *check_urls(void *ignore) {
             continue;
         }*/
 
-        printf("check_urls 1.3\n");
+        //printf("check_urls 1.3\n");
 
         pop_head(&urls_to_check_head);
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
@@ -250,7 +251,7 @@ void *check_urls(void *ignore) {
             memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
         }
 
-        printf("check_urls 2\n");
+        //printf("check_urls 2\n");
 
         pthread_mutex_unlock(&mutex);
 
@@ -263,13 +264,13 @@ void *check_urls(void *ignore) {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
         }
 
-        printf("check_urls 3\n");
+        //printf("check_urls 3\n");
 
         //curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
 
         process_data(curl_handle, &recv);
 
-        printf("check_urls 4\n");
+        //printf("check_urls 4\n");
 
         /*if(strcmp(content_type, "image/png") == 0) {
             char *temp = malloc(8);
