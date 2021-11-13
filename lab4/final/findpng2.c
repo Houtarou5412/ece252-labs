@@ -219,7 +219,7 @@ void *check_urls(void *ignore) {
         //char *content_type;
 
         pthread_mutex_lock(&mutex);
-        printf("pngs_found: %s\n", pngs_found);
+        printf("pngs_found: %d\n", pngs_found);
         waiting++;
         pthread_mutex_unlock(&mutex);
 
