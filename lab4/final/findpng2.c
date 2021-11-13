@@ -95,7 +95,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                 ENTRY e;
                 e.key = (char *)href;
                 if(hsearch(e, FIND) == NULL) {
-                    printf("find_http 5.2\n");
+                    //printf("find_http 5.2\n");
                     hsearch(e, ENTER);
 
                     pthread_mutex_lock(&mutex);
@@ -213,7 +213,7 @@ void *check_urls(void *ignore) {
         pthread_mutex_lock(&mutex);
         waiting--;
 
-        //printf("check_urls 1.2\n");
+        printf("check_urls 1.2\n");
 
         e.key = malloc(strlen(urls_to_check_head->url)+1);
         memcpy(e.key, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
@@ -224,7 +224,7 @@ void *check_urls(void *ignore) {
             continue;
         }*/
 
-        //printf("check_urls 1.3\n");
+        printf("check_urls 1.3\n");
 
         pop_head(&urls_to_check_head);
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
