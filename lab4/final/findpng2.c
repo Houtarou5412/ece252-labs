@@ -95,7 +95,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                 ENTRY e;
                 e.key = (char *)href;
                 if(hsearch(e, FIND) == NULL) {
-                    //printf("find_http 5.2\n");
+                    printf("find_http 5.2\n");
                     hsearch(e, ENTER);
 
                     pthread_mutex_lock(&mutex);
