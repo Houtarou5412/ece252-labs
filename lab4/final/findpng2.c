@@ -3,6 +3,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <sys/wait.h>
 #include <semaphore.h>
 #include <unistd.h>
 #include <curl/curl.h>
@@ -202,7 +203,7 @@ void *check_urls(void *ignore) {
         printf("check_urls 1.1\n");
         ENTRY e;
         CURLcode res;
-        char *content_type;
+        //char *content_type;
 
         pthread_mutex_lock(&mutex);
         waiting++;
@@ -212,6 +213,9 @@ void *check_urls(void *ignore) {
 
         pthread_mutex_lock(&mutex);
         waiting--;
+
+        printf("check_urls 1.2\n");
+
         e.key = malloc(strlen(urls_to_check_head->url)+1);
         memcpy(e.key, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
         /*if(hsearch(e, FIND) == NULL) {
@@ -220,6 +224,9 @@ void *check_urls(void *ignore) {
             pthread_mutex_unlock(&mutex);
             continue;
         }*/
+
+        printf("check_urls 1.3\n");
+
         pop_head(urls_to_check_head);
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
         printf("%s\n", e.key);
@@ -250,7 +257,7 @@ void *check_urls(void *ignore) {
 
         printf("check_urls 3\n");
 
-        curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
+        //curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
 
         process_data(curl_handle, &recv);
 
@@ -319,12 +326,18 @@ int main(int argc, char **argv) {
 
     printf("main 3\n");
 
+    int make_sure = 0;
     while(pngs_found < max_pngs) {
-        if(waiting == 10) {
+        if(waiting == 10 && make_sure) {
             for(int g = 0; g < threads; g++) {
                 pthread_cancel(ptids[g]);
             }
             break;
+        } else if(waiting == 10) {
+            sleep(1);
+            make_sure = 1;
+        } else {
+            make_sure = 0;
         }
     }
 
