@@ -166,23 +166,6 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
  */
 
 int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
-    //printf("process_data 1\n");
-    CURLcode res;
-    //pid_t pid =getpid();
-    long response_code;
-
-    res = curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &response_code);
-    if ( res == CURLE_OK ) {
-	    //printf("Response code: %ld\n", response_code);
-    }
-
-    //printf("process_data 2\n");
-
-    if ( response_code >= 400 ) { 
-    	printf("Error in response code.\n");
-        return 1;
-    }
-
     //printf("process_data 3\n");
 
     char *ct = NULL;
@@ -255,8 +238,6 @@ void *check_urls(void *ignore) {
 
         //printf("check_urls 2\n");
 
-        pthread_mutex_unlock(&mutex);
-
         res = curl_easy_perform(curl_handle);
 
         if( res != CURLE_OK) {
@@ -266,11 +247,56 @@ void *check_urls(void *ignore) {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
         }
 
+        //printf("process_data 1\n");
+        long response_code == 300;
+        int ignore = 0;
+
+        while(response_code >= 300 && !ignore) {
+            res = curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &response_code);
+            if ( res == CURLE_OK ) {
+                //printf("Response code: %ld\n", response_code);
+            }
+
+            //printf("process_data 2\n");
+
+            if ( response_code >= 400 ) { 
+                printf("Error in response code.\n");
+                ignore = 1;
+            } else if( response_code >= 300 ) {
+                curl_easy_getinfo(curl_handle, CURLINFO_EFFECTIVE_URL, &(e.key));
+                if(hsearch(e.key, FIND) == NULL) {
+                    hsearch(e.key, ENTER);
+                    if(log_check) {
+                        push_head(&visited_urls_head);
+                        visited_urls_head->url = malloc(strlen(e.key)+1);
+                        memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
+                    }
+
+                    curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
+                    res = curl_easy_perform(curl_handle);
+
+                    if( res != CURLE_OK) {
+                        printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+                        ignore = 1;
+                    } else {
+                        //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
+                    }
+
+                } else {
+                    ignore = 1;
+                }
+            }
+        }
+        
+
+        pthread_mutex_unlock(&mutex);
         //printf("check_urls 3\n");
 
         //curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
 
-        process_data(curl_handle, &recv);
+        if(!ignore) {
+            process_data(curl_handle, &recv);
+        }
 
         //printf("check_urls 4\n");
 

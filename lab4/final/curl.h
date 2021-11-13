@@ -300,8 +300,8 @@ CURL *easy_handle_init(RECV_BUF *ptr, const char *url)
     curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
     /* continue to send authentication credentials when following locations */
     curl_easy_setopt(curl_handle, CURLOPT_UNRESTRICTED_AUTH, 1L);
-    /* max numbre of redirects to follow sets to 5 */
-    curl_easy_setopt(curl_handle, CURLOPT_MAXREDIRS, 5L);
+    /* max numbre of redirects to follow sets to 1 */
+    curl_easy_setopt(curl_handle, CURLOPT_MAXREDIRS, 1L);
     /* supports all built-in encodings */ 
     curl_easy_setopt(curl_handle, CURLOPT_ACCEPT_ENCODING, "");
 
