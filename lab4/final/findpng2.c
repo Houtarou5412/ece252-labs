@@ -281,7 +281,7 @@ int main(int argc, char **argv) {
         pthread_join(ptids[v], NULL);
     }
     char *fname = "./png_urls.txt";
-    FILE f = fopen(fname, "w+");
+    FILE *f = fopen(fname, "w+");
     for(int w = 0; w < max_pngs && png_head != NULL; w++) {
         fprintf(&f, "%s\n", png_head->url);
         pop_head(png_head);
@@ -292,7 +292,7 @@ int main(int argc, char **argv) {
         pop_head(png_head);
     }
     
-    FILE l;
+    FILE *l;
     if(log_check) {
         l = fopen(logfile, "w+");
     }
