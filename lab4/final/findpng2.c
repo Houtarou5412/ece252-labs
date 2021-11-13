@@ -207,11 +207,10 @@ void *check_urls(void *ignore) {
             printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
         exit(1);
         } else {
-            //printf("%lu bytes received in memory %p, seq=%d.\n", \
-                recv_buf.size, recv_buf.buf, recv_buf.seq);
+            //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
         }
 
-        curl_easy_get_info(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
+        curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
 
         process_data(curl_handle, &recv);
 
@@ -265,7 +264,7 @@ int main(int argc, char **argv) {
     }
 
     pthread_t *ptids = malloc(threads*sizeof(pthread_t));
-    for(int u = 0; t < threads; t++) {
+    for(int u = 0; u < threads; u++) {
         pthread_create(ptids + u, NULL, check_urls, NULL);
     }
 
@@ -282,12 +281,12 @@ int main(int argc, char **argv) {
         pthread_join(ptids[v], NULL);
     }
     char *fname = "./png_urls.txt";
-    FILE f = fopen(fname);
+    FILE f = fopen(fname, "w+");
     for(int w = 0; w < max_pngs && png_head != NULL; w++) {
         fprintf(&f, "%s\n", png_head->url);
         pop_head(png_head);
     }
-    fclose(f);
+    fclose(&f);
 
     while(png_head != NULL) {
         pop_head(png_head);
@@ -295,13 +294,16 @@ int main(int argc, char **argv) {
     
     FILE l;
     if(log_check) {
-        l = fopen(logfile);
+        l = fopen(logfile, "w+");
     }
     while(visited_urls_head != NULL) {
         if(log_check) {
             fprintf(&l, "%s\n", visited_urls_head->url);
         }
         pop_head(visited_urls_head);
+    }
+    if(log_check) {
+        fclose(&l);
     }
 
     while(urls_to_check_head != NULL) {
