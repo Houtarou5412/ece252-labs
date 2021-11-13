@@ -292,13 +292,13 @@ int main(int argc, char **argv) {
             log_check = 1;
             t++;
         } else {
-            printf("%s\n",argv[t]);
             ENTRY e;
             e.key = argv[t];
             hsearch(e, ENTER);
             urls_to_check_head->url = malloc(strlen(argv[t])+1);
             memcpy(urls_to_check_head->url, argv[t], strlen(argv[t])+1);
             sem_post(&url_avail);
+            printf("%s %s %s\n",argv[t], e.key, urls_to_check_head->url);
         }
     }
 
