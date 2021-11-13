@@ -253,7 +253,7 @@ void *check_urls(void *ignore) {
         /*if(strcmp(content_type, "image/png") == 0) {
             char *temp = malloc(8);
             memcpy(temp, recv.buf, recv.size);
-            if(strcmp(temp, 0x89504E470D0A1A1)) {
+            if(strcmp(temp, 0x89504E470D0A1A1) == 0) {
                 pthread_mutex_lock(&mutex);
                 push_head(png_head);
                 png_head->url = malloc(sizeof(e.key));
@@ -278,15 +278,15 @@ int main(int argc, char **argv) {
     urls_to_check_head = malloc(sizeof(list));
     printf("main 1\n");
     for(int t = 1; t < argc; t++) {
-        if(strcmp(argv[t],"-t")) {
+        if(strcmp(argv[t],"-t") == 0) {
             threads = atoi(argv[t+1]);
             t++;
         }
-        else if(strcmp(argv[t], "-m")){
+        else if(strcmp(argv[t], "-m") == 0){
             max_pngs = atoi(argv[t+1]);
             t++;
         }
-        else if(strcmp(argv[t], "-v")){
+        else if(strcmp(argv[t], "-v") == 0){
             logfile = argv[t+1];
             log_check = 1;
             t++;
