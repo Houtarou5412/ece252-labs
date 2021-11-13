@@ -31,12 +31,12 @@ int waiting = 0;
 pthread_mutex_t mutex;
 sem_t url_avail;
 
-void pop_head(list *head) {
-    printf("head at %p\nurl: %s at %p\n", head, head->url, &(head->url));
-    free(head->url);
-    list *temp = head;
-    head = head->p_next;
-    printf("temp at %p, head at %p\n", temp, head);
+void pop_head(list **head) {
+    printf("head at %p\nurl: %s at %p\n", *head, *head->url, &(*head->url));
+    free(*head->url);
+    list *temp = *head;
+    *head = *head->p_next;
+    printf("temp at %p, head at %p\n", temp, *head);
     free(temp);
 
     /*printf("pop_head 1\n");
@@ -99,7 +99,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                     hsearch(e, ENTER);
 
                     pthread_mutex_lock(&mutex);
-                    push_head(urls_to_check_head);
+                    push_head(&urls_to_check_head);
                     urls_to_check_head->url = malloc(strlen(e.key)+1);
                     memcpy(urls_to_check_head->url, e.key, strlen(e.key)+1);
 
@@ -148,7 +148,7 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
         printf("process_png 2\n");
         //printf("The PNG url is: %s\n", eurl);
         pthread_mutex_lock(&mutex);
-        push_head(png_head);
+        push_head(&png_head);
         png_head->url = malloc(strlen(eurl)+1);
         memcpy(png_head->url, eurl, strlen(eurl)+1);
         pngs_found++;
@@ -240,12 +240,12 @@ void *check_urls(void *ignore) {
 
         printf("check_urls 1.3\n");
 
-        pop_head(urls_to_check_head);
+        pop_head(&urls_to_check_head);
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
         printf("%s\n", e.key);
 
         if(log_check) {
-            push_head(visited_urls_head);
+            push_head(&visited_urls_head);
             visited_urls_head->url = malloc(strlen(e.key)+1);
             memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
         }
@@ -258,7 +258,7 @@ void *check_urls(void *ignore) {
 
         if( res != CURLE_OK) {
             printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-            exit(1);
+            continue;
         } else {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
         }
@@ -276,7 +276,7 @@ void *check_urls(void *ignore) {
             memcpy(temp, recv.buf, recv.size);
             if(strcmp(temp, 0x89504E470D0A1A1) == 0) {
                 pthread_mutex_lock(&mutex);
-                push_head(png_head);
+                push_head(&png_head);
                 png_head->url = malloc(sizeof(e.key));
                 memcpy(png_head->url, e.key, sizeof(e.key));
                 pthread_mutex_unlock(&mutex);
@@ -364,12 +364,12 @@ int main(int argc, char **argv) {
     FILE *f = fopen(fname, "w+");
     for(int w = 0; w < max_pngs && png_head != NULL; w++) {
         fprintf(f, "%s\n", png_head->url);
-        pop_head(png_head);
+        pop_head(&png_head);
     }
     fclose(f);
 
     while(png_head != NULL) {
-        pop_head(png_head);
+        pop_head(&png_head);
     }
     
     FILE *l;
@@ -380,14 +380,14 @@ int main(int argc, char **argv) {
         if(log_check) {
             fprintf(l, "%s\n", visited_urls_head->url);
         }
-        pop_head(visited_urls_head);
+        pop_head(&visited_urls_head);
     }
     if(log_check) {
         fclose(l);
     }
 
     while(urls_to_check_head != NULL) {
-        pop_head(urls_to_check_head);
+        pop_head(&urls_to_check_head);
     }
 
     hdestroy();
