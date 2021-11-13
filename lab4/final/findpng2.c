@@ -301,6 +301,7 @@ int main(int argc, char **argv) {
     push_head(urls_to_check_head);
     printf("main 1\n");
     for(int t = 1; t < argc; t++) {
+        printf("main 1.1\n");
         if(strcmp(argv[t],"-t") == 0) {
             threads = atoi(argv[t+1]);
             t++;
