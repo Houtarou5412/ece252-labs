@@ -32,6 +32,7 @@ pthread_mutex_t mutex;
 sem_t url_avail;
 
 void pop_head(list *head) {
+    printf("head at %p\nurl: %s at %p\n", head, head->url, &(head->url));
     free(head->url);
     list *temp = head;
     head = head->p_next;
