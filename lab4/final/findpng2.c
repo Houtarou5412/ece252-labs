@@ -50,7 +50,7 @@ void pop_head(list *head) {
 }
 
 void push_head(list *head) {
-    //printf("push 1\n");
+    printf("push 1\n");
     list *temp = malloc(sizeof(list));
     temp->p_next = head;
     head = temp;
