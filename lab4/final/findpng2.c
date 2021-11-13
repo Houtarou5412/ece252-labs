@@ -67,7 +67,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
         nodeset = result->nodesetval;
         for (i=0; i < nodeset->nodeNr; i++) {
 
-            printf("find_http 4\n");
+            //printf("find_http 4\n");
 
             href = xmlNodeListGetString(doc, nodeset->nodeTab[i]->xmlChildrenNode, 1);
             if ( follow_relative_links ) {
@@ -76,14 +76,14 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                 xmlFree(old);
             }
 
-            printf("find_http 5\n");
+            //printf("find_http 5\n");
 
             if ( href != NULL && !strncmp((const char *)href, "http", 4) ) {
-                printf("find_http 5.1\n");
+                //printf("find_http 5.1\n");
                 ENTRY e;
                 e.key = (char *)href;
                 if(hsearch(e, FIND) == NULL) {
-                    printf("find_http 5.2\n");
+                    //printf("find_http 5.2\n");
                     hsearch(e, ENTER);
 
                     pthread_mutex_lock(&mutex);
@@ -95,7 +95,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                 }
             }
 
-            printf("find_http 6\n");
+            //printf("find_http 6\n");
 
             xmlFree(href);
         }
@@ -199,6 +199,7 @@ void *check_urls(void *ignore) {
     CURL *curl_handle = easy_handle_init(&recv, NULL);
     while(pngs_found < max_pngs) {
 
+        printf("check_urls 1.1\n");
         ENTRY e;
         CURLcode res;
         char *content_type;
@@ -242,7 +243,7 @@ void *check_urls(void *ignore) {
 
         if( res != CURLE_OK) {
             printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-        exit(1);
+            exit(1);
         } else {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
         }
