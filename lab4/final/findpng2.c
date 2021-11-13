@@ -313,6 +313,7 @@ int main(int argc, char **argv) {
             log_check = 1;
             t++;
         } else {
+            printf("%p -> %p", urls_to_check_head, urls_to_check_head->p_next);
             ENTRY e;
             e.key = argv[t];
             hsearch(e, ENTER);
