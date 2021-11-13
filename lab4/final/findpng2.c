@@ -224,7 +224,7 @@ void *check_urls(void *ignore) {
             continue;
         }*/
 
-        printf("urls_to_check_head %p, e.key %s\n", urls_to_check_head, e.key);
+        printf("urls_to_check_head %p, e.key %s at %p\n", urls_to_check_head, e.key, &(e.key));
 
         pop_head(&urls_to_check_head);
         printf("1.3\n");
