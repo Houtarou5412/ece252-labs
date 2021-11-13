@@ -167,7 +167,7 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
 
 int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     //printf("process_data 3\n");
-
+    CURLcode res;
     char *ct = NULL;
     res = curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &ct);
     if ( res == CURLE_OK && ct != NULL ) {
@@ -248,7 +248,7 @@ void *check_urls(void *ignore) {
         }
 
         //printf("process_data 1\n");
-        long response_code == 300;
+        long response_code = 300;
         int ignore = 0;
 
         while(response_code >= 300 && !ignore) {
@@ -264,8 +264,8 @@ void *check_urls(void *ignore) {
                 ignore = 1;
             } else if( response_code >= 300 ) {
                 curl_easy_getinfo(curl_handle, CURLINFO_EFFECTIVE_URL, &(e.key));
-                if(hsearch(e.key, FIND) == NULL) {
-                    hsearch(e.key, ENTER);
+                if(hsearch(e, FIND) == NULL) {
+                    hsearch(e, ENTER);
                     if(log_check) {
                         push_head(&visited_urls_head);
                         visited_urls_head->url = malloc(strlen(e.key)+1);
