@@ -32,9 +32,12 @@ pthread_mutex_t mutex;
 sem_t url_avail;
 
 void pop_head(list *head) {
+    printf("pop_head 1\n");
     free(head->url);
     list *temp = head->p_next;
+    printf("pop_head 2\n");
     free(head);
+    printf("pop_head 3\n");
     head = temp;
     return;
 }
