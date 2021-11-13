@@ -240,7 +240,7 @@ void *check_urls(void *ignore) {
 
         res = curl_easy_perform(curl_handle);
 
-        if( res != CURLE_OK) {
+        if( res != CURLE_OK && strcmp(curl_easy_strerror(res),"Number of redirects hit maximum account") != 0 ) {
             printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
             continue;
         } else {
@@ -252,6 +252,7 @@ void *check_urls(void *ignore) {
         int ignore = 0;
 
         while(response_code >= 300 && !ignore) {
+            printf("redirecting\n");
             res = curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &response_code);
             if ( res == CURLE_OK ) {
                 //printf("Response code: %ld\n", response_code);
@@ -275,7 +276,7 @@ void *check_urls(void *ignore) {
                     curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
                     res = curl_easy_perform(curl_handle);
 
-                    if( res != CURLE_OK) {
+                    if( res != CURLE_OK && strcmp(curl_easy_strerror(res),"Number of redirects hit maximum account") != 0 ) {
                         printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
                         ignore = 1;
                     } else {
@@ -295,6 +296,7 @@ void *check_urls(void *ignore) {
         //curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
 
         if(!ignore) {
+            printf("start processing\n");
             process_data(curl_handle, &recv);
         }
 
