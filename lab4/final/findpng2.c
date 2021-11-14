@@ -247,6 +247,10 @@ void *check_urls(void *ignore) {
         CURLcode res;
         //char *content_type;
 
+        if(urls_to_check_head == NULL) {
+            break;
+        }
+
         waiting++;
         printf("pngs_found: %d, maybe_png: %d, waiting: %d\n", pngs_found, maybe_png, waiting);
 
@@ -450,7 +454,7 @@ int main(int argc, char **argv) {
 
     //printf("main 3\n");
 
-    int make_sure = 0;
+    /*int make_sure = 0;
     while(pngs_found < max_pngs) {
         if(waiting == threads && make_sure) {
             printf("cancelling\n");
@@ -466,7 +470,7 @@ int main(int argc, char **argv) {
         } else {
             make_sure = 0;
         }
-    }
+    }*/
 
     //printf("main 4\n");
 
