@@ -302,7 +302,7 @@ void *check_urls(void *ignore) {
 
                     curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
                     recv_buf_cleanup(&recv);
-                    recv_buf_init(&recv);
+                    recv_buf_init(&recv, BUF_SIZE);
                     res = curl_easy_perform(curl_handle);
 
                     if( res != CURLE_OK ) {
@@ -356,7 +356,7 @@ void *check_urls(void *ignore) {
         //free(e.key);
 
         recv_buf_cleanup(&recv);
-        recv_buf_init(&recv);
+        recv_buf_init(&recv, BUF_SIZE);
     }
     cleanup(curl_handle, &recv);
     return NULL;
