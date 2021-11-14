@@ -266,7 +266,7 @@ void *check_urls(void *ignore) {
                 printf("Error in response code.\n");
                 ignore = 1;
             } else if( response_code >= 300 ) {
-                printf("rcode 3xx\n");
+                printf("rcode 3xx, e.key %p\n", &(e.key));
                 free(e.key);
                 printf("get redirect url\n");
                 curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &(e.key));
