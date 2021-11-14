@@ -319,7 +319,7 @@ void *check_urls(void *ignore) {
 
         }*/
 
-        free(e.key);
+        // free(e.key);
     }
     cleanup(curl_handle, &recv);
     return NULL;
