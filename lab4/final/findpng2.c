@@ -154,7 +154,13 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     //pid_t pid =getpid();
     char *eurl = NULL;          /* effective URL */
     curl_easy_getinfo(curl_handle, CURLINFO_EFFECTIVE_URL, &eurl);
-    if ( eurl != NULL) {
+
+    char as_hex[16];
+    for (int m = 0, n = 0; m < 8; ++m, n += 2) {
+        sprintf(as_hex + n, "%02x", p_recv_buf->buf[m] & 0xff);
+    }
+
+    if ( eurl != NULL && !strncmp(as_hex, "89504E470D0A1A0A", 16)) {
         //printf("process_png 2\n");
         //printf("The PNG url is: %s\n", eurl);
         pthread_mutex_lock(&mutex);
@@ -342,7 +348,7 @@ void *check_urls(void *ignore) {
         /*if(strcmp(content_type, "image/png") == 0) {
             char *temp = malloc(8);
             memcpy(temp, recv.buf, recv.size);
-            if(strcmp(temp, 0x89504E470D0A1A1) == 0) {
+            if(strcmp(temp, 0x89504E470D0A1A0A) == 0) {
                 pthread_mutex_lock(&mutex);
                 push_head(&png_head);
                 png_head->url = malloc(sizeof(e.key));
