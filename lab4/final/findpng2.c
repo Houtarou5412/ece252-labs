@@ -173,6 +173,10 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
         pngs_found++;
         maybe_png--;
         pthread_mutex_unlock(&mutex);
+    } else {
+        pthread_mutex_lock(&mutex);
+        maybe_png--;
+        pthread_mutex_unlock(&mutex);
     }
     //printf("process_png 3\n");
 
@@ -193,6 +197,9 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     if ( res == CURLE_OK && ct != NULL ) {
     	//printf("Content-Type: %s, len=%ld\n", ct, strlen(ct));
     } else {
+        pthread_mutex_lock(&mutex);
+        maybe_png--;
+        pthread_mutex_unlock(&mutex);
         //printf("Failed obtain Content-Type\n");
         return 2;
     }
@@ -205,6 +212,10 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     } else if ( strstr(ct, CT_PNG) ) {
         //printf("png\n");
         process_png(curl_handle, p_recv_buf);
+    } else {
+        pthread_mutex_lock(&mutex);
+        maybe_png--;
+        pthread_mutex_unlock(&mutex);
     }
 
     //printf("process_data 5\n");
@@ -247,12 +258,6 @@ void *check_urls(void *ignore) {
         e.key = malloc(strlen(urls_to_check_head->url)+1);
         //printf("e.key: %p\n", e.key);
         memcpy(e.key, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
-        /*if(hsearch(e, FIND) == NULL) {
-            hsearch(e, ENTER);
-        } else {
-            pthread_mutex_unlock(&mutex);
-            continue;
-        }*/
 
         //printf("urls_to_check_head %p, e.key %s at %p\n", urls_to_check_head, e.key, &(e.key));
 
@@ -275,6 +280,7 @@ void *check_urls(void *ignore) {
         if( res != CURLE_OK ) {
             //printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
             //pthread_mutex_unlock(&mutex);
+            maybe_png--;
             continue;
         } else {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
@@ -298,7 +304,6 @@ void *check_urls(void *ignore) {
                 ignore = 1;
             } else if( response_code >= 300 ) {
                 //printf("rcode 3xx, e.key %p\n", e.key);
-                //free(e.key);
                 //printf("get redirect url\n");
                 char * temp_key;
                 curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &temp_key);
@@ -345,30 +350,16 @@ void *check_urls(void *ignore) {
         }
         //printf("check_urls 3\n");
 
-        //curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
-
         if(!ignore) {
             //printf("start processing\n");
             process_data(curl_handle, &recv);
+        } else {
+            pthread_mutex_lock(&mutex);
+            maybe_png--;
+            pthread_mutex_unlock(&mutex);
         }
 
         //printf("check_urls 4\n");
-
-        /*if(strcmp(content_type, "image/png") == 0) {
-            char *temp = malloc(8);
-            memcpy(temp, recv.buf, recv.size);
-            if(strcmp(temp, 0x89504E470D0A1A0A) == 0) {
-                pthread_mutex_lock(&mutex);
-                push_head(&png_head);
-                png_head->url = malloc(sizeof(e.key));
-                memcpy(png_head->url, e.key, sizeof(e.key));
-                pthread_mutex_unlock(&mutex);
-            }
-        } else if(strcmp(content_type, "text/html") == 0) {
-
-        }*/
-
-        //free(e.key);
 
         recv_buf_cleanup(&recv);
         recv_buf_init(&recv, BUF_SIZE);
@@ -446,11 +437,11 @@ int main(int argc, char **argv) {
     int make_sure = 0;
     while(pngs_found < max_pngs) {
         if(waiting == threads && make_sure) {
-            //printf("cancelling\n");
+            printf("cancelling\n");
             for(int g = 0; g < threads; g++) {
                 pthread_cancel(ptids[g]);
-                //pthread_mutex_trylock(&mutex);
-                //pthread_mutex_unlock(&mutex);
+                pthread_mutex_trylock(&mutex);
+                pthread_mutex_unlock(&mutex);
             }
             break;
         } else if(waiting == threads) {
