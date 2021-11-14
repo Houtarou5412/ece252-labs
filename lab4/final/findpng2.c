@@ -461,8 +461,8 @@ int main(int argc, char **argv) {
     printf("main 7\n");
     
     FILE *l;
-    if( log_check && access( l, F_OK ) == 0 ) {
-        remove(l);
+    if( log_check && access( logfile, F_OK ) == 0 ) {
+        remove(logfile);
     } 
     if(log_check) {
         l = fopen(logfile, "w+");
