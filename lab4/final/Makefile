@@ -32,4 +32,3 @@ findpng2.out: findpng2.c $(OBJS3)
 .PHONY: clean
 clean:
 	rm -f *~ *.d *.o $(TARGETS) *.png *.html
-	rm all.png

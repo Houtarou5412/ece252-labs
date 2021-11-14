@@ -385,7 +385,7 @@ int main(int argc, char **argv) {
             logfile = argv[t+1];
             log_check = 1;
             t++;
-        } else {
+        } else if(t == argc-1) {
             printf("ok\n");
             //printf("%p -> %p\n", urls_to_check_head, urls_to_check_head->p_next);
             ENTRY e;
@@ -442,6 +442,9 @@ int main(int argc, char **argv) {
     printf("main 5\n");
 
     char *fname = "./png_urls.txt";
+    if( access( fname, F_OK ) == 0 ) {
+        remove(fname);
+    } 
     FILE *f = fopen(fname, "w+");
     for(int w = 0; w < max_pngs && png_head != NULL; w++) {
         fprintf(f, "%s\n", png_head->url);
@@ -458,6 +461,9 @@ int main(int argc, char **argv) {
     printf("main 7\n");
     
     FILE *l;
+    if( log_check && access( l, F_OK ) == 0 ) {
+        remove(l);
+    } 
     if(log_check) {
         l = fopen(logfile, "w+");
     }
