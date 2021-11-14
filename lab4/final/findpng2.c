@@ -216,6 +216,7 @@ void *check_urls(void *ignore) {
         printf("check_urls 1.2\n");
 
         e.key = malloc(strlen(urls_to_check_head->url)+1);
+        printf("e.key: %p\n", &(e.key));
         memcpy(e.key, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
         /*if(hsearch(e, FIND) == NULL) {
             hsearch(e, ENTER);
