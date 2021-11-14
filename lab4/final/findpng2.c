@@ -99,7 +99,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
 
                 pthread_mutex_lock(&mutex);
                 if(hsearch(e, FIND) == NULL) {
-                    printf("new key: %s\n",e.key);
+                    //printf("new key: %s\n",e.key);
                     hsearch(e, ENTER);
 
                     push_head(&urls_to_check_head);
@@ -113,7 +113,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                     //printf("new first url: %s\n", urls_to_check_head->url);
                     sem_post(&url_avail);
                 } else {
-                    printf("existing key: %s\n",e.key);
+                    //printf("existing key: %s\n",e.key);
                 }
 
                 pthread_mutex_unlock(&mutex);
@@ -217,9 +217,9 @@ void *check_urls(void *ignore) {
         printf("pngs_found: %d\n", pngs_found);
         waiting++;
 
-        if(urls_to_check_head == NULL) {
+        /*if(urls_to_check_head == NULL) {
             printf("no more urls\n");
-        }
+        }*/
         pthread_mutex_unlock(&mutex);
 
         sem_wait(&url_avail);
@@ -258,7 +258,7 @@ void *check_urls(void *ignore) {
         res = curl_easy_perform(curl_handle);
 
         if( res != CURLE_OK ) {
-            printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+            //printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
             pthread_mutex_unlock(&mutex);
             continue;
         } else {
@@ -279,7 +279,7 @@ void *check_urls(void *ignore) {
             //printf("process_data 2\n");
 
             if ( response_code >= 400 ) { 
-                printf("Error in response code. Url: %s\n", e.key);
+                //printf("Error in response code. Url: %s\n", e.key);
                 ignore = 1;
             } else if( response_code >= 300 ) {
                 //printf("rcode 3xx, e.key %p\n", e.key);
@@ -306,7 +306,7 @@ void *check_urls(void *ignore) {
                     res = curl_easy_perform(curl_handle);
 
                     if( res != CURLE_OK ) {
-                        printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+                        //printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
                         ignore = 1;
                     } else {
                         //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
@@ -321,7 +321,7 @@ void *check_urls(void *ignore) {
             }
         }
 
-        printf("Response code 2xx. Url: %s\n", e.key);
+        //printf("Response code 2xx. Url: %s\n", e.key);
 
         pthread_mutex_unlock(&mutex);
 
@@ -480,6 +480,7 @@ int main(int argc, char **argv) {
     printf("main 9\n");
 
     while(hash_urls_head != NULL) {
+        printf("p_next = %p\n", hash_urls_head->p_next);
         ENTRY s;
         s.key = hash_urls_head->url;
         ENTRY *entry = hsearch(s, FIND);
