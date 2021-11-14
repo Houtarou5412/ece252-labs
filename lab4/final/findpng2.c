@@ -142,9 +142,6 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
 }
 
 void process_html(CURL *curl_handle, RECV_BUF *p_recv_buf) {
-    pthread_mutex_lock(&mutex);
-    maybe_png--;
-    pthread_mutex_unlock(&mutex);
     //printf("process_html 1\n");
     int follow_relative_link = 1;
     char *url = NULL; 
@@ -156,6 +153,7 @@ void process_html(CURL *curl_handle, RECV_BUF *p_recv_buf) {
 
 
     pthread_mutex_lock(&mutex);
+    maybe_png--;
     find_http(p_recv_buf->buf, p_recv_buf->size, follow_relative_link, url);
     pthread_mutex_unlock(&mutex);
 
@@ -237,19 +235,17 @@ void *check_urls(void *ignore) {
     while(pngs_found < max_pngs) {
         //printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
 
-        if(pngs_found + maybe_png + waiting >= max_pngs) {
+        if(pngs_found + maybe_png + waiting >= max_pngs || urls_to_check_head == NULL && maybe_png != 0) {
             pthread_mutex_unlock(&mutex);
             pthread_mutex_lock(&mutex);
             continue;
+        } else if(urls_to_check_head == NULL && maybe_png == 0) {
+            break;
         }
         //printf("check_urls 1.1\n");
         ENTRY e;
         CURLcode res;
         //char *content_type;
-
-        if(urls_to_check_head == NULL) {
-            break;
-        }
 
         waiting++;
         printf("pngs_found: %d, maybe_png: %d, waiting: %d\n", pngs_found, maybe_png, waiting);
