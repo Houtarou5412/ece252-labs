@@ -29,6 +29,7 @@ int log_check = 0;
 int pngs_found = 0;
 int max_pngs = 50;
 int waiting = 0;
+int maybe_png = 0;
 pthread_mutex_t mutex;
 sem_t url_avail;
 
@@ -138,6 +139,9 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
 }
 
 void process_html(CURL *curl_handle, RECV_BUF *p_recv_buf) {
+    pthread_mutex_lock(&mutex);
+    maybe_png--;
+    pthread_mutex_unlock(&mutex);
     //printf("process_html 1\n");
     int follow_relative_link = 1;
     char *url = NULL; 
@@ -167,6 +171,7 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
         png_head->url = malloc(strlen(eurl)+1);
         memcpy(png_head->url, eurl, strlen(eurl)+1);
         pngs_found++;
+        maybe_png--;
         pthread_mutex_unlock(&mutex);
     }
     //printf("process_png 3\n");
@@ -211,14 +216,18 @@ void *check_urls(void *ignore) {
     //printf("check_urls 1\n");
     RECV_BUF recv;
     CURL *curl_handle = easy_handle_init(&recv, NULL);
+    pthread_mutex_lock(&mutex);
     while(pngs_found < max_pngs) {
-
+        if(pngs_found + maybe_png >= max_pngs) {
+            pthread_mutex_unlock(&mutex);
+            pthread_mutex_lock(&mutex);
+            continue;
+        }
         //printf("check_urls 1.1\n");
         ENTRY e;
         CURLcode res;
         //char *content_type;
 
-        pthread_mutex_lock(&mutex);
         printf("pngs_found: %d\n", pngs_found);
         waiting++;
 
@@ -231,6 +240,7 @@ void *check_urls(void *ignore) {
 
         pthread_mutex_lock(&mutex);
         waiting--;
+        maybe_png++;
 
         //printf("check_urls 1.2\n");
 
@@ -264,7 +274,7 @@ void *check_urls(void *ignore) {
 
         if( res != CURLE_OK ) {
             //printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-            pthread_mutex_unlock(&mutex);
+            //pthread_mutex_unlock(&mutex);
             continue;
         } else {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
@@ -362,7 +372,9 @@ void *check_urls(void *ignore) {
 
         recv_buf_cleanup(&recv);
         recv_buf_init(&recv, BUF_SIZE);
+        pthread_mutex_lock(&mutex);
     }
+    pthread_mutex_unlock(&mutex);
     printf("thread complete\n");
     cleanup(curl_handle, &recv);
     return NULL;
