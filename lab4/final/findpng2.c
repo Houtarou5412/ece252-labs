@@ -293,20 +293,20 @@ void *check_urls(void *ignore) {
         int ignore = 0;
 
         while(response_code >= 300 && !ignore) {
-            //printf("redirecting\n");
+            printf("redirecting\n");
             res = curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &response_code);
             if ( res == CURLE_OK ) {
                 //printf("Response code: %ld\n", response_code);
             }
 
-            //printf("process_data 2\n");
+            printf("process_data 2\n");
 
             if ( response_code >= 400 ) { 
-                //printf("Error in response code. Url: %s\n", e.key);
+                printf("Error in response code. Url: %s\n", e.key);
                 ignore = 1;
             } else if( response_code >= 300 ) {
                 //printf("rcode 3xx, e.key %p\n", e.key);
-                //printf("get redirect url\n");
+                printf("get redirect url\n");
                 char * temp_key;
                 curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &temp_key);
                 e.key = malloc(strlen(temp_key) + 1);
@@ -335,25 +335,25 @@ void *check_urls(void *ignore) {
                     }
 
                 } else {
-                    //printf("found e.key %s\n", e.key);
+                    printf("found e.key %s\n", e.key);
                     ignore = 1;
                 }
             } else {
-                //printf("rcode 2xx\n");
+                printf("rcode 2xx\n");
             }
         }
 
-        //printf("Response code 2xx. Url: %s\n", e.key);
+        printf("Response code 2xx. Url: %s\n", e.key);
 
         pthread_mutex_unlock(&mutex);
 
         if(recv.size == 0) {
             ignore = 1;
         }
-        //printf("check_urls 3\n");
+        printf("check_urls 3\n");
 
         if(!ignore) {
-            //printf("start processing\n");
+            printf("start processing\n");
             process_data(curl_handle, &recv);
         } else {
             pthread_mutex_lock(&mutex);
@@ -361,7 +361,7 @@ void *check_urls(void *ignore) {
             pthread_mutex_unlock(&mutex);
         }
 
-        //printf("check_urls 4\n");
+        printf("check_urls 4\n");
 
         recv_buf_cleanup(&recv);
         recv_buf_init(&recv, BUF_SIZE);
