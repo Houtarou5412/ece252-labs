@@ -268,7 +268,7 @@ void *check_urls(void *ignore) {
                 ignore = 1;
             } else if( response_code >= 300 ) {
                 printf("rcode 3xx, e.key %p\n", e.key);
-                free(e.key);
+                //free(e.key);
                 printf("get redirect url\n");
                 char * temp_key;
                 curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &temp_key);
@@ -293,6 +293,7 @@ void *check_urls(void *ignore) {
                     }
 
                 } else {
+                    printf("found e.key %s\n", e.key);
                     ignore = 1;
                 }
             } else {
@@ -327,7 +328,7 @@ void *check_urls(void *ignore) {
 
         }*/
 
-        // free(e.key);
+        //free(e.key);
     }
     cleanup(curl_handle, &recv);
     return NULL;
