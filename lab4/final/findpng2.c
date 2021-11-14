@@ -301,6 +301,8 @@ void *check_urls(void *ignore) {
         //printf("check_urls 2\n");
         pthread_mutex_unlock(&mutex);
         res = curl_easy_perform(curl_handle);
+
+        free(e.key);
         
         //printf("check_urls 2 finished\n");
 
@@ -335,7 +337,7 @@ void *check_urls(void *ignore) {
                 //printf("get redirect url\n");
                 char * temp_key;
                 curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &temp_key);
-                //free(e.key);
+                
                 e.key = malloc(strlen(temp_key) + 1);
                 memcpy(e.key, temp_key, strlen(temp_key) + 1);
                 pthread_mutex_lock(&mutex);
