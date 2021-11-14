@@ -59,7 +59,7 @@ void push_head(list **head) {
 }
 
 int is_png(char *png) {
-    return png[0] == 137 && png[1] == 80 && png[2] == 78 && png[3] == 71 && png[4] == 13 && png[5] == 10 && png[6] == 26 && png[7] == 10 ? 1 : 0;
+    return (unsigned char)png[0] == 137 && (unsigned char)png[1] == 80 && (unsigned char)png[2] == 78 && (unsigned char)png[3] == 71 && (unsigned char)png[4] == 13 && (unsigned char)png[5] == 10 && (unsigned char)png[6] == 26 && (unsigned char)png[7] == 10 ? 1 : 0;
 }
 
 int find_http(char *buf, int size, int follow_relative_links, const char *base_url) {
