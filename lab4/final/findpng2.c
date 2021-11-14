@@ -216,6 +216,10 @@ void *check_urls(void *ignore) {
         pthread_mutex_lock(&mutex);
         printf("pngs_found: %d\n", pngs_found);
         waiting++;
+
+        if(urls_to_check_head == NULL) {
+            printf("no more urls\n");
+        }
         pthread_mutex_unlock(&mutex);
 
         sem_wait(&url_avail);
