@@ -489,7 +489,7 @@ int main(int argc, char **argv) {
         } else {
             printf("wtf\n");
         }
-        printf("entry passed\n");
+        printf("entry passed %p\n", hash_urls_head);
         
         pop_head(&hash_urls_head);
     }
