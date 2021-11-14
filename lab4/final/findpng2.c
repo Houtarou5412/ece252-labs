@@ -278,7 +278,7 @@ void *check_urls(void *ignore) {
         printf("check_urls 2\n");
 
         res = curl_easy_perform(curl_handle);
-        printf("check_urls 2 finished");
+        printf("check_urls 2 finished\n");
 
         if( res != CURLE_OK ) {
             //printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
@@ -363,7 +363,7 @@ void *check_urls(void *ignore) {
         }
 
         printf("check_urls 4\n");
-
+        printf("recv is %p with buf %p\n", &recv, recv.buf);
         recv_buf_cleanup(&recv);
         recv_buf_init(&recv, BUF_SIZE);
         pthread_mutex_lock(&mutex);
