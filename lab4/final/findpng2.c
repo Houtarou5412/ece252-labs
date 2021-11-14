@@ -25,6 +25,7 @@ list *png_head = NULL;
 list *urls_to_check_head = NULL;
 list *visited_urls_head = NULL;
 list *hash_urls_head = NULL;
+int num_urls_to_check = 0;
 int log_check = 0;
 int pngs_found = 0;
 int max_pngs = 50;
@@ -107,6 +108,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                     //printf("new key: %s\n",e.key);
                     hsearch(e, ENTER);
 
+                    num_urls_to_check++;
                     push_head(&urls_to_check_head);
                     urls_to_check_head->url = malloc(strlen(e.key)+1);
                     memcpy(urls_to_check_head->url, e.key, strlen(e.key)+1);
@@ -235,13 +237,13 @@ void *check_urls(void *ignore) {
     while(pngs_found < max_pngs) {
         //printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
 
-        if( (pngs_found + maybe_png + waiting >= max_pngs) || (urls_to_check_head == NULL && maybe_png != 0) ) {
+        if(maybe_png == 0 && waiting == 0 && num_urls_to_check == 0) {
+            printf("breaking thread\n");
+            break;
+        } else if( (pngs_found + maybe_png + waiting >= max_pngs) || waiting >= num_urls_to_check ) {
             pthread_mutex_unlock(&mutex);
             pthread_mutex_lock(&mutex);
             continue;
-        } else if(urls_to_check_head == NULL && maybe_png == 0) {
-            printf("breaking thread\n");
-            break;
         }
         //printf("check_urls 1.1\n");
         ENTRY e;
@@ -261,6 +263,7 @@ void *check_urls(void *ignore) {
         pthread_mutex_lock(&mutex);
         waiting--;
         maybe_png++;
+        num_urls_to_check--;
         //printf("still waiting: %d\n", waiting);
 
         //printf("check_urls 1.2\n");
@@ -286,12 +289,13 @@ void *check_urls(void *ignore) {
         //printf("check_urls 2\n");
         pthread_mutex_unlock(&mutex);
         res = curl_easy_perform(curl_handle);
-        pthread_mutex_lock(&mutex);
+        
         //printf("check_urls 2 finished\n");
 
         if( res != CURLE_OK ) {
             //printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
             //pthread_mutex_unlock(&mutex);
+            pthread_mutex_lock(&mutex);
             maybe_png--;
             continue;
         } else {
@@ -321,6 +325,7 @@ void *check_urls(void *ignore) {
                 curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &temp_key);
                 e.key = malloc(strlen(temp_key) + 1);
                 memcpy(e.key, temp_key, strlen(temp_key) + 1);
+                pthread_mutex_lock(&mutex);
                 if(hsearch(e, FIND) == NULL) {
                     hsearch(e, ENTER);
                     
@@ -337,7 +342,6 @@ void *check_urls(void *ignore) {
                     recv_buf_cleanup(&recv);
                     recv_buf_init(&recv, BUF_SIZE);
                     res = curl_easy_perform(curl_handle);
-                    pthread_mutex_lock(&mutex);
 
                     if( res != CURLE_OK ) {
                         //printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
@@ -347,6 +351,7 @@ void *check_urls(void *ignore) {
                     }
 
                 } else {
+                    pthread_mutex_unlock(&mutex);
                     free(e.key);
                     //printf("found e.key %s\n", e.key);
                     ignore = 1;
@@ -357,9 +362,7 @@ void *check_urls(void *ignore) {
         }
 
         //printf("Response code 2xx. Url: %s\n", e.key);
-
-        pthread_mutex_unlock(&mutex);
-
+        
         if(recv.size == 0) {
             ignore = 1;
         }
@@ -429,6 +432,7 @@ int main(int argc, char **argv) {
             hsearch(e, ENTER);
 
             push_head(&urls_to_check_head);
+            num_urls_to_check++;
             urls_to_check_head->url = malloc(strlen(argv[t])+1);
             memcpy(urls_to_check_head->url, argv[t], strlen(argv[t])+1);
 
