@@ -484,10 +484,8 @@ int main(int argc, char **argv) {
         ENTRY s;
         s.key = hash_urls_head->url;
         ENTRY *entry = hsearch(s, FIND);
-        if(entry != NULL) {
+        if(entry != NULL && hash_urls_head->p_next != NULL) {
             free(entry->key);
-        } else {
-            printf("wtf\n");
         }
         printf("entry passed %p\n", hash_urls_head);
         
