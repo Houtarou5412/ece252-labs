@@ -245,7 +245,7 @@ void *check_urls(void *ignore) {
         CURLcode res;
         //char *content_type;
 
-        printf("pngs_found: %d, maybe_png: %d, waiting: %d\n", pngs_found, maybe_png, waiting);
+        //printf("pngs_found: %d, maybe_png: %d, waiting: %d\n", pngs_found, maybe_png, waiting);
 
         /*if(urls_to_check_head == NULL) {
             printf("no more urls\n");
@@ -268,7 +268,7 @@ void *check_urls(void *ignore) {
         pthread_mutex_lock(&mutex);
         
         if(early_cancel == 1) {
-            printf("breaking thread\n");
+            //printf("breaking thread\n");
 
             break;
         }
