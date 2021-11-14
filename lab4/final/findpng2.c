@@ -229,7 +229,7 @@ void *check_urls(void *ignore) {
         pop_head(&urls_to_check_head);
         printf("1.3\n");
         printf("%s\n", e.key);
-        curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
+        //curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
         printf("%s\n", e.key);
 
         if(log_check) {
