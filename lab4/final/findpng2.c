@@ -270,7 +270,10 @@ void *check_urls(void *ignore) {
                 printf("rcode 3xx, e.key %p\n", e.key);
                 free(e.key);
                 printf("get redirect url\n");
-                curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &(e.key));
+                char * temp_key;
+                curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &temp_key);
+                e.key = malloc(strlen(temp_key) + 1);
+                memcpy(e.key, temp_key, strlen(temp_key) + 1);
                 if(hsearch(e, FIND) == NULL) {
                     hsearch(e, ENTER);
                     if(log_check) {
