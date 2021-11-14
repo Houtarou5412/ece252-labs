@@ -31,6 +31,7 @@ int pngs_found = 0;
 int max_pngs = 50;
 int waiting = 0;
 int maybe_png = 0;
+int early_cancel = 0;
 pthread_mutex_t mutex;
 sem_t url_avail;
 
@@ -237,14 +238,6 @@ void *check_urls(void *ignore) {
     while(pngs_found < max_pngs) {
         //printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
 
-        if(maybe_png == 0 && waiting == 0 && num_urls_to_check == 0) {
-            printf("breaking thread\n");
-            break;
-        } else if( (pngs_found + maybe_png + waiting >= max_pngs) || waiting >= num_urls_to_check ) {
-            pthread_mutex_unlock(&mutex);
-            pthread_mutex_lock(&mutex);
-            continue;
-        }
         //printf("check_urls 1.1\n");
         ENTRY e;
         CURLcode res;
@@ -256,11 +249,27 @@ void *check_urls(void *ignore) {
         /*if(urls_to_check_head == NULL) {
             printf("no more urls\n");
         }*/
+        if(waiting == threads - 1 && num_urls_to_check == 0) {
+            early_cancel = 1;
+
+            for(int p = 0; p < threads - 1; p++) {
+                sem_post(&url_avail);
+            }
+            break;
+        }
+
         pthread_mutex_unlock(&mutex);
 
         sem_wait(&url_avail);
 
         pthread_mutex_lock(&mutex);
+        
+        if(early_cancel == 1) {
+            printf("breaking thread\n");
+
+            break;
+        }
+
         waiting--;
         maybe_png++;
         num_urls_to_check--;
