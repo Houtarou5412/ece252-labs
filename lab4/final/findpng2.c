@@ -229,7 +229,7 @@ void *check_urls(void *ignore) {
         pop_head(&urls_to_check_head);
         printf("1.3\n");
         printf("%s\n", e.key);
-        //curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
+        curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
         printf("%s\n", e.key);
 
         if(log_check) {
@@ -266,6 +266,7 @@ void *check_urls(void *ignore) {
                 printf("Error in response code.\n");
                 ignore = 1;
             } else if( response_code >= 300 ) {
+                free(e.key);
                 curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &(e.key));
                 if(hsearch(e, FIND) == NULL) {
                     hsearch(e, ENTER);
