@@ -314,6 +314,10 @@ void *check_urls(void *ignore) {
         
 
         pthread_mutex_unlock(&mutex);
+
+        if(recv.size == 0) {
+            ignore = 1;
+        }
         //printf("check_urls 3\n");
 
         //curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
@@ -403,6 +407,8 @@ int main(int argc, char **argv) {
         if(waiting == threads && make_sure) {
             for(int g = 0; g < threads; g++) {
                 pthread_cancel(ptids[g]);
+                //pthread_mutex_trylock(&mutex);
+                //pthread_mutex_unlock(&mutex);
             }
             break;
         } else if(waiting == threads) {
@@ -463,7 +469,12 @@ int main(int argc, char **argv) {
         ENTRY s;
         s.key = hash_urls_head->url;
         ENTRY *entry = hsearch(s, FIND);
-        free(entry->key);
+        if(entry != NULL) {
+            free(entry->key);
+        } else {
+            printf("wtf\n");
+        }
+        
         pop_head(&hash_urls_head);
     }
 
