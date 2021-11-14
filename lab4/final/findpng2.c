@@ -500,7 +500,7 @@ int main(int argc, char **argv) {
         remove(fname);
     } 
     FILE *f = fopen(fname, "w+");
-    for(int w = 0; w < pngs_found/*max_pngs && png_head != NULL*/; w++) {
+    for(int w = 0; w < pngs_found && w < max_pngs; w++) {
         fprintf(f, "%s\n", png_head->url);
         pop_head(&png_head);
     }
