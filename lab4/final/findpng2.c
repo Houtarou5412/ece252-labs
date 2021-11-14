@@ -339,6 +339,7 @@ void *check_urls(void *ignore) {
                     }
 
                 } else {
+                    free(e.key);
                     printf("found e.key %s\n", e.key);
                     ignore = 1;
                 }
