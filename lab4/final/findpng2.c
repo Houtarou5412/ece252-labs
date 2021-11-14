@@ -235,7 +235,7 @@ void *check_urls(void *ignore) {
     CURL *curl_handle = easy_handle_init(&recv, NULL);
     pthread_mutex_lock(&mutex);
     while(pngs_found < max_pngs) {
-        //printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
+        printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
 
         if(pngs_found + maybe_png >= max_pngs) {
             pthread_mutex_unlock(&mutex);
@@ -282,8 +282,9 @@ void *check_urls(void *ignore) {
         
 
         //printf("check_urls 2\n");
-
+        pthread_mutex_unlock(&mutex);
         res = curl_easy_perform(curl_handle);
+        pthread_mutex_lock(&mutex);
         //printf("check_urls 2 finished\n");
 
         if( res != CURLE_OK ) {
@@ -329,10 +330,12 @@ void *check_urls(void *ignore) {
                     hash_urls_head->url = malloc(strlen(e.key)+1);
                     memcpy(hash_urls_head->url, e.key, strlen(e.key)+1);
 
+                    pthread_mutex_unlock(&mutex);
                     curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
                     recv_buf_cleanup(&recv);
                     recv_buf_init(&recv, BUF_SIZE);
                     res = curl_easy_perform(curl_handle);
+                    pthread_mutex_lock(&mutex);
 
                     if( res != CURLE_OK ) {
                         //printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
