@@ -240,6 +240,7 @@ void *check_urls(void *ignore) {
             pthread_mutex_lock(&mutex);
             continue;
         } else if(urls_to_check_head == NULL && maybe_png == 0) {
+            printf("breaking thread\n");
             break;
         }
         //printf("check_urls 1.1\n");
