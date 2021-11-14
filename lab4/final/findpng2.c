@@ -247,7 +247,7 @@ void *check_urls(void *ignore) {
         CURLcode res;
         //char *content_type;
 
-        printf("pngs_found: %d\n", pngs_found);
+        printf("pngs_found: %d, maybe_png: %d\n", pngs_found, maybe_png);
         waiting++;
 
         /*if(urls_to_check_head == NULL) {
