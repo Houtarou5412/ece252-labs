@@ -404,6 +404,7 @@ int main(int argc, char **argv) {
     int make_sure = 0;
     while(pngs_found < max_pngs) {
         if(waiting == threads && make_sure) {
+            printf("cancelling\n");
             for(int g = 0; g < threads; g++) {
                 pthread_cancel(ptids[g]);
                 //pthread_mutex_trylock(&mutex);
