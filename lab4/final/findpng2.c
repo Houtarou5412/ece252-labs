@@ -96,9 +96,8 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                 ENTRY e;
                 e.key = malloc(strlen((char *)href) + 1);
                 memcpy(e.key, (char *)href, strlen((char *)href) + 1);
-                e.key = (char *)href;
                 if(hsearch(e, FIND) == NULL) {
-                    printf("new key: %s\n",e.key);
+                    //printf("new key: %s\n",e.key);
                     hsearch(e, ENTER);
 
                     pthread_mutex_lock(&mutex);
