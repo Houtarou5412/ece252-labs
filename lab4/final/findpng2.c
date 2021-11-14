@@ -301,6 +301,8 @@ void *check_urls(void *ignore) {
                     memcpy(hash_urls_head->url, e.key, strlen(e.key)+1);
 
                     curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
+                    recv_buf_cleanup(&recv);
+                    recv_buf_init(&recv);
                     res = curl_easy_perform(curl_handle);
 
                     if( res != CURLE_OK ) {
@@ -352,6 +354,9 @@ void *check_urls(void *ignore) {
         }*/
 
         //free(e.key);
+
+        recv_buf_cleanup(&recv);
+        recv_buf_init(&recv);
     }
     cleanup(curl_handle, &recv);
     return NULL;
