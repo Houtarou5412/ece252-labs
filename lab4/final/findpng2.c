@@ -278,6 +278,7 @@ void *check_urls(void *ignore) {
         printf("check_urls 2\n");
 
         res = curl_easy_perform(curl_handle);
+        printf("check_urls 2 finished")
 
         if( res != CURLE_OK ) {
             //printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
