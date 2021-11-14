@@ -96,11 +96,12 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                 ENTRY e;
                 e.key = malloc(strlen((char *)href) + 1);
                 memcpy(e.key, (char *)href, strlen((char *)href) + 1);
+
+                pthread_mutex_lock(&mutex);
                 if(hsearch(e, FIND) == NULL) {
-                    //printf("new key: %s\n",e.key);
+                    printf("new key: %s\n",e.key);
                     hsearch(e, ENTER);
 
-                    pthread_mutex_lock(&mutex);
                     push_head(&urls_to_check_head);
                     urls_to_check_head->url = malloc(strlen(e.key)+1);
                     memcpy(urls_to_check_head->url, e.key, strlen(e.key)+1);
@@ -111,8 +112,9 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
 
                     //printf("new first url: %s\n", urls_to_check_head->url);
                     sem_post(&url_avail);
-                    pthread_mutex_unlock(&mutex);
                 }
+
+                pthread_mutex_unlock(&mutex);
             }
 
             //printf("find_http 6\n");
