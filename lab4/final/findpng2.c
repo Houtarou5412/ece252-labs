@@ -235,7 +235,7 @@ void *check_urls(void *ignore) {
     CURL *curl_handle = easy_handle_init(&recv, NULL);
     pthread_mutex_lock(&mutex);
     while(pngs_found < max_pngs) {
-        printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
+        //printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
 
         if(pngs_found + maybe_png >= max_pngs) {
             pthread_mutex_unlock(&mutex);
@@ -247,7 +247,7 @@ void *check_urls(void *ignore) {
         CURLcode res;
         //char *content_type;
 
-        //printf("pngs_found: %d\n", pngs_found);
+        printf("pngs_found: %d\n", pngs_found);
         waiting++;
 
         /*if(urls_to_check_head == NULL) {
