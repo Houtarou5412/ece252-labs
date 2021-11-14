@@ -237,7 +237,7 @@ void *check_urls(void *ignore) {
     while(pngs_found < max_pngs) {
         //printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
 
-        if(pngs_found + maybe_png >= max_pngs) {
+        if(pngs_found + maybe_png + waiting >= max_pngs) {
             pthread_mutex_unlock(&mutex);
             pthread_mutex_lock(&mutex);
             continue;
