@@ -412,7 +412,7 @@ int main(int argc, char **argv) {
             }
             break;
         } else if(waiting == threads) {
-            sleep(1);
+            sleep(5);
             make_sure = 1;
         } else {
             make_sure = 0;
