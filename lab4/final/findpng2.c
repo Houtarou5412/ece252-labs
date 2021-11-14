@@ -260,7 +260,7 @@ void *check_urls(void *ignore) {
                 //printf("Response code: %ld\n", response_code);
             }
 
-            //printf("process_data 2\n");
+            printf("process_data 2\n");
 
             if ( response_code >= 400 ) { 
                 printf("Error in response code.\n");
