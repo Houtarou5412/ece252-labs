@@ -16,8 +16,8 @@
 #include "curl.h"
 
 typedef struct list{
-    char *url;
-    struct list *p_next;
+    char *url = NULL;
+    struct list *p_next = NULL;
 }list;
 
 //GLOBAL
