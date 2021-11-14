@@ -76,12 +76,12 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
         return 1;
     }
 
-    printf("find_http 2\n");
+    //printf("find_http 2\n");
 
     doc = mem_getdoc(buf, size, base_url);
     result = getnodeset (doc, xpath);
     if (result) {
-        printf("find_http 3\n");
+        //printf("find_http 3\n");
         nodeset = result->nodesetval;
         // pthread_mutex_lock(&mutex);
         for (i=0; i < nodeset->nodeNr; i++) {
@@ -98,7 +98,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
             //printf("find_http 5\n");
 
             if ( href != NULL && !strncmp((const char *)href, "http", 4) ) {
-                printf("find_http 5.1\n");
+                //printf("find_http 5.1\n");
                 ENTRY e;
                 e.key = malloc(strlen((char *)href) + 1);
                 memcpy(e.key, (char *)href, strlen((char *)href) + 1);
@@ -235,7 +235,7 @@ void *check_urls(void *ignore) {
     CURL *curl_handle = easy_handle_init(&recv, NULL);
     pthread_mutex_lock(&mutex);
     while(pngs_found < max_pngs) {
-        printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
+        //printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
 
         if(pngs_found + maybe_png >= max_pngs) {
             pthread_mutex_unlock(&mutex);
@@ -247,7 +247,7 @@ void *check_urls(void *ignore) {
         CURLcode res;
         //char *content_type;
 
-        printf("pngs_found: %d\n", pngs_found);
+        //printf("pngs_found: %d\n", pngs_found);
         waiting++;
 
         /*if(urls_to_check_head == NULL) {
@@ -261,19 +261,19 @@ void *check_urls(void *ignore) {
         waiting--;
         maybe_png++;
 
-        printf("check_urls 1.2\n");
+        //printf("check_urls 1.2\n");
 
         e.key = malloc(strlen(urls_to_check_head->url)+1);
-        printf("e.key: %p\n", e.key);
+        //printf("e.key: %p\n", e.key);
         memcpy(e.key, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
 
-        printf("urls_to_check_head %p, e.key %s at %p\n", urls_to_check_head, e.key, &(e.key));
+        //printf("urls_to_check_head %p, e.key %s at %p\n", urls_to_check_head, e.key, &(e.key));
 
         pop_head(&urls_to_check_head);
-        printf("1.3\n");
+        //printf("1.3\n");
         //printf("%s\n", e.key);
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
-        printf("%s\n", e.key);
+        //printf("%s\n", e.key);
 
         
         push_head(&visited_urls_head);
@@ -281,10 +281,10 @@ void *check_urls(void *ignore) {
         memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
         
 
-        printf("check_urls 2\n");
+        //printf("check_urls 2\n");
 
         res = curl_easy_perform(curl_handle);
-        printf("check_urls 2 finished\n");
+        //printf("check_urls 2 finished\n");
 
         if( res != CURLE_OK ) {
             //printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
@@ -295,25 +295,25 @@ void *check_urls(void *ignore) {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
         }
 
-        printf("check redirect\n");
+        //printf("check redirect\n");
         long response_code = 300;
         int ignore = 0;
 
         while(response_code >= 300 && !ignore) {
-            printf("redirecting\n");
+            //printf("redirecting\n");
             res = curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &response_code);
             if ( res == CURLE_OK ) {
                 //printf("Response code: %ld\n", response_code);
             }
 
-            printf("process_data 2\n");
+            //printf("process_data 2\n");
 
             if ( response_code >= 400 ) { 
-                printf("Error in response code. Url: %s\n", e.key);
+                //printf("Error in response code. Url: %s\n", e.key);
                 ignore = 1;
             } else if( response_code >= 300 ) {
                 //printf("rcode 3xx, e.key %p\n", e.key);
-                printf("get redirect url\n");
+                //printf("get redirect url\n");
                 char * temp_key;
                 curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &temp_key);
                 e.key = malloc(strlen(temp_key) + 1);
@@ -343,26 +343,26 @@ void *check_urls(void *ignore) {
 
                 } else {
                     free(e.key);
-                    printf("found e.key %s\n", e.key);
+                    //printf("found e.key %s\n", e.key);
                     ignore = 1;
                 }
             } else {
-                printf("rcode 2xx\n");
+                //printf("rcode 2xx\n");
             }
         }
 
-        printf("Response code 2xx. Url: %s\n", e.key);
+        //printf("Response code 2xx. Url: %s\n", e.key);
 
         pthread_mutex_unlock(&mutex);
 
         if(recv.size == 0) {
             ignore = 1;
         }
-        printf("check_urls 3\n");
+        //printf("check_urls 3\n");
         // pthread_mutex_lock(&mutex);
 
         if(!ignore) {
-            printf("start processing\n");
+            //printf("start processing\n");
             process_data(curl_handle, &recv);
         } else {
             pthread_mutex_lock(&mutex);
@@ -371,14 +371,14 @@ void *check_urls(void *ignore) {
         }
         // pthread_mutex_unlock(&mutex);
 
-        printf("check_urls 4\n");
-        printf("recv is %p with buf %p\n", &recv, recv.buf);
+        //printf("check_urls 4\n");
+        //printf("recv is %p with buf %p\n", &recv, recv.buf);
         recv_buf_cleanup(&recv);
         recv_buf_init(&recv, BUF_SIZE);
         pthread_mutex_lock(&mutex);
     }
     pthread_mutex_unlock(&mutex);
-    printf("thread complete\n");
+    //printf("thread complete\n");
     cleanup(curl_handle, &recv);
     return NULL;
 }
@@ -449,7 +449,7 @@ int main(int argc, char **argv) {
     int make_sure = 0;
     while(pngs_found < max_pngs) {
         if(waiting == threads && make_sure) {
-            printf("cancelling\n");
+            //printf("cancelling\n");
             for(int g = 0; g < threads; g++) {
                 pthread_cancel(ptids[g]);
                 pthread_mutex_trylock(&mutex);
