@@ -24,6 +24,7 @@ typedef struct list{
 list *png_head = NULL;
 list *urls_to_check_head = NULL;
 list *visited_urls_head = NULL;
+list *hash_urls_head = NULL;
 int log_check = 0;
 int pngs_found = 0;
 int max_pngs = 50;
@@ -93,6 +94,8 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
             if ( href != NULL && !strncmp((const char *)href, "http", 4) ) {
                 //printf("find_http 5.1\n");
                 ENTRY e;
+                e.key = malloc(strlen((char *)href) + 1);
+                memcpy(e.key, (char *)href, strlen((char *)href) + 1);
                 e.key = (char *)href;
                 if(hsearch(e, FIND) == NULL) {
                     //printf("find_http 5.2\n");
@@ -102,6 +105,10 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                     push_head(&urls_to_check_head);
                     urls_to_check_head->url = malloc(strlen(e.key)+1);
                     memcpy(urls_to_check_head->url, e.key, strlen(e.key)+1);
+
+                    push_head(&hash_urls_head);
+                    hash_urls_head->url = malloc(strlen(e.key)+1);
+                    memcpy(hash_urls_head->url, e.key, strlen(e.key)+1);
 
                     //printf("new first url: %s\n", urls_to_check_head->url);
                     sem_post(&url_avail);
@@ -213,10 +220,10 @@ void *check_urls(void *ignore) {
         pthread_mutex_lock(&mutex);
         waiting--;
 
-        printf("check_urls 1.2\n");
+        //printf("check_urls 1.2\n");
 
         e.key = malloc(strlen(urls_to_check_head->url)+1);
-        printf("e.key: %p\n", e.key);
+        //printf("e.key: %p\n", e.key);
         memcpy(e.key, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
         /*if(hsearch(e, FIND) == NULL) {
             hsearch(e, ENTER);
@@ -225,19 +232,19 @@ void *check_urls(void *ignore) {
             continue;
         }*/
 
-        printf("urls_to_check_head %p, e.key %s at %p\n", urls_to_check_head, e.key, &(e.key));
+        //printf("urls_to_check_head %p, e.key %s at %p\n", urls_to_check_head, e.key, &(e.key));
 
         pop_head(&urls_to_check_head);
-        printf("1.3\n");
-        printf("%s\n", e.key);
+        //printf("1.3\n");
+        //printf("%s\n", e.key);
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
-        printf("%s\n", e.key);
+        //printf("%s\n", e.key);
 
-        if(log_check) {
-            push_head(&visited_urls_head);
-            visited_urls_head->url = malloc(strlen(e.key)+1);
-            memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
-        }
+        
+        push_head(&visited_urls_head);
+        visited_urls_head->url = malloc(strlen(e.key)+1);
+        memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
+        
 
         //printf("check_urls 2\n");
 
@@ -256,32 +263,35 @@ void *check_urls(void *ignore) {
         int ignore = 0;
 
         while(response_code >= 300 && !ignore) {
-            printf("redirecting\n");
+            //printf("redirecting\n");
             res = curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &response_code);
             if ( res == CURLE_OK ) {
                 //printf("Response code: %ld\n", response_code);
             }
 
-            printf("process_data 2\n");
+            //printf("process_data 2\n");
 
             if ( response_code >= 400 ) { 
                 printf("Error in response code.\n");
                 ignore = 1;
             } else if( response_code >= 300 ) {
-                printf("rcode 3xx, e.key %p\n", e.key);
+                //printf("rcode 3xx, e.key %p\n", e.key);
                 //free(e.key);
-                printf("get redirect url\n");
+                //printf("get redirect url\n");
                 char * temp_key;
                 curl_easy_getinfo(curl_handle, CURLINFO_REDIRECT_URL, &temp_key);
                 e.key = malloc(strlen(temp_key) + 1);
                 memcpy(e.key, temp_key, strlen(temp_key) + 1);
                 if(hsearch(e, FIND) == NULL) {
                     hsearch(e, ENTER);
-                    if(log_check) {
-                        push_head(&visited_urls_head);
-                        visited_urls_head->url = malloc(strlen(e.key)+1);
-                        memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
-                    }
+                    
+                    push_head(&visited_urls_head);
+                    visited_urls_head->url = malloc(strlen(e.key)+1);
+                    memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
+                    
+                    push_head(&hash_urls_head);
+                    hash_urls_head->url = malloc(strlen(e.key)+1);
+                    memcpy(hash_urls_head->url, e.key, strlen(e.key)+1);
 
                     curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
                     res = curl_easy_perform(curl_handle);
@@ -294,11 +304,11 @@ void *check_urls(void *ignore) {
                     }
 
                 } else {
-                    printf("found e.key %s\n", e.key);
+                    //printf("found e.key %s\n", e.key);
                     ignore = 1;
                 }
             } else {
-                printf("rcode 2xx\n");
+                //printf("rcode 2xx\n");
             }
         }
         
@@ -309,7 +319,7 @@ void *check_urls(void *ignore) {
         //curl_easy_getinfo(curl_handle, CURLINFO_CONTENT_TYPE, &content_type);
 
         if(!ignore) {
-            printf("start processing\n");
+            //printf("start processing\n");
             process_data(curl_handle, &recv);
         }
 
@@ -342,7 +352,7 @@ int main(int argc, char **argv) {
     char *logfile = NULL;
     hcreate(200000);
     push_head(&png_head);
-    push_head(&urls_to_check_head);
+
     printf("main 1\n");
     for(int t = 1; t < argc; t++) {
         printf("main 1.1\n");
@@ -364,8 +374,15 @@ int main(int argc, char **argv) {
             ENTRY e;
             e.key = argv[t];
             hsearch(e, ENTER);
+
+            push_head(&urls_to_check_head);
             urls_to_check_head->url = malloc(strlen(argv[t])+1);
             memcpy(urls_to_check_head->url, argv[t], strlen(argv[t])+1);
+
+            push_head(&hash_urls_head);
+            hash_urls_head->url = malloc(strlen(argv[t])+1);
+            memcpy(hash_urls_head->url, argv[t], strlen(argv[t])+1);
+
             sem_post(&url_avail);
             printf("%s %s %s\n",argv[t], e.key, urls_to_check_head->url);
         }
@@ -383,12 +400,12 @@ int main(int argc, char **argv) {
 
     int make_sure = 0;
     while(pngs_found < max_pngs) {
-        if(waiting == 10 && make_sure) {
+        if(waiting == threads && make_sure) {
             for(int g = 0; g < threads; g++) {
                 pthread_cancel(ptids[g]);
             }
             break;
-        } else if(waiting == 10) {
+        } else if(waiting == threads) {
             sleep(1);
             make_sure = 1;
         } else {
@@ -432,6 +449,12 @@ int main(int argc, char **argv) {
 
     while(urls_to_check_head != NULL) {
         pop_head(&urls_to_check_head);
+    }
+
+    while(hash_urls_head != NULL) {
+        ENTRY *entry = hsearch(hash_urls_head->url);
+        free(entry->key);
+        pop_head(&hash_urls_head);
     }
 
     hdestroy();
