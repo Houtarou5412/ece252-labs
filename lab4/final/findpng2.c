@@ -58,6 +58,10 @@ void push_head(list **head) {
     return;
 }
 
+int is_png(char *png) {
+    return png[0] == 137 && png[1] == 80 && png[2] == 78 && png[3] == 71 && png[4] == 13 && png[5] == 10 && png[6] == 26 && png[7] == 10 ? 1 : 0;
+}
+
 int find_http(char *buf, int size, int follow_relative_links, const char *base_url) {
     //printf("find_http 1\n");
     int i;
@@ -155,12 +159,7 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     char *eurl = NULL;          /* effective URL */
     curl_easy_getinfo(curl_handle, CURLINFO_EFFECTIVE_URL, &eurl);
 
-    char as_hex[16];
-    for (int m = 0, n = 0; m < 8; ++m, n += 2) {
-        sprintf(as_hex + n, "%02x", p_recv_buf->buf[m] & 0xff);
-    }
-
-    if ( eurl != NULL && !strncmp(as_hex, "89504E470D0A1A0A", 16)) {
+    if ( eurl != NULL && is_png(p_recv_buf->buf)) {
         //printf("process_png 2\n");
         //printf("The PNG url is: %s\n", eurl);
         pthread_mutex_lock(&mutex);
