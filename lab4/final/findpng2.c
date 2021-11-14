@@ -83,6 +83,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
     if (result) {
         printf("find_http 3\n");
         nodeset = result->nodesetval;
+        pthread_mutex_lock(&mutex);
         for (i=0; i < nodeset->nodeNr; i++) {
 
             //printf("find_http 4\n");
@@ -102,7 +103,6 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                 e.key = malloc(strlen((char *)href) + 1);
                 memcpy(e.key, (char *)href, strlen((char *)href) + 1);
 
-                // pthread_mutex_lock(&mutex);
                 if(hsearch(e, FIND) == NULL) {
                     //printf("new key: %s\n",e.key);
                     hsearch(e, ENTER);
@@ -118,16 +118,19 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                     //printf("new first url: %s\n", urls_to_check_head->url);
                     sem_post(&url_avail);
                 } else {
+                    free(e.key);
                     //printf("existing key: %s\n",e.key);
                 }
 
-                // pthread_mutex_unlock(&mutex);
             }
 
             //printf("find_http 6\n");
 
             xmlFree(href);
         }
+
+        pthread_mutex_unlock(&mutex);
+
         xmlXPathFreeObject (result);
     }
 
@@ -139,9 +142,9 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
 }
 
 void process_html(CURL *curl_handle, RECV_BUF *p_recv_buf) {
-    // pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&mutex);
     maybe_png--;
-    //pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&mutex);
     //printf("process_html 1\n");
     int follow_relative_link = 1;
     char *url = NULL; 
@@ -166,17 +169,17 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     if ( eurl != NULL && is_png(p_recv_buf->buf)) {
         //printf("process_png 2\n");
         //printf("The PNG url is: %s\n", eurl);
-        //pthread_mutex_lock(&mutex);
+        pthread_mutex_lock(&mutex);
         push_head(&png_head);
         png_head->url = malloc(strlen(eurl)+1);
         memcpy(png_head->url, eurl, strlen(eurl)+1);
         pngs_found++;
         maybe_png--;
-        // pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&mutex);
     } else {
-        //pthread_mutex_lock(&mutex);
+        pthread_mutex_lock(&mutex);
         maybe_png--;
-        //pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&mutex);
     }
     //printf("process_png 3\n");
 
@@ -197,9 +200,9 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     if ( res == CURLE_OK && ct != NULL ) {
     	//printf("Content-Type: %s, len=%ld\n", ct, strlen(ct));
     } else {
-        // pthread_mutex_lock(&mutex);
+        pthread_mutex_lock(&mutex);
         maybe_png--;
-        // pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&mutex);
         //printf("Failed obtain Content-Type\n");
         return 2;
     }
@@ -213,9 +216,9 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
         //printf("png\n");
         process_png(curl_handle, p_recv_buf);
     } else {
-        // pthread_mutex_lock(&mutex);
+        pthread_mutex_lock(&mutex);
         maybe_png--;
-        //pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&mutex);
     }
 
     //printf("process_data 5\n");
@@ -352,17 +355,17 @@ void *check_urls(void *ignore) {
             ignore = 1;
         }
         printf("check_urls 3\n");
-        pthread_mutex_lock(&mutex);
+        // pthread_mutex_lock(&mutex);
 
         if(!ignore) {
             printf("start processing\n");
             process_data(curl_handle, &recv);
         } else {
-            // pthread_mutex_lock(&mutex);
+            pthread_mutex_lock(&mutex);
             maybe_png--;
-            // pthread_mutex_unlock(&mutex);
+            pthread_mutex_unlock(&mutex);
         }
-        pthread_mutex_unlock(&mutex);
+        // pthread_mutex_unlock(&mutex);
 
         printf("check_urls 4\n");
         printf("recv is %p with buf %p\n", &recv, recv.buf);
