@@ -312,7 +312,8 @@ void *check_urls(void *ignore) {
                 //printf("rcode 2xx\n");
             }
         }
-        
+
+        printf("Response code 2xx. Url: %s\n", e.key);
 
         pthread_mutex_unlock(&mutex);
 
