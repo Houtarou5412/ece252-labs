@@ -273,7 +273,7 @@ void *check_urls(void *ignore) {
             //printf("process_data 2\n");
 
             if ( response_code >= 400 ) { 
-                printf("Error in response code.\n");
+                printf("Error in response code. Url: %s\n", e.key);
                 ignore = 1;
             } else if( response_code >= 300 ) {
                 //printf("rcode 3xx, e.key %p\n", e.key);
