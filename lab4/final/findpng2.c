@@ -255,19 +255,19 @@ void *check_urls(void *ignore) {
         waiting--;
         maybe_png++;
 
-        //printf("check_urls 1.2\n");
+        printf("check_urls 1.2\n");
 
         e.key = malloc(strlen(urls_to_check_head->url)+1);
-        //printf("e.key: %p\n", e.key);
+        printf("e.key: %p\n", e.key);
         memcpy(e.key, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
 
-        //printf("urls_to_check_head %p, e.key %s at %p\n", urls_to_check_head, e.key, &(e.key));
+        printf("urls_to_check_head %p, e.key %s at %p\n", urls_to_check_head, e.key, &(e.key));
 
         pop_head(&urls_to_check_head);
-        //printf("1.3\n");
+        printf("1.3\n");
         //printf("%s\n", e.key);
         curl_easy_setopt(curl_handle, CURLOPT_URL, e.key);
-        //printf("%s\n", e.key);
+        printf("%s\n", e.key);
 
         
         push_head(&visited_urls_head);
@@ -275,7 +275,7 @@ void *check_urls(void *ignore) {
         memcpy(visited_urls_head->url, e.key, strlen(e.key)+1);
         
 
-        //printf("check_urls 2\n");
+        printf("check_urls 2\n");
 
         res = curl_easy_perform(curl_handle);
 
@@ -288,7 +288,7 @@ void *check_urls(void *ignore) {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
         }
 
-        //printf("process_data 1\n");
+        printf("check redirect\n");
         long response_code = 300;
         int ignore = 0;
 
