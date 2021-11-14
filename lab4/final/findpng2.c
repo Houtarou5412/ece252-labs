@@ -363,6 +363,7 @@ void *check_urls(void *ignore) {
         recv_buf_cleanup(&recv);
         recv_buf_init(&recv, BUF_SIZE);
     }
+    printf("thread complete\n");
     cleanup(curl_handle, &recv);
     return NULL;
 }
