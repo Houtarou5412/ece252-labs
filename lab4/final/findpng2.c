@@ -375,9 +375,9 @@ int main(int argc, char **argv) {
     hcreate(200000);
     push_head(&png_head);
 
-    printf("main 1\n");
+    //printf("main 1\n");
     for(int t = 1; t < argc; t++) {
-        printf("main 1.1\n");
+        //printf("main 1.1\n");
         if(strcmp(argv[t],"-t") == 0) {
             threads = atoi(argv[t+1]);
             t++;
@@ -391,7 +391,7 @@ int main(int argc, char **argv) {
             log_check = 1;
             t++;
         } else if(t == argc-1) {
-            printf("ok\n");
+            //printf("ok\n");
             //printf("%p -> %p\n", urls_to_check_head, urls_to_check_head->p_next);
             ENTRY e;
             e.key = argv[t];
@@ -431,7 +431,7 @@ int main(int argc, char **argv) {
             }
             break;
         } else if(waiting == threads) {
-            sleep(5);
+            sleep(1);
             make_sure = 1;
         } else {
             make_sure = 0;
