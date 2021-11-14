@@ -26,6 +26,7 @@ list *urls_to_check_head = NULL;
 list *visited_urls_head = NULL;
 list *hash_urls_head = NULL;
 int num_urls_to_check = 0;
+int threads = 1;
 int log_check = 0;
 int pngs_found = 0;
 int max_pngs = 50;
@@ -413,7 +414,6 @@ int main(int argc, char **argv) {
     
     pthread_mutex_init(&mutex, NULL);
     sem_init(&url_avail, 0, 0);
-    int threads = 1;
     char *logfile = NULL;
     hcreate(200000);
     push_head(&png_head);
