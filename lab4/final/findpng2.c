@@ -102,7 +102,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                 e.key = malloc(strlen((char *)href) + 1);
                 memcpy(e.key, (char *)href, strlen((char *)href) + 1);
 
-                pthread_mutex_lock(&mutex);
+                // pthread_mutex_lock(&mutex);
                 if(hsearch(e, FIND) == NULL) {
                     //printf("new key: %s\n",e.key);
                     hsearch(e, ENTER);
@@ -121,7 +121,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                     //printf("existing key: %s\n",e.key);
                 }
 
-                pthread_mutex_unlock(&mutex);
+                // pthread_mutex_unlock(&mutex);
             }
 
             //printf("find_http 6\n");
@@ -352,6 +352,7 @@ void *check_urls(void *ignore) {
             ignore = 1;
         }
         printf("check_urls 3\n");
+        pthread_mutex_lock(&mutex);
 
         if(!ignore) {
             printf("start processing\n");
@@ -361,6 +362,7 @@ void *check_urls(void *ignore) {
             maybe_png--;
             pthread_mutex_unlock(&mutex);
         }
+        pthread_mutex_unlock(&mutex);
 
         printf("check_urls 4\n");
         printf("recv is %p with buf %p\n", &recv, recv.buf);
