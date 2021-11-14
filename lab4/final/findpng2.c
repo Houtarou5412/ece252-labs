@@ -489,6 +489,7 @@ int main(int argc, char **argv) {
         } else {
             printf("wtf\n");
         }
+        print("entry passed\n");
         
         pop_head(&hash_urls_head);
     }
