@@ -370,7 +370,7 @@ int main(int argc, char **argv) {
             t++;
         } else {
             printf("ok\n");
-            printf("%p -> %p\n", urls_to_check_head, urls_to_check_head->p_next);
+            //printf("%p -> %p\n", urls_to_check_head, urls_to_check_head->p_next);
             ENTRY e;
             e.key = argv[t];
             hsearch(e, ENTER);
