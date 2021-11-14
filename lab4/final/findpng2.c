@@ -244,7 +244,6 @@ void *check_urls(void *ignore) {
         CURLcode res;
         //char *content_type;
 
-        waiting++;
         printf("pngs_found: %d, maybe_png: %d, waiting: %d\n", pngs_found, maybe_png, waiting);
 
         /*if(urls_to_check_head == NULL) {
@@ -258,6 +257,8 @@ void *check_urls(void *ignore) {
             }
             break;
         }
+
+        waiting++;
 
         pthread_mutex_unlock(&mutex);
 
