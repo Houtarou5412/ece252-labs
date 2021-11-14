@@ -452,7 +452,9 @@ int main(int argc, char **argv) {
     }
 
     while(hash_urls_head != NULL) {
-        ENTRY *entry = hsearch(hash_urls_head->url);
+        ENTRY s;
+        s.key = hash_urls_head->url;
+        ENTRY *entry = hsearch(s, FIND);
         free(entry->key);
         pop_head(&hash_urls_head);
     }
