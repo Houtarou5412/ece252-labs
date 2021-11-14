@@ -112,6 +112,8 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
 
                     //printf("new first url: %s\n", urls_to_check_head->url);
                     sem_post(&url_avail);
+                } else {
+                    printf("existing key: %s\n",e.key);
                 }
 
                 pthread_mutex_unlock(&mutex);
