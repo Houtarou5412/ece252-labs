@@ -429,9 +429,13 @@ int main(int argc, char **argv) {
     }
     fclose(f);
 
+    printf("main 6\n");
+
     while(png_head != NULL) {
         pop_head(&png_head);
     }
+
+    printf("main 7\n");
     
     FILE *l;
     if(log_check) {
@@ -447,9 +451,13 @@ int main(int argc, char **argv) {
         fclose(l);
     }
 
+    printf("main 8\n");
+
     while(urls_to_check_head != NULL) {
         pop_head(&urls_to_check_head);
     }
+
+    printf("main 9\n");
 
     while(hash_urls_head != NULL) {
         ENTRY s;
@@ -458,6 +466,8 @@ int main(int argc, char **argv) {
         free(entry->key);
         pop_head(&hash_urls_head);
     }
+
+    printf("main 10\n");
 
     hdestroy();
     sem_destroy(&url_avail);
