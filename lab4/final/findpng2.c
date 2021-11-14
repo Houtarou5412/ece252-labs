@@ -260,7 +260,7 @@ void *check_urls(void *ignore) {
         pthread_mutex_lock(&mutex);
         waiting--;
         maybe_png++;
-        printf("still waiting: %d\n", waiting);
+        //printf("still waiting: %d\n", waiting);
 
         //printf("check_urls 1.2\n");
 
@@ -382,7 +382,7 @@ void *check_urls(void *ignore) {
         pthread_mutex_lock(&mutex);
     }
     pthread_mutex_unlock(&mutex);
-    printf("thread complete\n");
+    //printf("thread complete\n");
     cleanup(curl_handle, &recv);
     return NULL;
 }
