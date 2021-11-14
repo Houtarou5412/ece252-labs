@@ -188,17 +188,17 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     if ( res == CURLE_OK && ct != NULL ) {
     	//printf("Content-Type: %s, len=%ld\n", ct, strlen(ct));
     } else {
-        printf("Failed obtain Content-Type\n");
+        //printf("Failed obtain Content-Type\n");
         return 2;
     }
 
     //printf("process_data 4\n");
 
     if ( strstr(ct, CT_HTML) ) {
-        printf("html\n");
+        //printf("html\n");
         process_html(curl_handle, p_recv_buf);
     } else if ( strstr(ct, CT_PNG) ) {
-        printf("png\n");
+        //printf("png\n");
         process_png(curl_handle, p_recv_buf);
     }
 
@@ -219,7 +219,7 @@ void *check_urls(void *ignore) {
         //char *content_type;
 
         pthread_mutex_lock(&mutex);
-        printf("pngs_found: %d\n", pngs_found);
+        //printf("pngs_found: %d\n", pngs_found);
         waiting++;
 
         /*if(urls_to_check_head == NULL) {
@@ -368,6 +368,16 @@ void *check_urls(void *ignore) {
 }
 
 int main(int argc, char **argv) {
+    //Timing Part 1
+    double times[2];
+    struct timeval tv;
+
+    if (gettimeofday(&tv, NULL) != 0) {
+        perror("gettimeofday");
+        abort();
+    }
+    times[0] = (tv.tv_sec) + tv.tv_usec/1000000.;
+    
     pthread_mutex_init(&mutex, NULL);
     sem_init(&url_avail, 0, 0);
     int threads = 1;
@@ -406,11 +416,11 @@ int main(int argc, char **argv) {
             memcpy(hash_urls_head->url, argv[t], strlen(argv[t])+1);
 
             sem_post(&url_avail);
-            printf("%s %s %s\n",argv[t], e.key, urls_to_check_head->url);
+            //printf("%s %s %s\n",argv[t], e.key, urls_to_check_head->url);
         }
     }
 
-    printf("main 2\n");
+    //printf("main 2\n");
 
     pthread_t *ptids = malloc(threads*sizeof(pthread_t));
     for(int u = 0; u < threads; u++) {
@@ -418,12 +428,12 @@ int main(int argc, char **argv) {
         //printf("thread %d created\n", u);
     }
 
-    printf("main 3\n");
+    //printf("main 3\n");
 
     int make_sure = 0;
     while(pngs_found < max_pngs) {
         if(waiting == threads && make_sure) {
-            printf("cancelling\n");
+            //printf("cancelling\n");
             for(int g = 0; g < threads; g++) {
                 pthread_cancel(ptids[g]);
                 //pthread_mutex_trylock(&mutex);
@@ -438,13 +448,13 @@ int main(int argc, char **argv) {
         }
     }
 
-    printf("main 4\n");
+    //printf("main 4\n");
 
     for(int v = 0; v < threads; v++) {
         pthread_join(ptids[v], NULL);
     }
 
-    printf("main 5\n");
+    //printf("main 5\n");
 
     char *fname = "./png_urls.txt";
     if( access( fname, F_OK ) == 0 ) {
@@ -457,13 +467,13 @@ int main(int argc, char **argv) {
     }
     fclose(f);
 
-    printf("main 6\n");
+    //printf("main 6\n");
 
     while(png_head != NULL) {
         pop_head(&png_head);
     }
 
-    printf("main 7\n");
+    //printf("main 7\n");
     
     FILE *l;
     if( log_check && access( logfile, F_OK ) == 0 ) {
@@ -482,33 +492,41 @@ int main(int argc, char **argv) {
         fclose(l);
     }
 
-    printf("main 8\n");
+    //printf("main 8\n");
 
     while(urls_to_check_head != NULL) {
         pop_head(&urls_to_check_head);
     }
 
-    printf("main 9\n");
+    //printf("main 9\n");
 
     while(hash_urls_head != NULL) {
-        printf("p_next = %p\n", hash_urls_head->p_next);
+        //printf("p_next = %p\n", hash_urls_head->p_next);
         ENTRY s;
         s.key = hash_urls_head->url;
         ENTRY *entry = hsearch(s, FIND);
         if(entry != NULL && hash_urls_head->p_next != NULL) {
             free(entry->key);
         }
-        printf("entry passed %p\n", hash_urls_head);
+        //printf("entry passed %p\n", hash_urls_head);
         
         pop_head(&hash_urls_head);
     }
 
-    printf("main 10\n");
+    //printf("main 10\n");
 
     hdestroy();
     sem_destroy(&url_avail);
     pthread_mutex_destroy(&mutex);
     free(ptids);
+
+    //Timing Part 2
+    if (gettimeofday(&tv, NULL) != 0) {
+        perror("gettimeofday");
+        abort();
+    }
+    times[1] = (tv.tv_sec) + tv.tv_usec/1000000.;
+    printf("%s execution time: %.6lf seconds\n", argv[0],  times[1] - times[0]);
 
     return 0;
 }
