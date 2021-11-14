@@ -358,9 +358,9 @@ void *check_urls(void *ignore) {
             printf("start processing\n");
             process_data(curl_handle, &recv);
         } else {
-            pthread_mutex_lock(&mutex);
+            // pthread_mutex_lock(&mutex);
             maybe_png--;
-            pthread_mutex_unlock(&mutex);
+            // pthread_mutex_unlock(&mutex);
         }
         pthread_mutex_unlock(&mutex);
 
