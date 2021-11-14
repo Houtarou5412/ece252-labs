@@ -245,6 +245,7 @@ void *check_urls(void *ignore) {
 
         if( res != CURLE_OK ) {
             printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+            pthread_mutex_unlock(&mutex);
             continue;
         } else {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
