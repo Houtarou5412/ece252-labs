@@ -83,7 +83,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
     if (result) {
         printf("find_http 3\n");
         nodeset = result->nodesetval;
-        pthread_mutex_lock(&mutex);
+        // pthread_mutex_lock(&mutex);
         for (i=0; i < nodeset->nodeNr; i++) {
 
             //printf("find_http 4\n");
@@ -129,7 +129,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
             xmlFree(href);
         }
 
-        pthread_mutex_unlock(&mutex);
+        // pthread_mutex_unlock(&mutex);
 
         xmlXPathFreeObject (result);
     }
@@ -154,7 +154,10 @@ void process_html(CURL *curl_handle, RECV_BUF *p_recv_buf) {
 
     //printf("process_html 2\n");
 
+
+    pthread_mutex_lock(&mutex);
     find_http(p_recv_buf->buf, p_recv_buf->size, follow_relative_link, url);
+    pthread_mutex_unlock(&mutex);
 
     //printf("process_html 3\n");
     return;
