@@ -16,8 +16,8 @@
 #include "curl.h"
 
 typedef struct list{
-    char *url = NULL;
-    struct list *p_next = NULL;
+    char *url;
+    struct list *p_next;
 }list;
 
 //GLOBAL
@@ -58,6 +58,7 @@ void push_head(list **head) {
     //printf("push 1\n");
     list *temp = malloc(sizeof(list));
     temp->p_next = *head;
+    temp->url = NULL;
     *head = temp;
     return;
 }
