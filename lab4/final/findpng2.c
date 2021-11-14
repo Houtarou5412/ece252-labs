@@ -76,12 +76,12 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
         return 1;
     }
 
-    //printf("find_http 2\n");
+    printf("find_http 2\n");
 
     doc = mem_getdoc(buf, size, base_url);
     result = getnodeset (doc, xpath);
     if (result) {
-        //printf("find_http 3\n");
+        printf("find_http 3\n");
         nodeset = result->nodesetval;
         for (i=0; i < nodeset->nodeNr; i++) {
 
@@ -97,7 +97,7 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
             //printf("find_http 5\n");
 
             if ( href != NULL && !strncmp((const char *)href, "http", 4) ) {
-                //printf("find_http 5.1\n");
+                printf("find_http 5.1\n");
                 ENTRY e;
                 e.key = malloc(strlen((char *)href) + 1);
                 memcpy(e.key, (char *)href, strlen((char *)href) + 1);
