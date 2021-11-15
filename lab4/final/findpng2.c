@@ -251,7 +251,7 @@ void *check_urls(void *ignore) {
             printf("no more urls\n");
         }*/
         pthread_mutex_lock(&mutex);
-        if( (waiting == threads - 1 && num_urls_to_check == 0) || (pngs_found == max_pngs && early_cancel == 0 ) {
+        if( (waiting == threads - 1 && num_urls_to_check == 0) || (pngs_found == max_pngs && early_cancel == 0) ) {
             early_cancel = 1;
 
             for(int p = 0; p < threads - 1; p++) {
