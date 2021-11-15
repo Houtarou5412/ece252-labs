@@ -236,8 +236,8 @@ void *check_urls(void *ignore) {
     //printf("check_urls 1\n");
     RECV_BUF recv;
     CURL *curl_handle = easy_handle_init(&recv, NULL);
-    pthread_mutex_lock(&mutex);
-    while(pngs_found < max_pngs) {
+    
+    while(1) {
         //printf("maybe_png: %d, pngs_found: %d\n", maybe_png, pngs_found);
 
         //printf("check_urls 1.1\n");
@@ -250,7 +250,8 @@ void *check_urls(void *ignore) {
         /*if(urls_to_check_head == NULL) {
             printf("no more urls\n");
         }*/
-        if(waiting == threads - 1 && num_urls_to_check == 0) {
+        pthread_mutex_lock(&mutex);
+        if( (waiting == threads - 1 && num_urls_to_check == 0) || (pngs_found == max_pngs && early_cancel == 0 ) {
             early_cancel = 1;
 
             for(int p = 0; p < threads - 1; p++) {
@@ -269,7 +270,7 @@ void *check_urls(void *ignore) {
         
         if(early_cancel == 1) {
             //printf("breaking thread\n");
-
+            pthread_mutex_unlock(&mutex);
             break;
         }
 
@@ -311,6 +312,7 @@ void *check_urls(void *ignore) {
             //pthread_mutex_unlock(&mutex);
             pthread_mutex_lock(&mutex);
             maybe_png--;
+            pthread_mutex_unlock(&mutex);
             continue;
         } else {
             //printf("%lu bytes received in memory %p, seq=%d.\n", recv_buf.size, recv_buf.buf, recv_buf.seq);
@@ -398,9 +400,7 @@ void *check_urls(void *ignore) {
         //printf("recv is %p with buf %p\n", &recv, recv.buf);
         recv_buf_cleanup(&recv);
         recv_buf_init(&recv, BUF_SIZE);
-        pthread_mutex_lock(&mutex);
     }
-    pthread_mutex_unlock(&mutex);
     //printf("thread complete\n");
     cleanup(curl_handle, &recv);
     return NULL;
