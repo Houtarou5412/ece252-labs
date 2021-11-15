@@ -257,6 +257,8 @@ void *check_urls(void *ignore) {
             for(int p = 0; p < threads - 1; p++) {
                 sem_post(&url_avail);
             }
+            pthread_mutex_unlock(&mutex);
+
             break;
         }
 
