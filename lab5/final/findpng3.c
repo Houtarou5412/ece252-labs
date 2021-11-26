@@ -241,7 +241,6 @@ void *check_urls(void *ignore) {
 
         int still_running=0, i=0, msgs_left=0;
         int http_status_code;
-        char *szUrl;
 
         int concurrencies = 0;
         for (i = 0; i < threads && urls_to_check_head != NULL; ++i) {
@@ -286,13 +285,13 @@ void *check_urls(void *ignore) {
 
                 // Get HTTP status code
                 http_status_code=0;
-                szUrl = NULL;
                 RECV_BUF *recv;
+                char *redirect_url;
 
                 printf("get infos\n");
                 curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_status_code);
-                curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &szUrl);
                 curl_easy_getinfo(eh, CURLINFO_PRIVATE, &recv);
+                curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
 
                 printf("analyze http status\n");
                 if(http_status_code >= 400) {
@@ -300,9 +299,10 @@ void *check_urls(void *ignore) {
                 } else if(http_status_code >= 300) {
                     printf("http 300 redirect\n");
                     ENTRY e;
-                    e.key = malloc(strlen(szUrl)+1);
-                    memcpy(e.key, szUrl, strlen(szUrl)+1);
+                    e.key = malloc(strlen(redirect_url)+1);
+                    memcpy(e.key, redirect_url, strlen(redirect_url)+1);
                     if(!hsearch(e, FIND)) {
+                        printf("add new url\n");
                         hsearch(e, ENTER);
 
                         pop_head(&urls_to_check_head);
