@@ -15,6 +15,8 @@
 #include <pthread.h>
 #include "multi_curl.h"
 
+// Created by Brian and Jason
+
 #define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
 
 typedef struct list{

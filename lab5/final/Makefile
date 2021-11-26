@@ -1,6 +1,7 @@
 # Makefile, ECE252  
 # Young Ha Ahn, Brian Peng
 # LAB5 Brian and Jason
+# Created by Brian and Jason
 
 CC = gcc 
 CFLAGS_XML2 = $(shell xml2-config --cflags)
