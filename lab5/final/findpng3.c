@@ -177,7 +177,7 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
 /**
  * @brief 
  * 
- */
+ *
  * @param CURL *curl_handle is the curl handler
  * @param RECV_BUF p_recv_buf contains the received data. 
  * @return 0 on success; non-zero otherwise
