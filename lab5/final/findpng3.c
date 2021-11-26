@@ -312,6 +312,8 @@ void *check_urls(void *ignore) {
                         push_head(&hash_urls_head);
                         hash_urls_head->url = malloc(strlen(e.key)+1);
                         memcpy(hash_urls_head->url, e.key, strlen(e.key)+1);
+
+                        printf("finished adding url\n");
                     } else {
                         free(e.key);
                     }
