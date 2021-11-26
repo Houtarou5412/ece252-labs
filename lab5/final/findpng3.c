@@ -209,13 +209,13 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
 }
 
 void init(CURLM *cm, int i) {   
-    RECV_BUF *recv = malloc(RECV_BUF);
+    RECV_BUF *recv = malloc(sizeof(RECV_BUF));
     CURL *eh = easy_handle_init(recv);
-    memcpy(temp_url, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
-    pop_head(&urls_to_check_head);
+    
     push_head(&visited_urls_head);
     visited_urls_head->url = malloc(strlen(urls_to_check_head->url)+1);
     memcpy(visited_urls_head->url, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
+    pop_head(&urls_to_check_head);
 
     curl_easy_setopt(eh, CURLOPT_HEADER, 0L);
     curl_easy_setopt(eh, CURLOPT_URL, visited_urls_head->url);
