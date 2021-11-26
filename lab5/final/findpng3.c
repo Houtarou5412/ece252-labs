@@ -228,7 +228,7 @@ void *check_urls(void *ignore) {
 
     cm = curl_multi_init();
 
-    printf("check_urls 1\n");
+    //printf("check_urls 1\n");
     
     while(urls_to_check_head != NULL && pngs_found < max_pngs) {
 
@@ -241,14 +241,14 @@ void *check_urls(void *ignore) {
             concurrencies++;
         }
 
-        printf("check_urls 2 finished\n");
+        //printf("check_urls 2 finished\n");
         curl_multi_perform(cm, &still_running);
 
         do {
             int numfds=0;
             int res = curl_multi_wait(cm, NULL, 0, MAX_WAIT_MSECS, &numfds);
             if(res != CURLM_OK) {
-                fprintf(stderr, "error: curl_multi_wait() returned %d\n", res);
+                //printf("error: curl_multi_wait() returned %d\n", res);
                 continue;
             }
             /*
@@ -261,13 +261,13 @@ void *check_urls(void *ignore) {
 
         } while(still_running);
 
-        printf("check http status\n");
+        //printf("check http status\n");
         CURL *eh = NULL;
 
         while ((msg = curl_multi_info_read(cm, &msgs_left))) {
-            printf("%d msgs_left\n", msgs_left);
+            //printf("%d msgs_left\n", msgs_left);
             if (msg->msg == CURLMSG_DONE) {
-                printf("message done\n");
+                //printf("message done\n");
                 eh = msg->easy_handle;
 
                 // Get HTTP status code
@@ -275,7 +275,7 @@ void *check_urls(void *ignore) {
                 RECV_BUF *recv;
                 char *redirect_url;
 
-                printf("get infos\n");
+                //printf("get infos\n");
                 curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_status_code);
                 curl_easy_getinfo(eh, CURLINFO_PRIVATE, &recv);
                 curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
@@ -289,16 +289,16 @@ void *check_urls(void *ignore) {
                     continue;
                 }
 
-                printf("analyze http status\n");
+                //printf("analyze http status\n");
                 if(http_status_code >= 400) {
-                    printf("http 400 error\n");
+                    //printf("http 400 error\n");
                 } else if(http_status_code >= 300) {
-                    printf("http 300 redirect\n");
+                    //printf("http 300 redirect\n");
                     ENTRY e;
                     e.key = malloc(strlen(redirect_url)+1);
                     memcpy(e.key, redirect_url, strlen(redirect_url)+1);
                     if(!hsearch(e, FIND)) {
-                        printf("add new url\n");
+                        //printf("add new url\n");
                         hsearch(e, ENTER);
 
                         push_head(&urls_to_check_head);
@@ -309,13 +309,13 @@ void *check_urls(void *ignore) {
                         hash_urls_head->url = malloc(strlen(e.key)+1);
                         memcpy(hash_urls_head->url, e.key, strlen(e.key)+1);
 
-                        printf("finished adding url\n");
+                        //printf("finished adding url\n");
                     } else {
                         free(e.key);
                     }
                     
                 } else if(recv->size != 0 && pngs_found < max_pngs) {
-                    printf("http 200 okay\n");
+                    //printf("http 200 okay\n");
                     process_data(eh, recv);
                 }
 
@@ -325,7 +325,7 @@ void *check_urls(void *ignore) {
                 free(recv);
             }
             else {
-                printf("error: after curl_multi_info_read(), CURLMsg=%d\n", msg->msg);
+                //printf("error: after curl_multi_info_read(), CURLMsg=%d\n", msg->msg);
             }
         }
     }
@@ -349,9 +349,9 @@ int main(int argc, char **argv) {
     hcreate(200000);
     push_head(&png_head);
 
-    printf("main 1\n");
+    //printf("main 1\n");
     for(int t = 1; t < argc; t++) {
-        printf("main 1.1\n");
+        //printf("main 1.1\n");
         if(strcmp(argv[t],"-t") == 0) {
             threads = atoi(argv[t+1]);
             t++;
@@ -365,7 +365,7 @@ int main(int argc, char **argv) {
             log_check = 1;
             t++;
         } else if(t == argc-1) {
-            printf("ok\n");
+            //printf("ok\n");
             //printf("%p -> %p\n", urls_to_check_head, urls_to_check_head->p_next);
             ENTRY e;
             e.key = argv[t];
@@ -385,7 +385,7 @@ int main(int argc, char **argv) {
 
     check_urls(NULL);
 
-    printf("main 5\n");
+    //printf("main 5\n");
 
     char *fname = "./png_urls.txt";
     if( access( fname, F_OK ) == 0 ) {
@@ -398,13 +398,13 @@ int main(int argc, char **argv) {
     }
     fclose(f);
 
-    printf("main 6\n");
+    //printf("main 6\n");
 
     while(png_head != NULL) {
         pop_head(&png_head);
     }
 
-    printf("main 7\n");
+    //printf("main 7\n");
     
     FILE *l;
     if( log_check && access( logfile, F_OK ) == 0 ) {
@@ -423,13 +423,13 @@ int main(int argc, char **argv) {
         fclose(l);
     }
 
-    printf("main 8\n");
+    //printf("main 8\n");
 
     while(urls_to_check_head != NULL) {
         pop_head(&urls_to_check_head);
     }
 
-    printf("main 9\n");
+    //printf("main 9\n");
 
     while(hash_urls_head != NULL) {
         //printf("p_next = %p\n", hash_urls_head->p_next);
@@ -444,7 +444,7 @@ int main(int argc, char **argv) {
         pop_head(&hash_urls_head);
     }
 
-    printf("main 10\n");
+    //printf("main 10\n");
 
     hdestroy();
 
