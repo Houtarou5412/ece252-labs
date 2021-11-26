@@ -305,7 +305,7 @@ void *check_urls(void *ignore) {
                         printf("add new url\n");
                         hsearch(e, ENTER);
 
-                        pop_head(&urls_to_check_head);
+                        push_head(&urls_to_check_head);
                         urls_to_check_head->url = malloc(strlen(e.key)+1);
                         memcpy(urls_to_check_head->url, e.key, strlen(e.key)+1);
 
