@@ -44,13 +44,6 @@ void pop_head(list **head) {
     //printf("temp at %p, head at %p\n", temp, *head);
     free(temp);
 
-    /*printf("pop_head 1\n");
-    free(head->url);
-    list *temp = head->p_next;
-    printf("pop_head 2\n");
-    free(head);
-    printf("pop_head 3\n");
-    head = temp;*/
     return;
 }
 
@@ -215,15 +208,12 @@ void init(CURLM *cm, int i) {
     CURL *eh = easy_handle_init(recv);
     
     push_head(&visited_urls_head);
-    char * test_url = malloc(strlen(urls_to_check_head->url)+1);
-    memcpy(test_url, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
-
     visited_urls_head->url = malloc(strlen(urls_to_check_head->url)+1);
     memcpy(visited_urls_head->url, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
     pop_head(&urls_to_check_head);
 
     curl_easy_setopt(eh, CURLOPT_HEADER, 0L);
-    curl_easy_setopt(eh, CURLOPT_URL, test_url);
+    curl_easy_setopt(eh, CURLOPT_URL, visited_urls_head->url);
     curl_easy_setopt(eh, CURLOPT_PRIVATE, recv);
     curl_easy_setopt(eh, CURLOPT_VERBOSE, 0L);
     curl_multi_add_handle(cm, eh);
@@ -280,12 +270,6 @@ void *check_urls(void *ignore) {
                 printf("message done\n");
                 eh = msg->easy_handle;
 
-                return_code = msg->data.result;
-                if(return_code!=CURLE_OK) {
-                    fprintf(stderr, "CURL error code: %d\n", msg->data.result);
-                    continue;
-                }
-
                 // Get HTTP status code
                 http_status_code=0;
                 RECV_BUF *recv;
@@ -295,6 +279,17 @@ void *check_urls(void *ignore) {
                 curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_status_code);
                 curl_easy_getinfo(eh, CURLINFO_PRIVATE, &recv);
                 curl_easy_getinfo(eh, CURLINFO_REDIRECT_URL, &redirect_url);
+
+                return_code = msg->data.result;
+                if(return_code!=CURLE_OK) {
+                    printf(stderr, "CURL error code: %d\n", msg->data.result);
+
+                    curl_multi_remove_handle(cm, eh);
+                    curl_easy_cleanup(eh);
+                    recv_buf_cleanup(recv);
+                    free(recv);
+                    continue;
+                }
 
                 printf("analyze http status\n");
                 if(http_status_code >= 400) {
