@@ -233,7 +233,7 @@ void *check_urls(void *ignore) {
 
     cm = curl_multi_init();
 
-    //printf("check_urls 1\n");
+    printf("check_urls 1\n");
     
     while(urls_to_check_head != NULL && pngs_found < max_pngs) {
 
@@ -247,7 +247,7 @@ void *check_urls(void *ignore) {
             concurrencies++;
         }
 
-        //printf("check_urls 2 finished\n");
+        printf("check_urls 2 finished\n");
         curl_multi_perform(cm, &still_running);
 
         do {
@@ -267,7 +267,7 @@ void *check_urls(void *ignore) {
 
         } while(still_running);
 
-        //printf("check redirect\n");
+        printf("check http status\n");
         CURL *eh = NULL;
 
         while ((msg = curl_multi_info_read(cm, &msgs_left))) {
@@ -344,9 +344,9 @@ int main(int argc, char **argv) {
     hcreate(200000);
     push_head(&png_head);
 
-    //printf("main 1\n");
+    printf("main 1\n");
     for(int t = 1; t < argc; t++) {
-        //printf("main 1.1\n");
+        printf("main 1.1\n");
         if(strcmp(argv[t],"-t") == 0) {
             threads = atoi(argv[t+1]);
             t++;
@@ -360,7 +360,7 @@ int main(int argc, char **argv) {
             log_check = 1;
             t++;
         } else if(t == argc-1) {
-            //printf("ok\n");
+            printf("ok\n");
             //printf("%p -> %p\n", urls_to_check_head, urls_to_check_head->p_next);
             ENTRY e;
             e.key = argv[t];
@@ -380,7 +380,7 @@ int main(int argc, char **argv) {
 
     check_urls(NULL);
 
-    //printf("main 5\n");
+    printf("main 5\n");
 
     char *fname = "./png_urls.txt";
     if( access( fname, F_OK ) == 0 ) {
@@ -393,13 +393,13 @@ int main(int argc, char **argv) {
     }
     fclose(f);
 
-    //printf("main 6\n");
+    printf("main 6\n");
 
     while(png_head != NULL) {
         pop_head(&png_head);
     }
 
-    //printf("main 7\n");
+    printf("main 7\n");
     
     FILE *l;
     if( log_check && access( logfile, F_OK ) == 0 ) {
@@ -418,13 +418,13 @@ int main(int argc, char **argv) {
         fclose(l);
     }
 
-    //printf("main 8\n");
+    printf("main 8\n");
 
     while(urls_to_check_head != NULL) {
         pop_head(&urls_to_check_head);
     }
 
-    //printf("main 9\n");
+    printf("main 9\n");
 
     while(hash_urls_head != NULL) {
         //printf("p_next = %p\n", hash_urls_head->p_next);
@@ -439,7 +439,7 @@ int main(int argc, char **argv) {
         pop_head(&hash_urls_head);
     }
 
-    //printf("main 10\n");
+    printf("main 10\n");
 
     hdestroy();
 
