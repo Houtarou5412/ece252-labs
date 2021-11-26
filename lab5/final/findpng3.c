@@ -241,7 +241,7 @@ void *check_urls(void *ignore) {
 
         int still_running=0, i=0, msgs_left=0;
         int http_status_code;
-        const char *szUrl;
+        char *szUrl;
 
         int concurrencies = 0;
         for (i = 0; i < threads && urls_to_check_head != NULL; ++i) {
