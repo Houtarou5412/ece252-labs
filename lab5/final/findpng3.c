@@ -282,8 +282,6 @@ void *check_urls(void *ignore) {
 
                 return_code = msg->data.result;
                 if(return_code!=CURLE_OK) {
-                    printf(stderr, "CURL error code: %d\n", msg->data.result);
-
                     curl_multi_remove_handle(cm, eh);
                     curl_easy_cleanup(eh);
                     recv_buf_cleanup(recv);
