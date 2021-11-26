@@ -175,7 +175,9 @@ void process_png(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     return;
 }
 /**
- * @brief process teh download data by curl
+ * @brief 
+ * 
+ */
  * @param CURL *curl_handle is the curl handler
  * @param RECV_BUF p_recv_buf contains the received data. 
  * @return 0 on success; non-zero otherwise
@@ -271,7 +273,9 @@ void *check_urls(void *ignore) {
         CURL *eh = NULL;
 
         while ((msg = curl_multi_info_read(cm, &msgs_left))) {
+            printf("%d msgs_left\n", msgs_left);
             if (msg->msg == CURLMSG_DONE) {
+                printf("message done\n");
                 eh = msg->easy_handle;
 
                 return_code = msg->data.result;
@@ -320,7 +324,7 @@ void *check_urls(void *ignore) {
                 recv_buf_cleanup(recv);
             }
             else {
-                fprintf(stderr, "error: after curl_multi_info_read(), CURLMsg=%d\n", msg->msg);
+                printf("error: after curl_multi_info_read(), CURLMsg=%d\n", msg->msg);
             }
         }
     }
