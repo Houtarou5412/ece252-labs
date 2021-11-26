@@ -15,6 +15,8 @@
 #include <pthread.h>
 #include "multi_curl.h"
 
+#define MAX_WAIT_MSECS 30*1000 /* Wait max. 30 seconds */
+
 typedef struct list{
     char *url;
     struct list *p_next;
@@ -33,7 +35,6 @@ int max_pngs = 50;
 int waiting = 0;
 int maybe_png = 0;
 int early_cancel = 0;
-buf_to_curl *recvs;
 
 void pop_head(list **head) {
     //printf("head at %p\nurl: %s at %p\n", *head, (*head)->url, &((*head)->url));
@@ -118,8 +119,6 @@ int find_http(char *buf, int size, int follow_relative_links, const char *base_u
                     hash_urls_head->url = malloc(strlen(e.key)+1);
                     memcpy(hash_urls_head->url, e.key, strlen(e.key)+1);
 
-                    //printf("new first url: %s\n", urls_to_check_head->url);
-                    sem_post(&url_avail);
                 } else {
                     free(e.key);
                     //printf("existing key: %s\n",e.key);
@@ -209,8 +208,7 @@ int process_data(CURL *curl_handle, RECV_BUF *p_recv_buf) {
     return 0;
 }
 
-static void init(CURLM *cm, int i);
-{   
+void init(CURLM *cm, int i) {   
     RECV_BUF *recv = malloc(RECV_BUF);
     CURL *eh = easy_handle_init(recv);
     memcpy(temp_url, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
@@ -221,7 +219,7 @@ static void init(CURLM *cm, int i);
 
     curl_easy_setopt(eh, CURLOPT_HEADER, 0L);
     curl_easy_setopt(eh, CURLOPT_URL, visited_urls_head->url);
-    curl_easy_setopt(eh, CURLOPT_PRIVATE, visited_urls_head->url);
+    curl_easy_setopt(eh, CURLOPT_PRIVATE, recv);
     curl_easy_setopt(eh, CURLOPT_VERBOSE, 0L);
     curl_multi_add_handle(cm, eh);
 }
@@ -244,13 +242,11 @@ void *check_urls(void *ignore) {
         const char *szUrl;
 
         int concurrencies = 0;
-        for (i = 0; i < threads, urls_to_check_head != NULL; ++i) {
+        for (i = 0; i < threads && urls_to_check_head != NULL; ++i) {
             init(cm, i);
             concurrencies++;
         }
 
-        CURLMcode res;
-        
         //printf("check_urls 2 finished\n");
         curl_multi_perform(cm, &still_running);
 
@@ -259,7 +255,7 @@ void *check_urls(void *ignore) {
             int res = curl_multi_wait(cm, NULL, 0, MAX_WAIT_MSECS, &numfds);
             if(res != CURLM_OK) {
                 fprintf(stderr, "error: curl_multi_wait() returned %d\n", res);
-                return EXIT_FAILURE;
+                continue;
             }
             /*
             if(!numfds) {
@@ -272,8 +268,6 @@ void *check_urls(void *ignore) {
         } while(still_running);
 
         //printf("check redirect\n");
-        long response_code = 300;
-        int ignore = 0;
         CURL *eh = NULL;
 
         while ((msg = curl_multi_info_read(cm, &msgs_left))) {
@@ -292,8 +286,8 @@ void *check_urls(void *ignore) {
                 RECV_BUF *recv;
 
                 curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_status_code);
-                curl_easy_getinfo(eh, CURLINFO_PRIVATE, &szUrl);
-                curl_easy_getinfo(eh, CURLINFO_WRITEDATA, recv)
+                curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &szUrl);
+                curl_easy_getinfo(eh, CURLINFO_PRIVATE, recv);
 
                 if(http_status_code >= 400) {
                     printf("http 400 error\n");
@@ -381,15 +375,9 @@ int main(int argc, char **argv) {
             push_head(&hash_urls_head);
             hash_urls_head->url = malloc(strlen(argv[t])+1);
             memcpy(hash_urls_head->url, argv[t], strlen(argv[t])+1);
-
-            sem_post(&url_avail);
             //printf("%s %s %s\n",argv[t], e.key, urls_to_check_head->url);
         }
     }
-
-    //recvs = malloc(sizeof(RECV_BUF)*threads);
-
-    //printf("main 2\n");
 
     check_urls(NULL);
 
@@ -455,9 +443,6 @@ int main(int argc, char **argv) {
     //printf("main 10\n");
 
     hdestroy();
-    sem_destroy(&url_avail);
-    pthread_mutex_destroy(&mutex);
-    free(ptids);
 
     //Timing Part 2
     if (gettimeofday(&tv, NULL) != 0) {
