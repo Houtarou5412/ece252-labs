@@ -289,10 +289,12 @@ void *check_urls(void *ignore) {
                 szUrl = NULL;
                 RECV_BUF *recv;
 
+                printf("get infos\n");
                 curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_status_code);
                 curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &szUrl);
                 curl_easy_getinfo(eh, CURLINFO_PRIVATE, recv);
 
+                printf("analyze http status\n");
                 if(http_status_code >= 400) {
                     printf("http 400 error\n");
                 } else if(http_status_code >= 300) {
