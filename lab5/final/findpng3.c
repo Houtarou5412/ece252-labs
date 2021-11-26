@@ -215,12 +215,15 @@ void init(CURLM *cm, int i) {
     CURL *eh = easy_handle_init(recv);
     
     push_head(&visited_urls_head);
+    char * test_url = malloc(strlen(urls_to_check_head->url)+1);
+    memcpy(test_url, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
+
     visited_urls_head->url = malloc(strlen(urls_to_check_head->url)+1);
     memcpy(visited_urls_head->url, urls_to_check_head->url, strlen(urls_to_check_head->url)+1);
     pop_head(&urls_to_check_head);
 
     curl_easy_setopt(eh, CURLOPT_HEADER, 0L);
-    curl_easy_setopt(eh, CURLOPT_URL, visited_urls_head->url);
+    curl_easy_setopt(eh, CURLOPT_URL, test_url);
     curl_easy_setopt(eh, CURLOPT_PRIVATE, recv);
     curl_easy_setopt(eh, CURLOPT_VERBOSE, 0L);
     curl_multi_add_handle(cm, eh);
