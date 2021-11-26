@@ -292,7 +292,7 @@ void *check_urls(void *ignore) {
                 printf("get infos\n");
                 curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &http_status_code);
                 curl_easy_getinfo(eh, CURLINFO_EFFECTIVE_URL, &szUrl);
-                curl_easy_getinfo(eh, CURLINFO_PRIVATE, recv);
+                curl_easy_getinfo(eh, CURLINFO_PRIVATE, &recv);
 
                 printf("analyze http status\n");
                 if(http_status_code >= 400) {
@@ -324,6 +324,7 @@ void *check_urls(void *ignore) {
                 curl_multi_remove_handle(cm, eh);
                 curl_easy_cleanup(eh);
                 recv_buf_cleanup(recv);
+                free(recv);
             }
             else {
                 printf("error: after curl_multi_info_read(), CURLMsg=%d\n", msg->msg);
