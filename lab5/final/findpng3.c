@@ -291,7 +291,6 @@ void *check_urls(void *ignore) {
 
                 if(http_status_code >= 400) {
                     printf("http 400 error\n");
-                    continue;
                 } else if(http_status_code >= 300) {
                     printf("http 300 redirect\n");
                     ENTRY e;
